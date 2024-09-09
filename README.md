@@ -1,0 +1,1 @@
+# Homebrew Casks in Nix
