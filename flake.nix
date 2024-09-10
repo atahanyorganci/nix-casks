@@ -13,6 +13,7 @@
     {
       formatter = eachSystem (pkgs: pkgs.nixpkgs-fmt);
       packages = eachDarwinSystem (pkgs: rec {
+        vlc = pkgs.callPackage ./packages/vlc { };
         whatsapp = pkgs.callPackage ./packages/whatsapp { };
       });
     };
