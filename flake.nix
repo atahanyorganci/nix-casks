@@ -16,5 +16,18 @@
         vlc = pkgs.callPackage ./packages/vlc { };
         whatsapp = pkgs.callPackage ./packages/whatsapp { };
       });
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShell {
+          shellHook = ''
+            export COREPACK_DIR=$HOME/.local/share/corepack
+            mkdir -p $COREPACK_DIR
+            corepack enable --install-directory $COREPACK_DIR
+            PATH=$COREPACK_DIR:$PATH
+          '';
+          buildInputs = with pkgs; [
+            nodejs_20
+          ];
+        };
+      });
     };
 }
