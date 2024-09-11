@@ -9,13 +9,17 @@
       eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
       darwin = nixpkgs.lib.platforms.darwin;
       eachDarwinSystem = f: nixpkgs.lib.genAttrs darwin (system: f nixpkgs.legacyPackages.${system});
+      eachCask = f:
+        let
+          casks = builtins.readDir ./packages/casks;
+          fileNames = builtins.attrNames casks;
+          fileStems = builtins.map (name: builtins.substring 0 (builtins.stringLength name - 5) name) fileNames;
+        in
+        nixpkgs.lib.genAttrs fileStems (name: f (builtins.fromJSON (builtins.readFile ./packages/casks/${name}.json)));
     in
     {
       formatter = eachSystem (pkgs: pkgs.nixpkgs-fmt);
-      packages = eachDarwinSystem (pkgs: rec {
-        vlc = pkgs.callPackage ./packages/vlc { };
-        whatsapp = pkgs.callPackage ./packages/whatsapp { };
-      });
+      packages = eachDarwinSystem (pkgs: eachCask (cask: (pkgs.callPackage ./packages { inherit cask; })));
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
           shellHook = ''

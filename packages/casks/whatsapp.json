@@ -1,0 +1,36 @@
+{
+  "pname": "whatsapp",
+  "version": "2.24.16.80",
+  "artifacts": [
+    {
+      "type": "app",
+      "value": {
+        "name": "WhatsApp.app"
+      }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Scripts/net.whatsapp.WhatsApp*",
+            "~/Library/Caches/net.whatsapp.WhatsApp",
+            "~/Library/Containers/net.whatsapp.WhatsApp*",
+            "~/Library/Group Containers/group.com.facebook.family",
+            "~/Library/Group Containers/group.net.whatsapp*",
+            "~/Library/Saved Application State/net.whatsapp.WhatsApp.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://web.whatsapp.com/desktop/mac_native/release/?version=2.24.16.80&extension=zip&configuration=Release&branch=relbranch",
+    "sha256": "33026f9cc9b1c63010df546c1ac5ff3b49ff6e742a57807a817264db82487ce9"
+  },
+  "meta": {
+    "description": "Native desktop client for WhatsApp",
+    "homepage": "https://www.whatsapp.com/"
+  }
+}

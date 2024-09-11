@@ -1,0 +1,46 @@
+{
+  "pname": "vlc",
+  "version": "3.0.21",
+  "artifacts": [
+    {
+      "type": "preflight",
+      "value": null
+    },
+    {
+      "type": "app",
+      "value": {
+        "name": "VLC.app"
+      }
+    },
+    {
+      "type": "binary",
+      "value": "$HOMEBREW_PREFIX/Caskroom/vlc/3.0.21/vlc.wrapper.sh"
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/org.videolan.vlc.sfl*",
+            "~/Library/Application Support/org.videolan.vlc",
+            "~/Library/Application Support/VLC",
+            "~/Library/Caches/org.videolan.vlc",
+            "~/Library/HTTPStorages/org.videolan.vlc",
+            "~/Library/Preferences/org.videolan.vlc",
+            "~/Library/Preferences/org.videolan.vlc.plist",
+            "~/Library/Saved Application State/org.videolan.vlc.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://get.videolan.org/vlc/3.0.21/macosx/vlc-3.0.21-arm64.dmg",
+    "sha256": "15dd65bf6489da9ec6a67f5585c74c40a58993acff41a82958a916dd74178044"
+  },
+  "meta": {
+    "description": "Multimedia player",
+    "homepage": "https://www.videolan.org/vlc/"
+  }
+}
