@@ -19,10 +19,7 @@
     { "preflight": null },
     { "app": ["VLC.app"] },
     {
-      "binary": [
-        "$HOMEBREW_PREFIX/Caskroom/vlc/3.0.21/vlc.wrapper.sh",
-        { "target": "vlc" }
-      ]
+      "binary": ["$HOMEBREW_PREFIX/Caskroom/vlc/3.0.21/vlc.wrapper.sh", { "target": "vlc" }]
     },
     {
       "zap": [
