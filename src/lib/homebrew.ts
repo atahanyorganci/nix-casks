@@ -1,6 +1,7 @@
 import { z } from "astro/zod";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
+export type Literal = z.infer<typeof Literal>;
 
 export const StringOrArray = z
   .string()
@@ -11,64 +12,44 @@ export const File = z
   .tuple([z.string()])
   .or(z.tuple([z.string(), z.object({ target: z.string() })]));
 
-export const FileArtifactType = z.enum([
-  "app",
-  "binary",
-  "colorpicker",
-  "dictionary",
-  "font",
-  "input_method",
-  "internet_plugin",
-  "keyboard_layout",
-  "prefpane",
-  "qlplugin",
-  "mdimporter",
-  "screen_saver",
-  "service",
-  "suite",
-  "audio_unit_plugin",
-  "vst_plugin",
-  "vst3_plugin",
-  "artifact",
-]);
-
-export const FileArtifact = z.record(FileArtifactType, File).transform(record =>
-  Object.entries(record).map(([key, value]) => ({
-    type: key,
-    name: value[0],
-    target: value[1]?.target,
-  })),
-);
-
-export const Script = z
+/**
+ * Relative path to an .app that should be moved into the `/Applications`
+ * folder on installation.
+ */
+export const AppArtifact = z
   .object({
-    executable: z.string(),
-    args: z.array(z.string()).default([]),
-    input: Literal.or(z.array(Literal))
-      .transform(value => (Array.isArray(value) ? value : [value]))
-      .default([]),
-    must_succeed: z.boolean().default(false),
-    sudo: z.boolean().default(false),
-    print_stderr: z.boolean().default(false),
+    app: File,
   })
-  .strict()
-  .or(
-    z.string().transform(value => ({
-      executable: value,
-      args: [],
-      must_succeed: false,
-      sudo: false,
-      print_stderr: false,
-    })),
-  );
+  .transform(({ app }) => ({
+    type: "app" as const,
+    value: {
+      name: app[0],
+      target: app[1]?.target,
+    },
+  }));
+export type AppArtifact = z.infer<typeof AppArtifact>;
 
-export const Signal = z.tuple([z.string(), z.string()]).transform(([signal, pid]) => ({
-  signal,
-  pid,
-}));
+/**
+ * Relative path to a containing directory that should be moved into the `/Applications`
+ * folder on installation.
+ */
+export const SuiteArtifact = z
+  .object({
+    suite: File,
+  })
+  .transform(({ suite }) => ({
+    type: "suite" as const,
+    value: {
+      name: suite[0],
+      target: suite[1]?.target,
+    },
+  }));
+export type SuiteArtifact = z.infer<typeof SuiteArtifact>;
 
-export const PkgOptions = z.object({
-  allow_untrusted: z.boolean().default(false),
+/**
+ * `PkgOptions` can be used to override a `.pkg`s default install options via `-applyChoiceChangesXML`.
+ */
+export const PkgChoices = z.object({
   choices: z
     .array(
       z.object({
@@ -79,56 +60,68 @@ export const PkgOptions = z.object({
     )
     .optional(),
 });
+export type PkgChoices = z.infer<typeof PkgChoices>;
 
+/**
+ * Tuple containing the relative path to a `.pkg` file and optional `PkgChoices`.
+ */
 export const Pkg = z
   .string()
   .or(z.tuple([z.string()]))
-  .or(z.tuple([z.string(), PkgOptions]))
+  .or(z.tuple([z.string(), PkgChoices]))
   .transform(value => {
-    if (Array.isArray(value)) {
-      if (value.length === 1) {
-        return {
-          pkg: value[0],
-        };
-      } else {
-        return {
-          pkg: value[0],
-          ...value[1],
-        };
-      }
-    } else {
+    if (typeof value === "string") {
       return {
         pkg: value,
+        choices: undefined,
+      };
+    }
+    if (value.length === 1) {
+      return {
+        pkg: value[0],
+        choices: undefined,
+      };
+    } else {
+      return {
+        pkg: value[0],
+        choices: value[1].choices,
       };
     }
   });
+export type Pkg = z.infer<typeof Pkg>;
 
-export const Uninstall = z.object({
-  early_script: Script.optional(),
-  launchctl: StringOrArray.optional(),
-  quit: StringOrArray.optional(),
-  signal: Signal.or(z.array(Signal))
-    .transform(signal => (Array.isArray(signal) ? signal : [signal]))
+/**
+ * Relative path to a `.pkg` file containing the distribution.
+ */
+export const PkgArtifact = z
+  .object({
+    pkg: Pkg,
+  })
+  .transform(({ pkg }) => ({
+    type: "pkg" as const,
+    value: {
+      pkg: pkg.pkg,
+      choices: pkg?.choices,
+    },
+  }));
+export type PkgArtifact = z.infer<typeof PkgArtifact>;
+
+export const Script = z.object({
+  executable: z.string(),
+  args: z.array(z.string()).optional(),
+  input: Literal.or(z.array(Literal))
+    .transform(value => (Array.isArray(value) ? value : [value]))
     .optional(),
-  login_item: StringOrArray.optional(),
-  kext: StringOrArray.optional(),
-  script: Script.or(z.array(Script))
-    .transform(script => (Array.isArray(script) ? script : [script]))
-    .optional(),
-  pkgutil: StringOrArray.optional(),
-  delete: StringOrArray.optional(),
-  rmdir: StringOrArray.optional(),
-  trash: StringOrArray.optional(),
+  must_succeed: z.boolean().optional(),
+  sudo: z.boolean().optional(),
+  print_stderr: z.boolean().optional(),
 });
 
-export const Artifact = z.union([
-  z.object({
-    zap: z.array(Uninstall),
-  }),
-  z.object({
-    uninstall: z.array(Uninstall),
-  }),
-  z.object({
+/**
+ * Describes an executable which must be run to complete the installation.
+ */
+export const InstallerArtifact = z
+  .object({
     installer: z.array(
       z
         .object({
@@ -136,29 +129,304 @@ export const Artifact = z.union([
         })
         .or(z.object({ manual: z.string() })),
     ),
-  }),
-  z.object({
-    manpage: StringOrArray,
-  }),
-  z.object({
-    pkg: Pkg,
-  }),
-  z.object({
-    preflight: z.object({}).nullable(),
-  }),
-  z.object({
-    postflight: z.object({}).nullable(),
-  }),
-  z.object({
-    uninstall_preflight: z.object({}).nullable(),
-  }),
-  z.object({
-    uninstall_postflight: z.object({}).nullable(),
-  }),
-  FileArtifact,
-  z.object({
+  })
+  .transform(({ installer }) => ({ type: "installer" as const, value: installer }));
+export type InstallerArtifact = z.infer<typeof InstallerArtifact>;
+
+/**
+ * Relative path to a Binary that should be linked into the `$(brew --prefix)/bin` folder on installation.
+ */
+export const BinaryArtifact = z
+  .object({
+    binary: File,
+  })
+  .transform(({ binary }) => ({
+    type: "binary" as const,
+    value: binary[0],
+  }));
+export type BinaryArtifact = z.infer<typeof BinaryArtifact>;
+
+/**
+ * Relative path to a Man Page that should be linked into the respective man
+ * page folder on installation, e.g. `/usr/local/share/man/man3` for `my_app.3`.
+ */
+export const ManpageArtifact = z
+  .object({
+    manpage: File,
+  })
+  .transform(({ manpage }) => ({
+    type: "manpage" as const,
+    value: manpage[0],
+  }));
+export type ManpageArtifact = z.infer<typeof ManpageArtifact>;
+
+/**
+ * Relative path to a ColorPicker plugin that should be moved into
+ * the `~/Library/ColorPickers` folder on installation.
+ */
+export const ColorPickerArtifact = z
+  .object({
+    colorpicker: File,
+  })
+  .transform(({ colorpicker }) => ({
+    type: "colorpicker" as const,
+    value: colorpicker[0],
+  }));
+export type ColorPickerArtifact = z.infer<typeof ColorPickerArtifact>;
+
+/**
+ * Relative path to a Dictionary that should be moved into the `~/Library/Dictionaries` folder on installation.
+ */
+export const DictionaryArtifact = z
+  .object({
+    dictionary: File,
+  })
+  .transform(({ dictionary }) => ({
+    type: "dictionary" as const,
+    value: dictionary[0],
+  }));
+export type DictionaryArtifact = z.infer<typeof DictionaryArtifact>;
+
+/**
+ * Relative path to a Font that should be moved into the `~/Library/Fonts` folder on installation.
+ */
+export const FontArtifact = z
+  .object({
+    font: File,
+  })
+  .transform(({ font }) => ({
+    type: "font" as const,
+    value: font[0],
+  }));
+export type FontArtifact = z.infer<typeof FontArtifact>;
+
+/**
+ * Relative path to an Input Method that should be moved into the ~/Library/Input Methods folder on installation.
+ */
+export const InputMethodArtifact = z
+  .object({
+    input_method: File,
+  })
+  .transform(({ input_method }) => ({
+    type: "input_method" as const,
+    value: input_method[0],
+  }));
+export type InputMethodArtifact = z.infer<typeof InputMethodArtifact>;
+
+/**
+ * Relative path to an Internet Plugin that should be moved into the ~/Library/Internet Plug-Ins folder on installation.
+ */
+export const InternetPluginArtifact = z
+  .object({
+    internet_plugin: File,
+  })
+  .transform(({ internet_plugin }) => ({
+    type: "internet_plugin" as const,
+    value: internet_plugin[0],
+  }));
+export type InternetPluginArtifact = z.infer<typeof InternetPluginArtifact>;
+
+/**
+ * Relative path to a Keyboard Layout that should be moved into the /Library/Keyboard Layouts folder on installation.
+ */
+export const KeyboardLayoutArtifact = z
+  .object({
+    keyboard_layout: File,
+  })
+  .transform(({ keyboard_layout }) => ({
+    type: "keyboard_layout" as const,
+    value: keyboard_layout[0],
+  }));
+export type KeyboardLayoutArtifact = z.infer<typeof KeyboardLayoutArtifact>;
+
+export const PrefPaneArtifact = z
+  .object({
+    prefpane: File,
+  })
+  .transform(({ prefpane }) => ({
+    type: "prefpane" as const,
+    value: prefpane[0],
+  }));
+export type PrefPaneArtifact = z.infer<typeof PrefPaneArtifact>;
+
+export const QlPluginArtifact = z
+  .object({
+    qlplugin: File,
+  })
+  .transform(({ qlplugin }) => ({
+    type: "qlplugin" as const,
+    value: qlplugin[0],
+  }));
+export type QlPluginArtifact = z.infer<typeof QlPluginArtifact>;
+
+export const MdImporterArtifact = z
+  .object({
+    mdimporter: File,
+  })
+  .transform(({ mdimporter }) => ({
+    type: "mdimporter" as const,
+    value: mdimporter[0],
+  }));
+export type MdImporterArtifact = z.infer<typeof MdImporterArtifact>;
+
+export const ScreenSaverArtifact = z
+  .object({
+    screen_saver: File,
+  })
+  .transform(({ screen_saver }) => ({
+    type: "screen_saver" as const,
+    value: screen_saver[0],
+  }));
+export type ScreenSaverArtifact = z.infer<typeof ScreenSaverArtifact>;
+
+export const ServiceArtifact = z
+  .object({
+    service: File,
+  })
+  .transform(({ service }) => ({
+    type: "service" as const,
+    value: service[0],
+  }));
+export type ServiceArtifact = z.infer<typeof ServiceArtifact>;
+
+export const AudioUnitPluginArtifact = z
+  .object({
+    audio_unit_plugin: File,
+  })
+  .transform(({ audio_unit_plugin }) => ({
+    type: "audio_unit_plugin" as const,
+    value: audio_unit_plugin[0],
+  }));
+export type AudioUnitPluginArtifact = z.infer<typeof AudioUnitPluginArtifact>;
+
+export const VstPluginArtifact = z
+  .object({
+    vst_plugin: File,
+  })
+  .transform(({ vst_plugin }) => ({
+    type: "vst_plugin" as const,
+    value: vst_plugin[0],
+  }));
+export type VstPluginArtifact = z.infer<typeof VstPluginArtifact>;
+
+export const Vst3PluginArtifact = z
+  .object({
+    vst3_plugin: File,
+  })
+  .transform(({ vst3_plugin }) => ({
+    type: "vst3_plugin" as const,
+    value: vst3_plugin[0],
+  }));
+export type Vst3PluginArtifact = z.infer<typeof Vst3PluginArtifact>;
+
+export const GenericArtifact = z
+  .object({
+    artifact: File,
+  })
+  .transform(({ artifact }) => ({
+    type: "artifact" as const,
+    value: artifact[0],
+  }));
+export type GenericArtifact = z.infer<typeof GenericArtifact>;
+
+export const StageOnlyArtifact = z
+  .object({
     stage_only: z.tuple([z.literal(true)]),
-  }),
+  })
+  .transform(() => ({
+    type: "stage_only" as const,
+    value: true,
+  }));
+export type StageOnlyArtifact = z.infer<typeof StageOnlyArtifact>;
+
+export const Signal = z.tuple([z.string(), z.string()]).transform(([signal, pid]) => ({
+  signal,
+  pid,
+}));
+
+export const Uninstall = z.union([
+  z.object({ early_script: Script }).transform(value => ({ type: "early_script" as const, value })),
+  z
+    .object({ launchctl: StringOrArray })
+    .transform(value => ({ type: "launchctl" as const, value })),
+  z.object({ quit: StringOrArray }).transform(value => ({ type: "quit" as const, value })),
+  z
+    .object({
+      signal: Signal.or(z.array(Signal)).transform(signal =>
+        Array.isArray(signal) ? signal : [signal],
+      ),
+    })
+    .transform(value => ({ type: "signal" as const, value })),
+  z
+    .object({ login_item: StringOrArray })
+    .transform(value => ({ type: "login_item" as const, value })),
+  z.object({ kext: StringOrArray }).transform(value => ({ type: "kext" as const, value })),
+  z
+    .object({
+      script: Script.or(z.array(Script)).transform(script =>
+        Array.isArray(script) ? script : [script],
+      ),
+    })
+    .transform(value => ({ type: "script" as const, value })),
+  z.object({ pkgutil: StringOrArray }).transform(value => ({ type: "pkgutil" as const, value })),
+  z.object({ delete: StringOrArray }).transform(value => ({ type: "delete" as const, value })),
+  z.object({ rmdir: StringOrArray }).transform(value => ({ type: "rmdir" as const, value })),
+  z.object({ trash: StringOrArray }).transform(value => ({ type: "trash" as const, value })),
+]);
+
+export const Artifact = z.union([
+  AppArtifact,
+  SuiteArtifact,
+  PkgArtifact,
+  InstallerArtifact,
+  BinaryArtifact,
+  ManpageArtifact,
+  ColorPickerArtifact,
+  DictionaryArtifact,
+  FontArtifact,
+  InputMethodArtifact,
+  InternetPluginArtifact,
+  KeyboardLayoutArtifact,
+  PrefPaneArtifact,
+  QlPluginArtifact,
+  MdImporterArtifact,
+  ScreenSaverArtifact,
+  ServiceArtifact,
+  AudioUnitPluginArtifact,
+  VstPluginArtifact,
+  Vst3PluginArtifact,
+  GenericArtifact,
+  StageOnlyArtifact,
+  z
+    .object({
+      zap: z.array(Uninstall),
+    })
+    .transform(({ zap }) => ({ type: "zap" as const, value: zap })),
+  z
+    .object({
+      uninstall: z.array(Uninstall),
+    })
+    .transform(({ uninstall }) => ({ type: "uninstall" as const, value: uninstall })),
+  z
+    .object({
+      preflight: z.object({}).nullable(),
+    })
+    .transform(value => ({ type: "preflight" as const, value })),
+  z
+    .object({
+      postflight: z.object({}).nullable(),
+    })
+    .transform(value => ({ type: "postflight" as const, value })),
+  z
+    .object({
+      uninstall_preflight: z.object({}).nullable(),
+    })
+    .transform(value => ({ type: "uninstall_preflight" as const, value })),
+  z
+    .object({
+      uninstall_postflight: z.object({}).nullable(),
+    })
+    .transform(value => ({ type: "uninstall_postflight" as const, value })),
 ]);
 
 const Artifacts = z.array(Artifact).transform(value => {
