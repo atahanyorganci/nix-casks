@@ -343,35 +343,50 @@ export const Signal = z.tuple([z.string(), z.string()]).transform(([signal, pid]
   signal,
   pid,
 }));
+export type Signal = z.infer<typeof Signal>;
 
 export const Uninstall = z.union([
-  z.object({ early_script: Script }).transform(value => ({ type: "early_script" as const, value })),
+  z
+    .object({ early_script: Script })
+    .transform(({ early_script }) => ({ type: "early_script" as const, value: early_script })),
   z
     .object({ launchctl: StringOrArray })
-    .transform(value => ({ type: "launchctl" as const, value })),
-  z.object({ quit: StringOrArray }).transform(value => ({ type: "quit" as const, value })),
+    .transform(({ launchctl }) => ({ type: "launchctl" as const, value: launchctl })),
+  z
+    .object({ quit: StringOrArray })
+    .transform(({ quit }) => ({ type: "quit" as const, value: quit })),
   z
     .object({
       signal: Signal.or(z.array(Signal)).transform(signal =>
         Array.isArray(signal) ? signal : [signal],
       ),
     })
-    .transform(value => ({ type: "signal" as const, value })),
+    .transform(({ signal }) => ({ type: "signal" as const, value: signal })),
   z
     .object({ login_item: StringOrArray })
-    .transform(value => ({ type: "login_item" as const, value })),
-  z.object({ kext: StringOrArray }).transform(value => ({ type: "kext" as const, value })),
+    .transform(({ login_item }) => ({ type: "login_item" as const, value: login_item })),
+  z
+    .object({ kext: StringOrArray })
+    .transform(({ kext }) => ({ type: "kext" as const, value: kext })),
   z
     .object({
       script: Script.or(z.array(Script)).transform(script =>
         Array.isArray(script) ? script : [script],
       ),
     })
-    .transform(value => ({ type: "script" as const, value })),
-  z.object({ pkgutil: StringOrArray }).transform(value => ({ type: "pkgutil" as const, value })),
-  z.object({ delete: StringOrArray }).transform(value => ({ type: "delete" as const, value })),
-  z.object({ rmdir: StringOrArray }).transform(value => ({ type: "rmdir" as const, value })),
-  z.object({ trash: StringOrArray }).transform(value => ({ type: "trash" as const, value })),
+    .transform(({ script }) => ({ type: "script" as const, value: script })),
+  z
+    .object({ pkgutil: StringOrArray })
+    .transform(({ pkgutil }) => ({ type: "pkgutil" as const, value: pkgutil })),
+  z
+    .object({ delete: StringOrArray })
+    .transform(value => ({ type: "delete" as const, value: value["delete"] })),
+  z
+    .object({ rmdir: StringOrArray })
+    .transform(({ rmdir }) => ({ type: "rmdir" as const, value: rmdir })),
+  z
+    .object({ trash: StringOrArray })
+    .transform(({ trash }) => ({ type: "trash" as const, value: trash })),
 ]);
 
 export const Artifact = z.union([
@@ -409,40 +424,25 @@ export const Artifact = z.union([
     .transform(({ uninstall }) => ({ type: "uninstall" as const, value: uninstall })),
   z
     .object({
-      preflight: z.object({}).nullable(),
+      preflight: z.null(),
     })
     .transform(value => ({ type: "preflight" as const, value })),
   z
     .object({
-      postflight: z.object({}).nullable(),
+      postflight: z.null(),
     })
     .transform(value => ({ type: "postflight" as const, value })),
   z
     .object({
-      uninstall_preflight: z.object({}).nullable(),
+      uninstall_preflight: z.null(),
     })
     .transform(value => ({ type: "uninstall_preflight" as const, value })),
   z
     .object({
-      uninstall_postflight: z.object({}).nullable(),
+      uninstall_postflight: z.null(),
     })
     .transform(value => ({ type: "uninstall_postflight" as const, value })),
 ]);
-
-const Artifacts = z.array(Artifact).transform(value => {
-  const any = {} as any;
-  for (const artifact of value) {
-    for (const [key, value] of Object.entries(artifact)) {
-      if (key in any) {
-        any[key].push(value);
-      } else {
-        any[key] = [value];
-      }
-    }
-  }
-  return any;
-});
-
 export type Artifact = z.infer<typeof Artifact>;
 
 export const Container = z
@@ -515,7 +515,27 @@ export const Cask = z
     installed: z.null(),
     installed_time: z.null(),
     outdated: z.literal(false),
+    // Only from API
+    generated_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    analytics: z.unknown(),
   })
   .strict();
 
 export type Cask = z.infer<typeof Cask>;
+
+export function caskToNix(cask: Cask) {
+  const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
+  return {
+    pname,
+    version,
+    artifacts,
+    src: {
+      url,
+      sha256,
+    },
+    meta: {
+      description,
+      homepage,
+    },
+  };
+}
