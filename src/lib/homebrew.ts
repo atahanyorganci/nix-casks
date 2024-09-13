@@ -531,6 +531,12 @@ export type Cask = z.infer<typeof Cask>;
 
 export function caskToNix(cask: Cask) {
   const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
+  const urlObj = new URL(url);
+  const pathSegments = urlObj.pathname.split("/");
+  let filename = pathSegments[pathSegments.length - 1];
+  if (filename === "") {
+    filename = `${pname}-${version}`;
+  }
   return {
     pname,
     version,
@@ -538,6 +544,7 @@ export function caskToNix(cask: Cask) {
     src: {
       url,
       sha256,
+      name: filename,
     },
     meta: {
       description,
