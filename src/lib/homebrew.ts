@@ -426,22 +426,28 @@ export const Artifact = z.union([
     .object({
       preflight: z.null(),
     })
-    .transform(value => ({ type: "preflight" as const, value })),
+    .transform(({ preflight }) => ({ type: "preflight" as const, value: preflight })),
   z
     .object({
       postflight: z.null(),
     })
-    .transform(value => ({ type: "postflight" as const, value })),
+    .transform(({ postflight }) => ({ type: "postflight" as const, value: postflight })),
   z
     .object({
       uninstall_preflight: z.null(),
     })
-    .transform(value => ({ type: "uninstall_preflight" as const, value })),
+    .transform(({ uninstall_preflight }) => ({
+      type: "uninstall_preflight" as const,
+      value: uninstall_preflight,
+    })),
   z
     .object({
       uninstall_postflight: z.null(),
     })
-    .transform(value => ({ type: "uninstall_postflight" as const, value })),
+    .transform(({ uninstall_postflight }) => ({
+      type: "uninstall_postflight" as const,
+      value: uninstall_postflight,
+    })),
 ]);
 export type Artifact = z.infer<typeof Artifact>;
 
