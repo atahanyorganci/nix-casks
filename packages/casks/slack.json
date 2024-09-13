@@ -1,0 +1,54 @@
+{
+  "pname": "slack",
+  "version": "4.40.126",
+  "artifacts": [
+    {
+      "type": "uninstall",
+      "value": [
+        {
+          "type": "quit",
+          "value": ["com.tinyspeck.slackmacgap"]
+        }
+      ]
+    },
+    {
+      "type": "app",
+      "value": {
+        "name": "Slack.app"
+      }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Scripts/com.tinyspeck.slackmacgap",
+            "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.tinyspeck.slackmacgap.sfl*",
+            "~/Library/Application Support/Slack",
+            "~/Library/Caches/com.tinyspeck.slackmacgap*",
+            "~/Library/Containers/com.tinyspeck.slackmacgap*",
+            "~/Library/Cookies/com.tinyspeck.slackmacgap.binarycookies",
+            "~/Library/Group Containers/*.com.tinyspeck.slackmacgap",
+            "~/Library/Group Containers/*.slack",
+            "~/Library/HTTPStorages/com.tinyspeck.slackmacgap*",
+            "~/Library/Logs/Slack",
+            "~/Library/Preferences/ByHost/com.tinyspeck.slackmacgap.ShipIt.*.plist",
+            "~/Library/Preferences/com.tinyspeck.slackmacgap*",
+            "~/Library/Saved Application State/com.tinyspeck.slackmacgap.savedState",
+            "~/Library/WebKit/com.tinyspeck.slackmacgap"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://downloads.slack-edge.com/desktop-releases/mac/arm64/4.40.126/Slack-4.40.126-macOS.dmg",
+    "sha256": "87dcde01a382e7d4a23f72f0fdd64315b52390dd2d5800df2a645d4316b3bc52",
+    "name": "Slack-4.40.126-macOS.dmg"
+  },
+  "meta": {
+    "description": "Team communication and collaboration software",
+    "homepage": "https://slack.com/"
+  }
+}

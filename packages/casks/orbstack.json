@@ -1,0 +1,31 @@
+{
+  "pname": "orbstack",
+  "version": "1.7.2_17389",
+  "artifacts": [
+    {
+      "type": "uninstall",
+      "value": [
+        {
+          "type": "script",
+          "value": [
+            {
+              "executable": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orbctl",
+              "args": ["_internal", "brew-uninstall"]
+            }
+          ]
+        }
+      ]
+    },
+    { "type": "app", "value": { "name": "OrbStack.app" } },
+    { "type": "binary", "value": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orb" },
+    { "type": "binary", "value": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orbctl" },
+    { "type": "postflight", "value": null },
+    { "type": "zap", "value": [{ "type": "rmdir", "value": ["~/OrbStack"] }] }
+  ],
+  "src": {
+    "url": "https://cdn-updates.orbstack.dev/arm64/OrbStack_v1.7.2_17389_arm64.dmg",
+    "sha256": "6df4dabe60c374bdcae5cee090dc9275986e37c553625f6ccb94457030cf03be",
+    "name": "OrbStack_v1.7.2_17389_arm64.dmg"
+  },
+  "meta": { "description": "Replacement for Docker Desktop", "homepage": "https://orbstack.dev/" }
+}

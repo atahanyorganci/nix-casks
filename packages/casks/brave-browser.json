@@ -1,0 +1,37 @@
+{
+  "pname": "brave-browser",
+  "version": "1.69.168.0",
+  "artifacts": [
+    {
+      "type": "app",
+      "value": {
+        "name": "Brave Browser.app"
+      }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Support/BraveSoftware",
+            "~/Library/Caches/BraveSoftware",
+            "~/Library/Caches/com.brave.Browser",
+            "~/Library/HTTPStorages/com.brave.Browser",
+            "~/Library/Preferences/com.brave.Browser.plist",
+            "~/Library/Saved Application State/com.brave.Browser.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/169.168/Brave-Browser-arm64.dmg",
+    "sha256": "705b1569946c9ec7b11277c15d6c5d60ca14e5262df3d7f8356ad5de1e0fa2bc",
+    "name": "Brave-Browser-arm64.dmg"
+  },
+  "meta": {
+    "description": "Web browser focusing on privacy",
+    "homepage": "https://brave.com/"
+  }
+}
