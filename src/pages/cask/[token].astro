@@ -24,15 +24,9 @@ const { cask, nix } = await fetchCask(token);
   <div class="flex items-center gap-2">
     <a class="block" href={nix.meta.homepage}>Homepage</a>
   </div>
-  <p>
-    {nix.meta.description}
-  </p>
+  <p>{nix.meta.description}</p>
   <h2 class="text-2xl font-semibold">Nix Derivation</h2>
-  <pre>
-    {`\n${JSON.stringify(nix, null, 2)}`}
-  </pre>
+  <pre>{JSON.stringify(nix, null, 2)}</pre>
   <h2 class="text-2xl font-semibold">Homebrew Cask</h2>
-  <pre>
-    {`\n${JSON.stringify(cask, null, 2)}`}
-  </pre>
+  <pre>{JSON.stringify(cask, null, 2)}</pre>
 </Layout>
