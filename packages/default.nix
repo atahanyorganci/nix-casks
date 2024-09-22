@@ -38,7 +38,9 @@ let
       parts = lib.splitString "/" binary;
       name = builtins.elemAt parts (builtins.length parts - 1);
     in
-    "mkdir -p $out/bin && ln -s ${src} $out/bin/${name}";
+    ''
+      mkdir -p "$out/bin" && ln -s "${src}" "$out/bin/${name}"
+    '';
   installScript = builtins.concatStringsSep "\n" (builtins.map ({ type, value }: if type == "app" then (appCopy value) else if type == "binary" then (binaryLink value) else "") cask.artifacts);
 in
 stdenv.mkDerivation rec {
