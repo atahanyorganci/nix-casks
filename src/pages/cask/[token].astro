@@ -22,7 +22,7 @@ const { cask, nix } = await fetchCask(token);
 <Layout title={`${nix.pname} | Nix Casks`}>
   <h1 class="text-4xl font-semibold">{nix.pname} - {nix.version}</h1>
   <div class="flex items-center gap-2">
-    <a class="block" href={nix.meta.homepage}>Homepage</a>
+    <a class="block" target="_blank" rel="noopener noreferrer" href={nix.meta.homepage}>Homepage</a>
   </div>
   <p>{nix.meta.description}</p>
   <h2 class="text-2xl font-semibold">Nix Derivation</h2>
