@@ -142,7 +142,10 @@ export const BinaryArtifact = z
   })
   .transform(({ binary }) => ({
     type: "binary" as const,
-    value: binary[0],
+    value: {
+      name: binary[0],
+      target: binary[1]?.target,
+    },
   }));
 export type BinaryArtifact = z.infer<typeof BinaryArtifact>;
 
@@ -529,6 +532,41 @@ export const Cask = z
 
 export type Cask = z.infer<typeof Cask>;
 
+function unreachable(message: string): never {
+  throw new Error(`Unreachable: ${message}`);
+}
+
+function artifactToInstallScript({ token, version, artifacts }: Cask) {
+  return artifacts
+    .map(({ type, value: artifact }) => {
+      switch (type) {
+        case "app":
+        case "suite":
+          return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
+        case "binary": {
+          const src = artifact.name
+            .replace("$APPDIR", "$out/Applications")
+            .replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out");
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`${token}'s binary ${artifact.name} has missing target`);
+          return `mkdir -p "$out/bin" && ln -s "${src}" "$out/bin/${target}"`;
+        }
+        case "manpage": {
+          const src = artifact.replace("$APPDIR", "$out/Applications");
+          const name =
+            artifact.split("/").pop() ??
+            unreachable(`${token}'s manpage ${artifact} has missing name`);
+          const [_, section] = name.split(".");
+          const dirname = `$out/usr/local/share/man/man${section}`;
+          return `mkdir -p "${dirname}" && ln -s "${src}" "${dirname}/${name}"`;
+        }
+      }
+    })
+    .filter(Boolean);
+}
+
 export function caskToNix(cask: Cask) {
   const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
   const urlObj = new URL(url);
@@ -546,6 +584,7 @@ export function caskToNix(cask: Cask) {
       sha256,
       name: filename,
     },
+    installPhase: artifactToInstallScript(cask),
     meta: {
       description,
       homepage,

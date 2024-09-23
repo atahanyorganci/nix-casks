@@ -24,10 +24,7 @@ stdenv.mkDerivation rec {
   ];
   phases = [ "unpackPhase" "installPhase" ];
   unpackPhase = builtins.readFile ./unpack.sh;
-  installPhase = ''
-    ${installScript}
-    echo '${installScript}' > $out/install.sh
-  '';
+  installPhase = builtins.concatStringsSep "\n" cask.installPhase;
   src = fetchurl cask.src;
   meta = with stdenv.lib; {
     inherit (cask.meta) description homepage;
