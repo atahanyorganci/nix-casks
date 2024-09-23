@@ -1,33 +1,5 @@
 { stdenv, pkgs, fetchurl, lib, cask, ... }:
 let
-  installDmg = ''
-    mnt=$(mktemp -d -t ci-XXXXXXXXXX)
-
-    function finish {
-      echo "Detaching $mnt"
-      /usr/bin/hdiutil detach $mnt -force
-      rm -rf $mnt
-    }
-    trap finish EXIT
-
-    echo "Attaching $mnt"
-    /usr/bin/hdiutil attach -nobrowse -readonly $src -mountpoint $mnt
-
-    echo "Contents of $mnt"
-    ls -la $mnt/
-
-    echo "Copying contents"
-    shopt -s extglob
-    DEST="$PWD"
-    (cd "$mnt"; cp -a !(Applications) "$DEST/")
-    echo "Contents copied to $DEST"
-  '';
-  installZip = ''
-    tmp=$(mktemp -d -t ci-XXXXXXXXXX)
-    unzip -d $tmp $src
-    DEST="$PWD"
-    cd $tmp && cp -a . "$DEST" && cd $DEST
-  '';
   artifact = (builtins.elemAt (builtins.filter (entry: entry.type == "app") cask.artifacts) 0).value;
   appCopy = artifact: ''
     mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target or artifact.name}"
@@ -45,20 +17,13 @@ let
 in
 stdenv.mkDerivation rec {
   inherit (cask) pname version;
-  nativeBuildInputs = with pkgs; [ file unzip undmg ];
-  unpackPhase =
-    if lib.strings.hasSuffix ".dmg" cask.src.name then installDmg
-    else if lib.strings.hasSuffix ".zip" cask.src.name then installZip
-    else
-      ''
-        type=$(file -b --mime-type $src)
-        if [ "$type" = "application/zip" ]; then
-          ${installZip}
-        else
-          echo "Unsupported file type: $type"
-          exit 1
-        fi
-      '';
+  nativeBuildInputs = with pkgs; [
+    python312Packages.magika
+    unzip
+    jq
+  ];
+  phases = [ "unpackPhase" "installPhase" ];
+  unpackPhase = builtins.readFile ./unpack.sh;
   installPhase = ''
     ${installScript}
     echo '${installScript}' > $out/install.sh
