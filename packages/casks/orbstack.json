@@ -17,8 +17,8 @@
       ]
     },
     { "type": "app", "value": { "name": "OrbStack.app" } },
-    { "type": "binary", "value": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orb" },
-    { "type": "binary", "value": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orbctl" },
+    { "type": "binary", "value": { "name": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orb" } },
+    { "type": "binary", "value": { "name": "$APPDIR/OrbStack.app/Contents/MacOS/bin/orbctl" } },
     { "type": "postflight", "value": null },
     { "type": "zap", "value": [{ "type": "rmdir", "value": ["~/OrbStack"] }] }
   ],
@@ -27,5 +27,10 @@
     "sha256": "6df4dabe60c374bdcae5cee090dc9275986e37c553625f6ccb94457030cf03be",
     "name": "OrbStack_v1.7.2_17389_arm64.dmg"
   },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"OrbStack.app\" \"$out/Applications/OrbStack.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/OrbStack.app/Contents/MacOS/bin/orb\" \"$out/bin/orb\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/OrbStack.app/Contents/MacOS/bin/orbctl\" \"$out/bin/orbctl\""
+  ],
   "meta": { "description": "Replacement for Docker Desktop", "homepage": "https://orbstack.dev/" }
 }

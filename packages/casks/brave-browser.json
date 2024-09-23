@@ -1,13 +1,8 @@
 {
   "pname": "brave-browser",
-  "version": "1.69.168.0",
+  "version": "1.70.117.0",
   "artifacts": [
-    {
-      "type": "app",
-      "value": {
-        "name": "Brave Browser.app"
-      }
-    },
+    { "type": "app", "value": { "name": "Brave Browser.app" } },
     {
       "type": "zap",
       "value": [
@@ -26,12 +21,12 @@
     }
   ],
   "src": {
-    "url": "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/169.168/Brave-Browser-arm64.dmg",
-    "sha256": "705b1569946c9ec7b11277c15d6c5d60ca14e5262df3d7f8356ad5de1e0fa2bc",
+    "url": "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/170.117/Brave-Browser-arm64.dmg",
+    "sha256": "b9c532d04317f48936bfb0966a66d1111267bee5d5ff6b74238569824175cc50",
     "name": "Brave-Browser-arm64.dmg"
   },
-  "meta": {
-    "description": "Web browser focusing on privacy",
-    "homepage": "https://brave.com/"
-  }
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Brave Browser.app\" \"$out/Applications/Brave Browser.app\""
+  ],
+  "meta": { "description": "Web browser focusing on privacy", "homepage": "https://brave.com/" }
 }

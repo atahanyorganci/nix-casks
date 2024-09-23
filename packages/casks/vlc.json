@@ -2,19 +2,11 @@
   "pname": "vlc",
   "version": "3.0.21",
   "artifacts": [
-    {
-      "type": "preflight",
-      "value": null
-    },
-    {
-      "type": "app",
-      "value": {
-        "name": "VLC.app"
-      }
-    },
+    { "type": "preflight", "value": null },
+    { "type": "app", "value": { "name": "VLC.app" } },
     {
       "type": "binary",
-      "value": "$HOMEBREW_PREFIX/Caskroom/vlc/3.0.21/vlc.wrapper.sh"
+      "value": { "name": "$HOMEBREW_PREFIX/Caskroom/vlc/3.0.21/vlc.wrapper.sh", "target": "vlc" }
     },
     {
       "type": "zap",
@@ -40,8 +32,9 @@
     "sha256": "15dd65bf6489da9ec6a67f5585c74c40a58993acff41a82958a916dd74178044",
     "name": "vlc-3.0.21-arm64.dmg"
   },
-  "meta": {
-    "description": "Multimedia player",
-    "homepage": "https://www.videolan.org/vlc/"
-  }
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"VLC.app\" \"$out/Applications/VLC.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/vlc.wrapper.sh\" \"$out/bin/vlc\""
+  ],
+  "meta": { "description": "Multimedia player", "homepage": "https://www.videolan.org/vlc/" }
 }

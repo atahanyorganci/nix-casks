@@ -1,22 +1,9 @@
 {
   "pname": "slack",
-  "version": "4.40.126",
+  "version": "4.40.128",
   "artifacts": [
-    {
-      "type": "uninstall",
-      "value": [
-        {
-          "type": "quit",
-          "value": ["com.tinyspeck.slackmacgap"]
-        }
-      ]
-    },
-    {
-      "type": "app",
-      "value": {
-        "name": "Slack.app"
-      }
-    },
+    { "type": "uninstall", "value": [{ "type": "quit", "value": ["com.tinyspeck.slackmacgap"] }] },
+    { "type": "app", "value": { "name": "Slack.app" } },
     {
       "type": "zap",
       "value": [
@@ -43,10 +30,13 @@
     }
   ],
   "src": {
-    "url": "https://downloads.slack-edge.com/desktop-releases/mac/arm64/4.40.126/Slack-4.40.126-macOS.dmg",
-    "sha256": "87dcde01a382e7d4a23f72f0fdd64315b52390dd2d5800df2a645d4316b3bc52",
-    "name": "Slack-4.40.126-macOS.dmg"
+    "url": "https://downloads.slack-edge.com/desktop-releases/mac/arm64/4.40.128/Slack-4.40.128-macOS.dmg",
+    "sha256": "8de39cf4419e3de0d3848d73094fe4021c3e736c1127a770ee13206f692ac640",
+    "name": "Slack-4.40.128-macOS.dmg"
   },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Slack.app\" \"$out/Applications/Slack.app\""
+  ],
   "meta": {
     "description": "Team communication and collaboration software",
     "homepage": "https://slack.com/"

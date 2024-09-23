@@ -4,22 +4,12 @@
   "artifacts": [
     {
       "type": "uninstall",
-      "value": [
-        {
-          "type": "launchctl",
-          "value": ["com.microsoft.VSCode.ShipIt"]
-        }
-      ]
+      "value": [{ "type": "launchctl", "value": ["com.microsoft.VSCode.ShipIt"] }]
     },
-    {
-      "type": "app",
-      "value": {
-        "name": "Visual Studio Code.app"
-      }
-    },
+    { "type": "app", "value": { "name": "Visual Studio Code.app" } },
     {
       "type": "binary",
-      "value": "$APPDIR/Visual Studio Code.app/Contents/Resources/app/bin/code"
+      "value": { "name": "$APPDIR/Visual Studio Code.app/Contents/Resources/app/bin/code" }
     },
     {
       "type": "zap",
@@ -43,12 +33,13 @@
     }
   ],
   "src": {
-    "url": "https://update.code.visualstudio.com/1.93.1/darwin-universal/stable",
-    "sha256": "0031ajy11az05l3lwl2bp62dxx48kvia8v302giybqcraag7df16",
+    "url": "https://update.code.visualstudio.com/1.93.1/darwin-arm64/stable",
+    "sha256": "8bb425d1737c4699db5f2ef2f21c596a41680edf094966ac874d5d67813ab04d",
     "name": "stable"
   },
-  "meta": {
-    "description": "Open-source code editor",
-    "homepage": "https://code.visualstudio.com/"
-  }
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Visual Studio Code.app\" \"$out/Applications/Visual Studio Code.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" \"$out/bin/code\""
+  ],
+  "meta": { "description": "Open-source code editor", "homepage": "https://code.visualstudio.com/" }
 }
