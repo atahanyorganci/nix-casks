@@ -22,3 +22,7 @@ node_modules/
 
 # jetbrains setting folder
 .idea/
+
+# wrangler files
+.wrangler
+.dev.vars

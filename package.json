@@ -6,13 +6,16 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview",
+    "preview": "astro build && wrangler pages dev",
     "astro": "astro",
     "format": "prettier --check '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
-    "format:write": "prettier --write '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'"
+    "format:write": "prettier --write '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
+    "cf:typegen": "wrangler types",
+    "cf:deploy": "astro build && wrangler pages deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
+    "@astrojs/cloudflare": "^11.1.0",
     "@astrojs/tailwind": "^5.1.0",
     "astro": "^4.15.4",
     "pathe": "^1.1.2",
@@ -20,10 +23,12 @@
     "typescript": "^5.6.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240919.0",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-organize-imports": "^4.0.0",
-    "prettier-plugin-tailwindcss": "^0.6.6"
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "wrangler": "^3.78.8"
   },
   "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
 }
