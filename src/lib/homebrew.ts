@@ -1,4 +1,5 @@
 import { z } from "astro/zod";
+import path from "node:path";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
 export type Literal = z.infer<typeof Literal>;
@@ -606,7 +607,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
             artifact.target ??
             artifact.name.split("/").pop() ??
             unreachable(`${token}'s binary ${artifact.name} has missing target`);
-          return `mkdir -p "$out/bin" && ln -s "${src}" "$out/bin/${target}"`;
+          const absoluteTarget = path.join("$out/bin", target);
+          return `mkdir -p "$out/bin" && ln -s "${src}" "${absoluteTarget}"`;
         }
         case "manpage": {
           const src = artifact.replace("$APPDIR", "$out/Applications");
