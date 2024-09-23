@@ -1,7 +1,7 @@
 {
   description = "Nix flake port of Homebrew casks";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
   outputs = { nixpkgs, ... }:
     let
@@ -30,6 +30,7 @@
           '';
           buildInputs = with pkgs; [
             nodejs_20
+            python312Packages.magika
           ];
         };
       });
