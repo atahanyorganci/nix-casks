@@ -16,6 +16,9 @@ importers:
       astro:
         specifier: ^4.15.4
         version: 4.15.4(@types/node@22.5.4)(rollup@4.21.2)(typescript@5.6.2)
+      pathe:
+        specifier: ^1.1.2
+        version: 1.1.2
       tailwindcss:
         specifier: ^3.4.10
         version: 3.4.10
@@ -23,9 +26,6 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
     devDependencies:
-      "@types/node":
-        specifier: ^22.5.4
-        version: 22.5.4
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -2633,6 +2633,12 @@ packages:
         integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==,
       }
 
+  pathe@1.1.2:
+    resolution:
+      {
+        integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==,
+      }
+
   picocolors@1.1.0:
     resolution:
       {
@@ -4342,6 +4348,7 @@ snapshots:
   "@types/node@22.5.4":
     dependencies:
       undici-types: 6.19.8
+    optional: true
 
   "@types/unist@3.0.3": {}
 
@@ -5495,6 +5502,8 @@ snapshots:
 
   path-to-regexp@6.2.2: {}
 
+  pathe@1.1.2: {}
+
   picocolors@1.1.0: {}
 
   picomatch@2.3.1: {}
@@ -5926,7 +5935,8 @@ snapshots:
 
   typescript@5.6.2: {}
 
-  undici-types@6.19.8: {}
+  undici-types@6.19.8:
+    optional: true
 
   unified@11.0.5:
     dependencies:
