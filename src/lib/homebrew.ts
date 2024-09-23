@@ -571,7 +571,10 @@ export const Cask = z
     installed_time: z.null(),
     outdated: z.literal(false),
     // Only from API
-    generated_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    generated_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
     analytics: z.unknown(),
   })
   .strict();
