@@ -9,51 +9,44 @@ async function fetchCasks() {
     throw new Error("Failed to fetch casks");
   }
   const json = await response.json();
-  const casksJson = z.array(z.any()).parse(json);
-  const parsed = casksJson.map(cask => Cask.safeParse(cask));
-  return parsed.reduce(
-    (acc, cask, i) => {
-      if (cask.success) {
-        acc.success.push(cask.data.token);
-      } else {
-        acc.errors.push(casksJson[i].token);
-      }
-      return acc;
-    },
-    {
-      success: [] as string[],
-      errors: [] as string[],
-    },
-  );
+  const casks = z.array(Cask).parse(json);
+  return casks;
 }
 
-const { success, errors } = await fetchCasks();
-const total = success.length + errors.length;
+const casks = await fetchCasks();
 ---
 
 <Layout title="Nix Casks">
-  <h1 class="text-4xl font-semibold">Nix Casks</h1>
-  <p>
-    {success.length} of {total} casks were successfully parsed.
+  <h1 class="text-4xl font-semibold my-4">Nix Casks</h1>
+  <p class="my-4">
+    {casks.length} casks are available in <code>nix-casks</code>.
   </p>
-  <h2 class="text-2xl font-semibold">Errors</h2>
-  <ul>
-    {
-      errors.map(token => (
-        <li>
-          <a href={`/cask/${token}`}>{token}</a>
-        </li>
-      ))
-    }
-  </ul>
-  <h2 class="text-2xl font-semibold">Success</h2>
-  <ul>
-    {
-      success.map(token => (
-        <li>
-          <a href={`/cask/${token}`}>{token}</a>
-        </li>
-      ))
-    }
-  </ul>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Homepage</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        casks.map(({ token: name, desc: description, homepage, name: [displayName] }) => (
+          <tr>
+            <td>
+              <a href={`/cask/${name}`} class="curspor-pointer hover:underline">
+                {name}
+              </a>
+            </td>
+            <td>{description}</td>
+            <td>
+              <a href={homepage} target="_blank" target="_blank" rel="noopener noreferrer">
+                {displayName}'s Homepage
+              </a>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
 </Layout>
