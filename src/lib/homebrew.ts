@@ -173,7 +173,10 @@ export const ColorPickerArtifact = z
   })
   .transform(({ colorpicker }) => ({
     type: "colorpicker" as const,
-    value: colorpicker[0],
+    value: {
+      name: colorpicker[0],
+      target: colorpicker[1]?.target,
+    },
   }));
 export type ColorPickerArtifact = z.infer<typeof ColorPickerArtifact>;
 
@@ -186,7 +189,10 @@ export const DictionaryArtifact = z
   })
   .transform(({ dictionary }) => ({
     type: "dictionary" as const,
-    value: dictionary[0],
+    value: {
+      name: dictionary[0],
+      target: dictionary[1]?.target,
+    },
   }));
 export type DictionaryArtifact = z.infer<typeof DictionaryArtifact>;
 
@@ -199,7 +205,10 @@ export const FontArtifact = z
   })
   .transform(({ font }) => ({
     type: "font" as const,
-    value: font[0],
+    value: {
+      name: font[0],
+      target: font[1]?.target,
+    },
   }));
 export type FontArtifact = z.infer<typeof FontArtifact>;
 
@@ -212,7 +221,10 @@ export const InputMethodArtifact = z
   })
   .transform(({ input_method }) => ({
     type: "input_method" as const,
-    value: input_method[0],
+    value: {
+      name: input_method[0],
+      target: input_method[1]?.target,
+    },
   }));
 export type InputMethodArtifact = z.infer<typeof InputMethodArtifact>;
 
@@ -225,7 +237,10 @@ export const InternetPluginArtifact = z
   })
   .transform(({ internet_plugin }) => ({
     type: "internet_plugin" as const,
-    value: internet_plugin[0],
+    value: {
+      name: internet_plugin[0],
+      target: internet_plugin[1]?.target,
+    },
   }));
 export type InternetPluginArtifact = z.infer<typeof InternetPluginArtifact>;
 
@@ -238,7 +253,10 @@ export const KeyboardLayoutArtifact = z
   })
   .transform(({ keyboard_layout }) => ({
     type: "keyboard_layout" as const,
-    value: keyboard_layout[0],
+    value: {
+      name: keyboard_layout[0],
+      target: keyboard_layout[1]?.target,
+    },
   }));
 export type KeyboardLayoutArtifact = z.infer<typeof KeyboardLayoutArtifact>;
 
@@ -248,7 +266,10 @@ export const PrefPaneArtifact = z
   })
   .transform(({ prefpane }) => ({
     type: "prefpane" as const,
-    value: prefpane[0],
+    value: {
+      name: prefpane[0],
+      target: prefpane[1]?.target,
+    },
   }));
 export type PrefPaneArtifact = z.infer<typeof PrefPaneArtifact>;
 
@@ -258,7 +279,10 @@ export const QlPluginArtifact = z
   })
   .transform(({ qlplugin }) => ({
     type: "qlplugin" as const,
-    value: qlplugin[0],
+    value: {
+      name: qlplugin[0],
+      target: qlplugin[1]?.target,
+    },
   }));
 export type QlPluginArtifact = z.infer<typeof QlPluginArtifact>;
 
@@ -268,7 +292,10 @@ export const MdImporterArtifact = z
   })
   .transform(({ mdimporter }) => ({
     type: "mdimporter" as const,
-    value: mdimporter[0],
+    value: {
+      name: mdimporter[0],
+      target: mdimporter[1]?.target,
+    },
   }));
 export type MdImporterArtifact = z.infer<typeof MdImporterArtifact>;
 
@@ -278,7 +305,10 @@ export const ScreenSaverArtifact = z
   })
   .transform(({ screen_saver }) => ({
     type: "screen_saver" as const,
-    value: screen_saver[0],
+    value: {
+      name: screen_saver[0],
+      target: screen_saver[1]?.target,
+    },
   }));
 export type ScreenSaverArtifact = z.infer<typeof ScreenSaverArtifact>;
 
@@ -288,7 +318,10 @@ export const ServiceArtifact = z
   })
   .transform(({ service }) => ({
     type: "service" as const,
-    value: service[0],
+    value: {
+      name: service[0],
+      target: service[1]?.target,
+    },
   }));
 export type ServiceArtifact = z.infer<typeof ServiceArtifact>;
 
@@ -298,7 +331,10 @@ export const AudioUnitPluginArtifact = z
   })
   .transform(({ audio_unit_plugin }) => ({
     type: "audio_unit_plugin" as const,
-    value: audio_unit_plugin[0],
+    value: {
+      name: audio_unit_plugin[0],
+      target: audio_unit_plugin[1]?.target,
+    },
   }));
 export type AudioUnitPluginArtifact = z.infer<typeof AudioUnitPluginArtifact>;
 
@@ -308,7 +344,10 @@ export const VstPluginArtifact = z
   })
   .transform(({ vst_plugin }) => ({
     type: "vst_plugin" as const,
-    value: vst_plugin[0],
+    value: {
+      name: vst_plugin[0],
+      target: vst_plugin[1]?.target,
+    },
   }));
 export type VstPluginArtifact = z.infer<typeof VstPluginArtifact>;
 
@@ -318,7 +357,10 @@ export const Vst3PluginArtifact = z
   })
   .transform(({ vst3_plugin }) => ({
     type: "vst3_plugin" as const,
-    value: vst3_plugin[0],
+    value: {
+      name: vst3_plugin[0],
+      target: vst3_plugin[1]?.target,
+    },
   }));
 export type Vst3PluginArtifact = z.infer<typeof Vst3PluginArtifact>;
 
@@ -328,7 +370,10 @@ export const GenericArtifact = z
   })
   .transform(({ artifact }) => ({
     type: "artifact" as const,
-    value: artifact[0],
+    value: {
+      name: artifact[0],
+      target: artifact[1]?.target,
+    },
   }));
 export type GenericArtifact = z.infer<typeof GenericArtifact>;
 
@@ -536,6 +581,10 @@ function unreachable(message: string): never {
   throw new Error(`Unreachable: ${message}`);
 }
 
+function unimplemented(message: string): never {
+  throw new Error(`Unimplemented: ${message}`);
+}
+
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
   return artifacts
     .map(({ type, value: artifact }) => {
@@ -543,6 +592,12 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
         case "app":
         case "suite":
           return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
+        case "pkg": {
+          unimplemented(`pkg ${artifact.pkg}`);
+        }
+        case "installer": {
+          unimplemented(`installer ${artifact}`);
+        }
         case "binary": {
           const src = artifact.name
             .replace("$APPDIR", "$out/Applications")
@@ -562,6 +617,109 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
           const dirname = `$out/usr/local/share/man/man${section}`;
           return `mkdir -p "${dirname}" && ln -s "${src}" "${dirname}/${name}"`;
         }
+        case "colorpicker": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`colorPicker ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/ColorPickers" && cp -r "${artifact.name}" "$out/Library/ColorPickers/${target}"`;
+        }
+        case "dictionary": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`dictionary ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Dictionaries" && cp -r "${artifact.name}" "$out/Library/Dictionaries/${target}"`;
+        }
+        case "font": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`font ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Fonts" && cp -r "${artifact.name}" "$out/Library/Fonts/${target}"`;
+        }
+        case "input_method": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`inputMethod ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Input Methods" && cp -r "${artifact.name}" "$out/Library/Input Methods/${target}"`;
+        }
+        case "internet_plugin": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`internetPlugin ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Internet Plug-Ins" && cp -r "${artifact.name}" "$out/Library/Internet Plug-Ins/${target}"`;
+        }
+        case "keyboard_layout": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`keyboardLayout ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Keyboard Layouts" && cp -r "${artifact.name}" "$out/Library/Keyboard Layouts/${target}"`;
+        }
+        case "prefpane": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`prefPane ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/PreferencePanes" && cp -r "${artifact.name}" "$out/Library/PreferencePanes/${target}"`;
+        }
+        case "qlplugin": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`qlPlugin ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/QuickLook" && cp -r "${artifact.name}" "$out/Library/QuickLook/${target}"`;
+        }
+        case "mdimporter": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`mdImporter ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Spotlight" && cp -r "${artifact.name}" "$out/Library/Spotlight/${target}"`;
+        }
+        case "screen_saver": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`screenSaver ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Screen Savers" && cp -r "${artifact.name}" "$out/Library/Screen Savers/${target}"`;
+        }
+        case "service": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`service ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Services" && cp -r "${artifact.name}" "$out/Library/Services/${target}"`;
+        }
+        case "audio_unit_plugin": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`audioUnitPlugin ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Audio/Components" && cp -r "${artifact.name}" "$out/Library/Audio/Components/${target}"`;
+        }
+        case "vst_plugin": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`vstPlugin ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Audio/VST" && cp -r "${artifact.name}" "$out/Library/Audio/VST/${target}"`;
+        }
+        case "vst3_plugin": {
+          const target =
+            artifact.target ??
+            artifact.name.split("/").pop() ??
+            unreachable(`vst3Plugin ${artifact.name} has missing target`);
+          return `mkdir -p "$out/Library/Audio/VST3" && cp -r "${artifact.name}" "$out/Library/Audio/VST3/${target}"`;
+        }
+        case "artifact": {
+          const target =
+            artifact.target ?? unreachable(`artifact ${artifact.name} has missing target`);
+          return `cp -r "${artifact.name}" "$out/${target}"`;
+        }
       }
     })
     .filter(Boolean);
@@ -569,12 +727,7 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 
 export function caskToNix(cask: Cask) {
   const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
-  const urlObj = new URL(url);
-  const pathSegments = urlObj.pathname.split("/");
-  let filename = pathSegments[pathSegments.length - 1];
-  if (filename === "") {
-    filename = `${pname}-${version}`;
-  }
+  const installPhase = artifactToInstallScript(cask);
   return {
     pname,
     version,
@@ -582,9 +735,8 @@ export function caskToNix(cask: Cask) {
     src: {
       url,
       sha256,
-      name: filename,
     },
-    installPhase: artifactToInstallScript(cask),
+    installPhase,
     meta: {
       description,
       homepage,
