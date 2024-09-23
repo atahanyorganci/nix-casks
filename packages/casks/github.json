@@ -1,0 +1,27 @@
+{
+  "pname": "github",
+  "version": "3.4.5-0b64c23c",
+  "artifacts": [
+    { "type": "app", "value": { "name": "GitHub Desktop.app" } },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/GitHub Desktop.app/Contents/Resources/app/static/github.sh",
+        "target": "github"
+      }
+    },
+    { "type": "zap", "value": [{ "type": "rmdir", "value": ["~/.config/git"] }] }
+  ],
+  "src": {
+    "url": "https://desktop.githubusercontent.com/releases/3.4.5-0b64c23c/GitHubDesktop-arm64.zip",
+    "sha256": "56b1908907f49ee2b97946f9117f74ac237f3c58e12f7505a763d928a3be8801"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"GitHub Desktop.app\" \"$out/Applications/GitHub Desktop.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/GitHub Desktop.app/Contents/Resources/app/static/github.sh\" \"$out/bin/github\""
+  ],
+  "meta": {
+    "description": "Desktop client for GitHub repositories",
+    "homepage": "https://desktop.github.com/"
+  }
+}

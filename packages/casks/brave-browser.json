@@ -22,8 +22,7 @@
   ],
   "src": {
     "url": "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/170.117/Brave-Browser-arm64.dmg",
-    "sha256": "b9c532d04317f48936bfb0966a66d1111267bee5d5ff6b74238569824175cc50",
-    "name": "Brave-Browser-arm64.dmg"
+    "sha256": "b9c532d04317f48936bfb0966a66d1111267bee5d5ff6b74238569824175cc50"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"Brave Browser.app\" \"$out/Applications/Brave Browser.app\""

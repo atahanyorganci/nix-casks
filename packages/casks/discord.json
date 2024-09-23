@@ -1,0 +1,32 @@
+{
+  "pname": "discord",
+  "version": "0.0.319",
+  "artifacts": [
+    { "type": "app", "value": { "name": "Discord.app" } },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Support/discord",
+            "~/Library/Caches/com.hnc.Discord",
+            "~/Library/Caches/com.hnc.Discord.ShipIt",
+            "~/Library/Cookies/com.hnc.Discord.binarycookies",
+            "~/Library/Preferences/com.hnc.Discord.helper.plist",
+            "~/Library/Preferences/com.hnc.Discord.plist",
+            "~/Library/Saved Application State/com.hnc.Discord.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://dl.discordapp.net/apps/osx/0.0.319/Discord.dmg",
+    "sha256": "5f96af2df8f1c7f4dc5bfbd401c0ff1ed279c3b42d2cd8ddf5b724a655bee839"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Discord.app\" \"$out/Applications/Discord.app\""
+  ],
+  "meta": { "description": "Voice and text chat software", "homepage": "https://discord.com/" }
+}

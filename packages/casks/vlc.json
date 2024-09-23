@@ -29,8 +29,7 @@
   ],
   "src": {
     "url": "https://get.videolan.org/vlc/3.0.21/macosx/vlc-3.0.21-arm64.dmg",
-    "sha256": "15dd65bf6489da9ec6a67f5585c74c40a58993acff41a82958a916dd74178044",
-    "name": "vlc-3.0.21-arm64.dmg"
+    "sha256": "15dd65bf6489da9ec6a67f5585c74c40a58993acff41a82958a916dd74178044"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"VLC.app\" \"$out/Applications/VLC.app\"",

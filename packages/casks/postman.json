@@ -1,0 +1,37 @@
+{
+  "pname": "postman",
+  "version": "11.13.0",
+  "artifacts": [
+    { "type": "app", "value": { "name": "Postman.app" } },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Support/com.postmanlabs.mac.ShipIt",
+            "~/Library/Application Support/Postman",
+            "~/Library/Caches/com.postmanlabs.mac",
+            "~/Library/Caches/com.postmanlabs.mac.ShipIt",
+            "~/Library/Caches/Postman",
+            "~/Library/HTTPStorages/com.postmanlabs.mac",
+            "~/Library/Preferences/ByHost/com.postmanlabs.mac.ShipIt.*.plist",
+            "~/Library/Preferences/com.postmanlabs.mac.plist",
+            "~/Library/Saved Application State/com.postmanlabs.mac.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://dl.pstmn.io/download/version/11.13.0/osx_arm64",
+    "sha256": "8721824cf7e154b0bfe869b79d7be206cb966170c51325d4c3c28a065dbf48cc"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Postman.app\" \"$out/Applications/Postman.app\""
+  ],
+  "meta": {
+    "description": "Collaboration platform for API development",
+    "homepage": "https://www.postman.com/"
+  }
+}

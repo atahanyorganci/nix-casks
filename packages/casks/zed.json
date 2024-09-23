@@ -1,0 +1,38 @@
+{
+  "pname": "zed",
+  "version": "0.153.6",
+  "artifacts": [
+    { "type": "app", "value": { "name": "Zed.app" } },
+    {
+      "type": "binary",
+      "value": { "name": "$APPDIR/Zed.app/Contents/MacOS/cli", "target": "zed" }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/.config/zed",
+            "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/dev.zed.zed.sfl*",
+            "~/Library/Application Support/Zed",
+            "~/Library/Caches/dev.zed.Zed",
+            "~/Library/HTTPStorages/dev.zed.Zed",
+            "~/Library/Logs/Zed",
+            "~/Library/Preferences/dev.zed.Zed.plist",
+            "~/Library/Saved Application State/dev.zed.Zed.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://zed.dev/api/releases/stable/0.153.6/Zed-aarch64.dmg",
+    "sha256": "772db60973c64adff82f26ad4ecf30d1e2bea3531476be69cf8ae0f2c0af0e99"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Zed.app\" \"$out/Applications/Zed.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Zed.app/Contents/MacOS/cli\" \"$out/bin/zed\""
+  ],
+  "meta": { "description": "Multiplayer code editor", "homepage": "https://zed.dev/" }
+}

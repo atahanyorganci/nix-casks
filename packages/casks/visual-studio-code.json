@@ -34,8 +34,7 @@
   ],
   "src": {
     "url": "https://update.code.visualstudio.com/1.93.1/darwin-arm64/stable",
-    "sha256": "8bb425d1737c4699db5f2ef2f21c596a41680edf094966ac874d5d67813ab04d",
-    "name": "stable"
+    "sha256": "8bb425d1737c4699db5f2ef2f21c596a41680edf094966ac874d5d67813ab04d"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"Visual Studio Code.app\" \"$out/Applications/Visual Studio Code.app\"",

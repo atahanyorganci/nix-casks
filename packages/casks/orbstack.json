@@ -24,8 +24,7 @@
   ],
   "src": {
     "url": "https://cdn-updates.orbstack.dev/arm64/OrbStack_v1.7.2_17389_arm64.dmg",
-    "sha256": "6df4dabe60c374bdcae5cee090dc9275986e37c553625f6ccb94457030cf03be",
-    "name": "OrbStack_v1.7.2_17389_arm64.dmg"
+    "sha256": "6df4dabe60c374bdcae5cee090dc9275986e37c553625f6ccb94457030cf03be"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"OrbStack.app\" \"$out/Applications/OrbStack.app\"",

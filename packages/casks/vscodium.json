@@ -1,0 +1,41 @@
+{
+  "pname": "vscodium",
+  "version": "1.93.1.24256",
+  "artifacts": [
+    { "type": "app", "value": { "name": "VSCodium.app" } },
+    {
+      "type": "binary",
+      "value": { "name": "$APPDIR/VSCodium.app/Contents/Resources/app/bin/codium" }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/.vscode-oss",
+            "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.vscodium.sfl*",
+            "~/Library/Application Support/VSCodium",
+            "~/Library/Caches/com.vscodium",
+            "~/Library/Caches/com.vscodium.ShipIt",
+            "~/Library/HTTPStorages/com.vscodium",
+            "~/Library/Preferences/com.vscodium*.plist",
+            "~/Library/Saved Application State/com.vscodium.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://github.com/VSCodium/vscodium/releases/download/1.93.1.24256/VSCodium.arm64.1.93.1.24256.dmg",
+    "sha256": "83e2c4c9b45833c6b64235f42fa5ffa6560fd4c0c53bbdb21c4af18a7b1790b6"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"VSCodium.app\" \"$out/Applications/VSCodium.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/VSCodium.app/Contents/Resources/app/bin/codium\" \"$out/bin/codium\""
+  ],
+  "meta": {
+    "description": "Binary releases of VS Code without MS branding/telemetry/licensing",
+    "homepage": "https://github.com/VSCodium/vscodium"
+  }
+}

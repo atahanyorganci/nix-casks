@@ -1,0 +1,36 @@
+{
+  "pname": "raycast",
+  "version": "1.83.1",
+  "artifacts": [
+    { "type": "uninstall", "value": [{ "type": "quit", "value": ["com.raycast.macos"] }] },
+    { "type": "app", "value": { "name": "Raycast.app" } },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/.config/raycast",
+            "~/Library/Application Support/com.raycast.macos",
+            "~/Library/Caches/com.raycast.macos",
+            "~/Library/Caches/SentryCrash/Raycast",
+            "~/Library/Cookies/com.raycast.macos.binarycookies",
+            "~/Library/HTTPStorages/com.raycast.macos",
+            "~/Library/Preferences/com.raycast.macos.plist"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://releases.raycast.com/releases/1.83.1/download?build=arm",
+    "sha256": "694b78a76f11ffff2fcf1f9c7d3295f4e29d69bbf1accbdb5f560160e4e93209"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Raycast.app\" \"$out/Applications/Raycast.app\""
+  ],
+  "meta": {
+    "description": "Control your tools with a few keystrokes",
+    "homepage": "https://raycast.com/"
+  }
+}

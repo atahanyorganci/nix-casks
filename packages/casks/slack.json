@@ -31,8 +31,7 @@
   ],
   "src": {
     "url": "https://downloads.slack-edge.com/desktop-releases/mac/arm64/4.40.128/Slack-4.40.128-macOS.dmg",
-    "sha256": "8de39cf4419e3de0d3848d73094fe4021c3e736c1127a770ee13206f692ac640",
-    "name": "Slack-4.40.128-macOS.dmg"
+    "sha256": "8de39cf4419e3de0d3848d73094fe4021c3e736c1127a770ee13206f692ac640"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"Slack.app\" \"$out/Applications/Slack.app\""

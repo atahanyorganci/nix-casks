@@ -22,8 +22,7 @@
   ],
   "src": {
     "url": "https://web.whatsapp.com/desktop/mac_native/release/?version=2.24.18.81&extension=zip&configuration=Release&branch=relbranch",
-    "sha256": "a26a7367d8c54e58df03aef94e4d71926fd464326838b5df65773bf58f667d2a",
-    "name": "whatsapp-2.24.18.81"
+    "sha256": "a26a7367d8c54e58df03aef94e4d71926fd464326838b5df65773bf58f667d2a"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"WhatsApp.app\" \"$out/Applications/WhatsApp.app\""

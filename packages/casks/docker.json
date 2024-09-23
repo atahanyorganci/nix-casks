@@ -1,0 +1,153 @@
+{
+  "pname": "docker",
+  "version": "4.34.2,167172",
+  "artifacts": [
+    {
+      "type": "uninstall",
+      "value": [
+        {
+          "type": "launchctl",
+          "value": ["com.docker.helper", "com.docker.socket", "com.docker.vmnetd"]
+        }
+      ]
+    },
+    { "type": "app", "value": { "name": "Docker.app" } },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker-compose.zsh-completion",
+        "target": "$HOMEBREW_PREFIX/share/zsh/site-functions/_docker-compose"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker-compose.fish-completion",
+        "target": "$HOMEBREW_PREFIX/share/fish/vendor_completions.d/docker-compose.fish"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/docker",
+        "target": "/usr/local/bin/docker"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/docker-credential-desktop",
+        "target": "/usr/local/bin/docker-credential-desktop"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/docker-credential-ecr-login",
+        "target": "/usr/local/bin/docker-credential-ecr-login"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/docker-credential-osxkeychain",
+        "target": "/usr/local/bin/docker-credential-osxkeychain"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/docker-index",
+        "target": "/usr/local/bin/docker-index"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/kubectl",
+        "target": "/usr/local/bin/kubectl.docker"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/cli-plugins/docker-compose",
+        "target": "/usr/local/cli-plugins/docker-compose"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker.bash-completion",
+        "target": "$HOMEBREW_PREFIX/etc/bash_completion.d/docker"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker.zsh-completion",
+        "target": "$HOMEBREW_PREFIX/share/zsh/site-functions/_docker"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker.fish-completion",
+        "target": "$HOMEBREW_PREFIX/share/fish/vendor_completions.d/docker.fish"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "$APPDIR/Docker.app/Contents/Resources/bin/hub-tool",
+        "target": "/usr/local/bin/hub-tool"
+      }
+    },
+    {
+      "type": "binary",
+      "value": {
+        "name": "Docker.app/Contents/Resources/etc/docker-compose.bash-completion",
+        "target": "$HOMEBREW_PREFIX/etc/bash_completion.d/docker-compose"
+      }
+    },
+    { "type": "uninstall_postflight", "value": null },
+    { "type": "postflight", "value": null },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "rmdir",
+          "value": [
+            "~/Library/Caches/com.plausiblelabs.crashreporter.data",
+            "~/Library/Caches/KSCrashReports"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://desktop.docker.com/mac/main/arm64/167172/Docker.dmg",
+    "sha256": "c315fbc351bdb675e8f86ab83b442cfd273489f1ebbe1327e51c2535e4e9dd06"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Docker.app\" \"$out/Applications/Docker.app\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker-compose.zsh-completion\" \"$out/bin/$HOMEBREW_PREFIX/share/zsh/site-functions/_docker-compose\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker-compose.fish-completion\" \"$out/bin/$HOMEBREW_PREFIX/share/fish/vendor_completions.d/docker-compose.fish\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/docker\" \"$out/bin/usr/local/bin/docker\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/docker-credential-desktop\" \"$out/bin/usr/local/bin/docker-credential-desktop\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/docker-credential-ecr-login\" \"$out/bin/usr/local/bin/docker-credential-ecr-login\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/docker-credential-osxkeychain\" \"$out/bin/usr/local/bin/docker-credential-osxkeychain\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/docker-index\" \"$out/bin/usr/local/bin/docker-index\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/kubectl\" \"$out/bin/usr/local/bin/kubectl.docker\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/cli-plugins/docker-compose\" \"$out/bin/usr/local/cli-plugins/docker-compose\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker.bash-completion\" \"$out/bin/$HOMEBREW_PREFIX/etc/bash_completion.d/docker\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker.zsh-completion\" \"$out/bin/$HOMEBREW_PREFIX/share/zsh/site-functions/_docker\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker.fish-completion\" \"$out/bin/$HOMEBREW_PREFIX/share/fish/vendor_completions.d/docker.fish\"",
+    "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Docker.app/Contents/Resources/bin/hub-tool\" \"$out/bin/usr/local/bin/hub-tool\"",
+    "mkdir -p \"$out/bin\" && ln -s \"Docker.app/Contents/Resources/etc/docker-compose.bash-completion\" \"$out/bin/$HOMEBREW_PREFIX/etc/bash_completion.d/docker-compose\""
+  ],
+  "meta": {
+    "description": "App to build and share containerised applications and microservices",
+    "homepage": "https://www.docker.com/products/docker-desktop"
+  }
+}
