@@ -1,5 +1,6 @@
 # Framework Files
 .astro/
+.turbo/
 dist/
 
 # Package Manager

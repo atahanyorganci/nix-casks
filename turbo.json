@@ -1,0 +1,27 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["flake.nix", "flake.lock"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["check"],
+      "inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"]
+    },
+    "check": {
+      "inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"]
+    },
+    "deploy": {
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "format": {},
+    "preview": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["build"]
+    }
+  }
+}

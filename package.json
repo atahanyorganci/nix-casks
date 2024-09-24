@@ -3,15 +3,15 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro build && wrangler pages dev",
     "astro": "astro",
-    "format": "prettier --check '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
+    "build": "astro build",
+    "check": "astro check",
+    "deploy": "wrangler pages deploy",
+    "dev": "astro dev",
     "format:write": "prettier --write '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
-    "cf:typegen": "wrangler types",
-    "cf:deploy": "astro build && wrangler pages deploy"
+    "format": "prettier --check '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
+    "preview": "wrangler pages dev --port 4321 --show-interactive-dev-session false",
+    "types": "wrangler types"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
@@ -27,6 +27,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
+    "turbo": "^2.1.2",
     "typescript": "^5.6.2",
     "wrangler": "^3.78.8"
   },
