@@ -1,5 +1,6 @@
 import { z } from "astro/zod";
 import pathe from "pathe";
+import { unimplemented, unreachable } from ".";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
 export type Literal = z.infer<typeof Literal>;
@@ -580,14 +581,6 @@ export const Cask = z
   .strict();
 
 export type Cask = z.infer<typeof Cask>;
-
-function unreachable(message: string): never {
-  throw new Error(`Unreachable: ${message}`);
-}
-
-function unimplemented(message: string): never {
-  throw new Error(`Unimplemented: ${message}`);
-}
 
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
   return artifacts
