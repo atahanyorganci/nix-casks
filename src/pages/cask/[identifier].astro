@@ -1,0 +1,24 @@
+---
+import { z } from "astro/zod";
+import Layout from "../../layouts/Layout.astro";
+import { identifier, findPackageByIdentifier } from "../../lib/package";
+
+const params = z
+  .object({
+    identifier: identifier,
+  })
+  .parse(Astro.params);
+const cask = await findPackageByIdentifier(Astro.locals.runtime.env.DB, params.identifier);
+
+if (!cask) {
+  return await Astro.redirect("/404");
+} else if (!("hash" in params.identifier)) {
+  Astro.response.status = 301;
+  Astro.response.headers.set("Location", `/cask/${cask.pname}-${cask.version}-${cask.hash}`);
+}
+---
+
+<Layout title={`${cask.pname} | Nix Casks`}>
+  <h1 class="text-4xl font-semibold">{cask.pname} - {cask.version}</h1>
+  <pre>{JSON.stringify(cask, null, 2)}</pre>
+</Layout>
