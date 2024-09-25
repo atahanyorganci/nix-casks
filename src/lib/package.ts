@@ -1,7 +1,7 @@
 import { z } from "astro/zod";
 import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
-import { caskPackages } from "../schema";
+import { caskPackages } from "~/schema";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
