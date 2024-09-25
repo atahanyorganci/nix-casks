@@ -1,0 +1,39 @@
+{
+  "pname": "polypane",
+  "version": "21.1.0",
+  "artifacts": [
+    {
+      "type": "app",
+      "value": {
+        "name": "Polypane.app"
+      }
+    },
+    {
+      "type": "zap",
+      "value": [
+        {
+          "type": "trash",
+          "value": [
+            "~/Library/Application Support/Polypane",
+            "~/Library/Caches/com.firstversionist.polypane",
+            "~/Library/Caches/com.firstversionist.polypane.ShipIt",
+            "~/Library/Logs/Polypane",
+            "~/Library/Preferences/com.firstversionist.polypane.plist",
+            "~/Library/Saved Application State/com.firstversionist.polypane.savedState"
+          ]
+        }
+      ]
+    }
+  ],
+  "src": {
+    "url": "https://github.com/firstversionist/polypane/releases/download/v21.1.0/Polypane-21.1.0-arm64.dmg",
+    "sha256": "68ea77eddc9aacffd801c629d86ac4de480e19c9b18ee33d583ae02010900c17"
+  },
+  "installPhase": [
+    "mkdir -p \"$out/Applications\" && cp -r \"Polypane.app\" \"$out/Applications/Polypane.app\""
+  ],
+  "meta": {
+    "description": "Browser for ambitious developers",
+    "homepage": "https://polypane.app/"
+  }
+}
