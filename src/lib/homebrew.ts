@@ -748,3 +748,5 @@ export function caskToNix(cask: Cask) {
     },
   };
 }
+
+export type CaskPackage = ReturnType<typeof caskToNix>;

@@ -1,0 +1,28 @@
+---
+import { z } from "astro/zod";
+import Layout from "../../../layouts/Layout.astro";
+import { drizzle } from "drizzle-orm/d1";
+import { caskPackages } from "../../../schema";
+import { eq } from "drizzle-orm";
+
+const { name } = z
+  .object({
+    name: z.string(),
+  })
+  .parse(Astro.params);
+
+const cask = await drizzle(Astro.locals.runtime.env.DB)
+  .select()
+  .from(caskPackages)
+  .where(eq(caskPackages.pname, name))
+  .get();
+
+if (!cask) {
+  return await Astro.rewrite("/");
+}
+---
+
+<Layout title={`${cask.pname} | Nix Casks`}>
+  <h1 class="text-4xl font-semibold">{cask.pname} - {cask.version}</h1>
+  <pre>{JSON.stringify(cask, null, 2)}</pre>
+</Layout>
