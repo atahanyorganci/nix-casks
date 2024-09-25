@@ -1,11 +1,11 @@
 ---
 import { z } from "astro/zod";
 import Layout from "../../layouts/Layout.astro";
-import { identifier, findPackageByIdentifier } from "../../lib/package";
+import { PkgIdentifier, findPackageByIdentifier } from "../../lib/package";
 
 const params = z
   .object({
-    identifier: identifier,
+    identifier: PkgIdentifier,
   })
   .parse(Astro.params);
 const cask = await findPackageByIdentifier(Astro.locals.runtime.env.DB, params.identifier);
