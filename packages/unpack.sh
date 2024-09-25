@@ -29,7 +29,7 @@ if [ "$MIME_TYPE" = "application/zip" ]; then
     cd "$TEMP" && cp -a . "$DEST" && cd "$DEST" || exit 1
 elif [ "$MIME_TYPE" = "application/x-apple-diskimage" ]; then
     echo "Attaching $TEMP"
-    /usr/bin/hdiutil attach -nobrowse -readonly "$src" -mountpoint "$TEMP"
+    echo "Y" | /usr/bin/hdiutil attach -nobrowse -readonly "$src" -mountpoint "$TEMP"
     MOUNTED=1
     echo "Contents of $TEMP:"
     ls -l "$TEMP"
