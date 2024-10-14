@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { createDatabase } from "~/db";
 
 export const caskPackages = sqliteTable(
   "cask_packages",

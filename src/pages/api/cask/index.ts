@@ -1,8 +1,7 @@
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
 import { desc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
-import { caskPackages } from "~/schema";
+import { caskPackages, createDatabase } from "~/db";
 
 const SearchParams = z.object({
   page: z.coerce.number().int().nonnegative().default(0),
@@ -17,14 +16,12 @@ export async function GET({ locals, request }: APIContext) {
     return new Response("Bad Request", { status: 400 });
   }
 
-  const db = drizzle(locals.runtime.env.DB);
-  const records = await db
-    .select()
-    .from(caskPackages)
-    .orderBy(desc(caskPackages.createdAt))
-    .limit(result.data.limit)
-    .offset(result.data.page * result.data.limit)
-    .all();
+  const db = createDatabase(locals.runtime.env.DB);
+  const records = await db.query.caskPackages.findMany({
+    orderBy: desc(caskPackages.createdAt),
+    limit: result.data.limit,
+    offset: result.data.page * result.data.limit,
+  });
 
   if (records.length === 0) {
     return new Response("Not Found", { status: 404 });

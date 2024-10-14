@@ -1,10 +1,9 @@
 ---
 import Layout from "~/layouts/Layout.astro";
-import { drizzle } from "drizzle-orm/d1";
-import { caskPackages } from "~/schema";
+import { createDatabase } from "~/db";
 import type { CaskPackage } from "~/lib/homebrew";
 
-const records = await drizzle(Astro.locals.runtime.env.DB).select().from(caskPackages).all();
+const records = await createDatabase(Astro.locals.runtime.env.DB).query.caskPackages.findMany();
 const casks = records.map(({ pname: name, cask }) => {
   const {
     meta: { description, homepage },

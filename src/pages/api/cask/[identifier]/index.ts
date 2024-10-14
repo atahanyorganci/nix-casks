@@ -1,9 +1,8 @@
 import type { APIContext } from "astro";
 import { z } from "astro/zod";
-import { drizzle } from "drizzle-orm/d1";
+import { caskPackages, createDatabase } from "~/db";
 import { fetchHomebrewCask } from "~/lib/fetch";
 import { findPackageByIdentifier, PkgIdentifier } from "~/lib/package";
-import { caskPackages } from "~/schema";
 
 const Params = z.object({
   identifier: PkgIdentifier,
@@ -40,7 +39,7 @@ export async function POST({ locals, params }: APIContext) {
     return new Response(null, { status: 304 });
   }
 
-  const [created] = await drizzle(locals.runtime.env.DB)
+  const [created] = await createDatabase(locals.runtime.env.DB)
     .insert(caskPackages)
     .values(latest)
     .returning();

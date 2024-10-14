@@ -1,7 +1,6 @@
 import { z } from "astro/zod";
 import { and, desc, eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
-import { caskPackages } from "~/schema";
+import { caskPackages, createDatabase } from "~/db";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
@@ -50,30 +49,27 @@ export type PkgIdentifier = z.infer<typeof PkgIdentifier>;
  * If the identifier has version, it will use composite index on pname and version. Otherwise, it will
  * use index on pname and order by version in descending order.
  *
- * @param db D1Database
+ * @param d1 D1Database
  * @param identifier package identifier
  * @returns package
  */
-export async function findPackageByIdentifier(db: D1Database, identifier: PkgIdentifier) {
-  const d = drizzle(db, {
-    schema: { caskPackages },
-  });
+export async function findPackageByIdentifier(d1: D1Database, identifier: PkgIdentifier) {
+  const db = createDatabase(d1);
   if ("hash" in identifier) {
-    return d.select().from(caskPackages).where(eq(caskPackages.hash, identifier.hash)).get();
+    return await db.query.caskPackages.findFirst({
+      where: eq(caskPackages.hash, identifier.hash),
+    });
   } else if ("version" in identifier) {
-    return d
-      .select()
-      .from(caskPackages)
-      .where(
-        and(eq(caskPackages.pname, identifier.name), eq(caskPackages.version, identifier.version)),
-      )
-      .get();
+    return await db.query.caskPackages.findFirst({
+      where: and(
+        eq(caskPackages.pname, identifier.name),
+        eq(caskPackages.version, identifier.version),
+      ),
+    });
   } else {
-    return d
-      .select()
-      .from(caskPackages)
-      .where(eq(caskPackages.pname, identifier.name))
-      .orderBy(desc(caskPackages.version))
-      .get();
+    return await db.query.caskPackages.findFirst({
+      where: eq(caskPackages.pname, identifier.name),
+      orderBy: desc(caskPackages.version),
+    });
   }
 }
