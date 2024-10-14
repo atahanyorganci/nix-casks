@@ -1,40 +1,9 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5b7f5103-a58f-4fea-9097-bf04e5eaaf86",
+  "id": "c0c4895c-bcea-4d9f-83e1-9833c724712b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "api_keys": {
-      "name": "api_keys",
-      "columns": {
-        "salt": {
-          "name": "salt",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "key": {
-          "name": "key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "cask_packages": {
       "name": "cask_packages",
       "columns": {
