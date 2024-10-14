@@ -20,3 +20,11 @@ export const caskPackages = sqliteTable(
     };
   },
 );
+
+export const apiKeys = sqliteTable("api_keys", {
+  salt: text("salt").primaryKey(),
+  keyHash: text("key").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))`),
+});
