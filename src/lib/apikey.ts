@@ -2,6 +2,19 @@ import { z } from "astro/zod";
 import { eq } from "drizzle-orm";
 import { apiKeys, createDatabase } from "~/db";
 
+/**
+ * The zero hash is a constant value that is used to represent an empty hash. Used when record
+ * is not found in the database, but the function should take constant time.
+ *
+ * ```ts
+ * const EMPTY_STRING = "";
+ * const HASH = crypto.subtle.digest("SHA-512", new TextEncoder().encode(EMPTY_STRING));
+ * const ZERO_HASH = btoa(String.fromCharCode(...new Uint8Array(hash)));
+ * ```
+ */
+const ZERO_HASH =
+  "z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==";
+
 export async function createApiKey(db: D1Database) {
   const salt = generateRandomBase64String(12);
   const secret = generateRandomBase64String(36);
@@ -36,16 +49,14 @@ export async function verifyApiKey(d1: D1Database, apiKey: string) {
   }
   const [salt, secret] = result.data;
   const db = createDatabase(d1);
-  const keyHash = await db.query.apiKeys.findFirst({
+  const record = await db.query.apiKeys.findFirst({
     where: eq(apiKeys.salt, salt),
   });
-  if (!keyHash) {
-    return false;
-  }
+  const keyHash = record?.keyHash ?? ZERO_HASH;
 
   const hash = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(`${salt}.${secret}`));
   const expectedKeyHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
-  return compareStringConstantTime(keyHash.keyHash, expectedKeyHash);
+  return compareStringConstantTime(keyHash, expectedKeyHash);
 }
 
 function generateRandomBase64String(length: number) {
