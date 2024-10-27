@@ -1,6 +1,6 @@
 import { z } from "astro/zod";
 import { eq } from "drizzle-orm";
-import { apiKeys, createDatabase } from "~/db";
+import { apiKeys, type Database } from "~/db";
 
 /**
  * The zero hash is a constant value that is used to represent an empty hash. Used when record
@@ -15,7 +15,7 @@ import { apiKeys, createDatabase } from "~/db";
 const ZERO_HASH =
   "z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==";
 
-export async function createApiKey(db: D1Database) {
+export async function createApiKey(db: Database) {
   const salt = generateRandomBase64String(12);
   const secret = generateRandomBase64String(36);
 
@@ -23,9 +23,7 @@ export async function createApiKey(db: D1Database) {
   const hash = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(apiKey));
   const keyHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
 
-  const drizzle = createDatabase(db);
-  await drizzle.insert(apiKeys).values({ salt, keyHash }).returning().execute();
-
+  await db.insert(apiKeys).values({ salt, keyHash }).returning().execute();
   return apiKey;
 }
 
@@ -42,13 +40,12 @@ const apiKeySchema = z
   .transform(value => value.split("."))
   .pipe(z.tuple([z.string(), z.string()]));
 
-export async function verifyApiKey(d1: D1Database, apiKey: string) {
+export async function verifyApiKey(db: Database, apiKey: string) {
   const result = apiKeySchema.safeParse(apiKey);
   if (!result.success) {
     return false;
   }
   const [salt, secret] = result.data;
-  const db = createDatabase(d1);
   const record = await db.query.apiKeys.findFirst({
     where: eq(apiKeys.salt, salt),
   });

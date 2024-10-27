@@ -3,12 +3,14 @@ import { z } from "astro/zod";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
-import { createDatabase } from "~/db";
+import { createDatabase, type Database } from "~/db";
 import { createApiKey } from "~/lib/apikey";
 import { findPackageByIdentifier, PkgIdentifier } from "~/lib/package";
 
 const app = new Hono<{
-  Bindings: APIContext["locals"]["runtime"]["env"];
+  Bindings: {
+    DB: Database;
+  };
 }>().basePath("/api");
 
 app.use(logger());
@@ -19,8 +21,7 @@ app.get("/", async c => {
 });
 
 app.get("/cask", async c => {
-  const db = createDatabase(c.env.DB);
-  const records = await db.query.caskPackages.findMany();
+  const records = await c.env.DB.query.caskPackages.findMany();
   return c.json(records);
 });
 
@@ -45,5 +46,6 @@ app.get("/cask/:identifier", async c => {
 });
 
 export async function ALL({ request, locals }: APIContext) {
-  return app.fetch(request, locals.runtime.env);
+  const DB = createDatabase(locals.runtime.env.DB);
+  return app.fetch(request, { DB });
 }

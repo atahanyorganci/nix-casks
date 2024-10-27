@@ -1,6 +1,6 @@
 import { z } from "astro/zod";
 import { and, desc, eq } from "drizzle-orm";
-import { caskPackages, createDatabase } from "~/db";
+import { caskPackages, type Database } from "~/db";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
@@ -49,12 +49,11 @@ export type PkgIdentifier = z.infer<typeof PkgIdentifier>;
  * If the identifier has version, it will use composite index on pname and version. Otherwise, it will
  * use index on pname and order by version in descending order.
  *
- * @param d1 D1Database
+ * @param db `Database` instance from Drizzle
  * @param identifier package identifier
  * @returns package
  */
-export async function findPackageByIdentifier(d1: D1Database, identifier: PkgIdentifier) {
-  const db = createDatabase(d1);
+export async function findPackageByIdentifier(db: Database, identifier: PkgIdentifier) {
   if ("hash" in identifier) {
     return await db.query.caskPackages.findFirst({
       where: eq(caskPackages.hash, identifier.hash),
