@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { createDatabase } from "~/db";
+import { createApiKey } from "~/lib/apikey";
 import { findPackageByIdentifier, PkgIdentifier } from "~/lib/package";
 
 const app = new Hono<{
@@ -11,6 +12,11 @@ const app = new Hono<{
 }>().basePath("/api");
 
 app.use(logger());
+
+app.get("/", async c => {
+  const apiKey = await createApiKey(c.env.DB);
+  return c.json({ apiKey });
+});
 
 app.get("/cask", async c => {
   const db = createDatabase(c.env.DB);
