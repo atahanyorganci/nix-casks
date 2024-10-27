@@ -723,7 +723,7 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
     .filter(Boolean);
 }
 
-export function caskToNix(cask: Cask) {
+export function cask2nix(cask: Cask) {
   const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
   const installPhase = artifactToInstallScript(cask);
   return {
@@ -742,4 +742,4 @@ export function caskToNix(cask: Cask) {
   };
 }
 
-export type CaskPackage = ReturnType<typeof caskToNix>;
+export type CaskPackage = ReturnType<typeof cask2nix>;
