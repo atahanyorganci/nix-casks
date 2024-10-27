@@ -1,6 +1,6 @@
 import { z } from "astro/zod";
 import { and, desc, eq } from "drizzle-orm";
-import { caskPackages, type Database } from "~/db";
+import { packages, type Database } from "~/db";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
@@ -55,20 +55,17 @@ export type PkgIdentifier = z.infer<typeof PkgIdentifier>;
  */
 export async function findPackageByIdentifier(db: Database, identifier: PkgIdentifier) {
   if ("hash" in identifier) {
-    return await db.query.caskPackages.findFirst({
-      where: eq(caskPackages.hash, identifier.hash),
+    return await db.query.packages.findFirst({
+      where: eq(packages.hash, identifier.hash),
     });
   } else if ("version" in identifier) {
-    return await db.query.caskPackages.findFirst({
-      where: and(
-        eq(caskPackages.pname, identifier.name),
-        eq(caskPackages.version, identifier.version),
-      ),
+    return await db.query.packages.findFirst({
+      where: and(eq(packages.pname, identifier.name), eq(packages.version, identifier.version)),
     });
   } else {
-    return await db.query.caskPackages.findFirst({
-      where: eq(caskPackages.pname, identifier.name),
-      orderBy: desc(caskPackages.version),
+    return await db.query.packages.findFirst({
+      where: eq(packages.pname, identifier.name),
+      orderBy: desc(packages.version),
     });
   }
 }

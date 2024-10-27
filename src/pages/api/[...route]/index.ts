@@ -4,7 +4,7 @@ import { z } from "astro/zod";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
-import { caskPackages, createDatabase, type Database } from "~/db";
+import { createDatabase, packages, type Database } from "~/db";
 import { createApiKey, verifyApiKey } from "~/lib/apikey";
 import { fetchCaskFromUrl } from "~/lib/fetch";
 import { findPackageByIdentifier, PkgIdentifier } from "~/lib/package";
@@ -23,7 +23,7 @@ app.get("/", async c => {
 });
 
 app.get("/cask", async c => {
-  const records = await c.env.DB.query.caskPackages.findMany();
+  const records = await c.env.DB.query.packages.findMany();
   return c.json(records);
 });
 
@@ -60,13 +60,8 @@ app.post(
       nix: { artifacts, ...nix },
       version,
     } = await fetchCaskFromUrl(url);
-    const persistedPackage = await c.env.DB.insert(caskPackages)
-      .values({
-        pname,
-        hash,
-        version,
-        cask: nix,
-      })
+    const persistedPackage = await c.env.DB.insert(packages)
+      .values({ pname, hash, version, nix })
       .returning();
 
     return c.json(persistedPackage);

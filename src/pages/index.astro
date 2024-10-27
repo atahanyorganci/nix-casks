@@ -1,15 +1,11 @@
 ---
 import Layout from "~/layouts/Layout.astro";
-import { createDatabase } from "~/db";
+import { createDatabase, packages } from "~/db";
 import type { CaskPackage } from "~/lib/homebrew";
 
-const records = await createDatabase(Astro.locals.runtime.env.DB).query.caskPackages.findMany();
-const casks = records.map(({ pname: name, cask }) => {
-  const {
-    meta: { description, homepage },
-  } = cask as CaskPackage;
-  return { name, description, homepage };
-});
+const db = createDatabase(Astro.locals.runtime.env.DB);
+const records = await db.select({ nix: packages.nix }).from(packages).all();
+const casks = records.map(({ nix }) => nix as CaskPackage);
 ---
 
 <Layout title="Nix Casks">
@@ -27,17 +23,17 @@ const casks = records.map(({ pname: name, cask }) => {
     </thead>
     <tbody>
       {
-        casks.map(({ name, description, homepage }) => (
+        casks.map(({ pname, meta: { description, homepage } }) => (
           <tr>
             <td>
-              <a href={`/cask/${name}`} class="curspor-pointer hover:underline">
-                {name}
+              <a href={`/cask/${pname}`} class="curspor-pointer hover:underline">
+                {pname}
               </a>
             </td>
             <td>{description}</td>
             <td>
               <a href={homepage} target="_blank" target="_blank" rel="noopener noreferrer">
-                {name}'s Homepage
+                {pname}'s Homepage
               </a>
             </td>
           </tr>
