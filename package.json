@@ -11,6 +11,7 @@
     "format:write": "prettier --write '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
     "format": "prettier --check '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
     "preview": "wrangler pages dev --port 4321 --show-interactive-dev-session false",
+    "test": "vitest",
     "types": "wrangler types"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.5.24",
     "@cloudflare/workers-types": "^4.20240919.0",
     "drizzle-kit": "^0.24.2",
     "prettier": "^3.3.3",
@@ -38,6 +40,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "turbo": "^2.1.2",
     "typescript": "^5.6.2",
+    "vitest": "2.0.5",
     "wrangler": "^3.78.8"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
