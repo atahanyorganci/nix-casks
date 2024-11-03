@@ -13,6 +13,13 @@ export const app = new OpenAPIHono<AppContext>().basePath("/api");
 
 app.use(logger());
 app.route("/apikey", apikeyRouter);
+app.doc("/doc", {
+  openapi: "3.0.0",
+  info: {
+    version: "0.0.1",
+    title: "Nix Casks Documentation",
+  },
+});
 
 app.get("/cask", async c => {
   const records = await c.env.DB.query.packages.findMany();
