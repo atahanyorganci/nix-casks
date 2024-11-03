@@ -1,7 +1,7 @@
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { zValidator } from "@hono/zod-validator";
 import type { APIContext } from "astro";
-import { z } from "astro/zod";
-import { Hono } from "hono";
+import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { createDatabase, packages, type Database } from "~/db";
@@ -9,17 +9,66 @@ import { createApiKey, verifyApiKey } from "~/lib/apikey";
 import { fetchCaskFromUrl } from "~/lib/fetch";
 import { findPackageByIdentifier, PkgIdentifier } from "~/lib/package";
 
-const app = new Hono<{
+interface AppContext {
   Bindings: {
     DB: Database;
   };
-}>().basePath("/api");
+}
+
+const app = new OpenAPIHono<AppContext>().basePath("/api");
 
 app.use(logger());
 
-app.get("/", async c => {
-  const apiKey = await createApiKey(c.env.DB);
-  return c.json({ apiKey });
+const Apikey = z.string().openapi({
+  description: "API key used to authenticate requests",
+  example: "xxxxxxxxx.xxxxxxxxxxxxxxxxx",
+});
+
+const newApiKeyRoute = createRoute({
+  method: "post",
+  path: "/apikey",
+  responses: {
+    200: {
+      description: "API key created",
+      content: {
+        "application/json": {
+          schema: z.object({
+            apikey: Apikey,
+          }),
+        },
+      },
+    },
+    401: {
+      description: "Missing or invalid API key",
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string().openapi({
+              description: "Unauthorized",
+              enum: ["Unauthorized"],
+            }),
+          }),
+        },
+      },
+    },
+  },
+});
+
+async function authorizeRequest(c: Context<AppContext>): Promise<boolean> {
+  const apiKey = c.req.header("x-api-key");
+  if (!apiKey) {
+    return false;
+  }
+  return await verifyApiKey(c.env.DB, apiKey);
+}
+
+app.openapi(newApiKeyRoute, async c => {
+  const authorized = await authorizeRequest(c);
+  if (!authorized) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+  const apikey = await createApiKey(c.env.DB);
+  return c.json({ apikey }, 200);
 });
 
 app.get("/cask", async c => {
