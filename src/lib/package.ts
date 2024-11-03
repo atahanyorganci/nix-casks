@@ -1,6 +1,6 @@
 import { z } from "astro/zod";
 import { and, desc, eq } from "drizzle-orm";
-import { packages, type Database } from "~/db";
+import { packages, type Database } from "~/server/db";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.

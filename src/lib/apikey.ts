@@ -1,6 +1,6 @@
 import { z } from "astro/zod";
 import { eq } from "drizzle-orm";
-import { apiKeys, type Database } from "~/db";
+import { apiKeys, type Database } from "~/server/db";
 
 /**
  * The zero hash is a constant value that is used to represent an empty hash. Used when record

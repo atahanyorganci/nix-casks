@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default defineConfig({
-  schema: "./src/db/schema.ts",
+  schema: "./src/server/db/schema.ts",
   dialect: "sqlite",
   driver: "d1-http",
   dbCredentials: {
