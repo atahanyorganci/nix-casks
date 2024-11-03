@@ -1,5 +1,5 @@
-import { z } from "astro/zod";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { apiKeys, type Database } from "~/server/db";
 
 /**

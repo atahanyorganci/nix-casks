@@ -1,5 +1,5 @@
-import { z } from "astro/zod";
 import pathe from "pathe";
+import { z } from "zod";
 import { unimplemented, unreachable } from ".";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
