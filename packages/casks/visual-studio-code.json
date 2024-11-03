@@ -1,44 +1,16 @@
 {
   "pname": "visual-studio-code",
-  "version": "1.93.1",
-  "artifacts": [
-    {
-      "type": "uninstall",
-      "value": [{ "type": "launchctl", "value": ["com.microsoft.VSCode.ShipIt"] }]
-    },
-    { "type": "app", "value": { "name": "Visual Studio Code.app" } },
-    {
-      "type": "binary",
-      "value": { "name": "$APPDIR/Visual Studio Code.app/Contents/Resources/app/bin/code" }
-    },
-    {
-      "type": "zap",
-      "value": [
-        {
-          "type": "trash",
-          "value": [
-            "~/.vscode",
-            "~/Library/Application Support/Code",
-            "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.microsoft.vscode.sfl*",
-            "~/Library/Caches/com.microsoft.VSCode",
-            "~/Library/Caches/com.microsoft.VSCode.ShipIt",
-            "~/Library/HTTPStorages/com.microsoft.VSCode",
-            "~/Library/Preferences/ByHost/com.microsoft.VSCode.ShipIt.*.plist",
-            "~/Library/Preferences/com.microsoft.VSCode.helper.plist",
-            "~/Library/Preferences/com.microsoft.VSCode.plist",
-            "~/Library/Saved Application State/com.microsoft.VSCode.savedState"
-          ]
-        }
-      ]
-    }
-  ],
+  "version": "1.94.2",
   "src": {
-    "url": "https://update.code.visualstudio.com/1.93.1/darwin-arm64/stable",
-    "sha256": "8bb425d1737c4699db5f2ef2f21c596a41680edf094966ac874d5d67813ab04d"
+    "url": "https://update.code.visualstudio.com/1.94.2/darwin-arm64/stable",
+    "sha256": "f730750149557e960b31fc8769bd4d285ed3680dc3aef4fd2c745abf1b73a9d0"
   },
   "installPhase": [
     "mkdir -p \"$out/Applications\" && cp -r \"Visual Studio Code.app\" \"$out/Applications/Visual Studio Code.app\"",
     "mkdir -p \"$out/bin\" && ln -s \"$out/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" \"$out/bin/code\""
   ],
-  "meta": { "description": "Open-source code editor", "homepage": "https://code.visualstudio.com/" }
+  "meta": {
+    "description": "Open-source code editor",
+    "homepage": "https://code.visualstudio.com/"
+  }
 }
