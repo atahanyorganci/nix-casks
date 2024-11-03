@@ -17,6 +17,9 @@ importers:
       '@astrojs/tailwind':
         specifier: ^5.1.0
         version: 5.1.0(astro@4.15.4(@types/node@22.5.4)(rollup@4.21.2)(typescript@5.6.2))(tailwindcss@3.4.10)
+      '@hono/zod-openapi':
+        specifier: ^0.16.4
+        version: 0.16.4(hono@4.6.5)(zod@3.23.8)
       '@hono/zod-validator':
         specifier: ^0.4.1
         version: 0.4.1(hono@4.6.5)(zod@3.23.8)
@@ -82,6 +85,11 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@asteasolutions/zod-to-openapi@7.2.0':
+    resolution: {integrity: sha512-Va+Fq1QzKkSgmiYINSp3cASFhMsbdRH/kmCk2feijhC+yNjGoC056CRqihrVFhR8MY8HOZHdlYm2Ns2lmszCiw==}
+    peerDependencies:
+      zod: ^3.20.2
 
   '@astrojs/check@0.9.3':
     resolution: {integrity: sha512-I6Dz45bMI5YRbp4yK2LKWsHH3/kkHRGdPGruGkLap6pqxhdcNh7oCgN04Ac+haDfc9ow5BYPGPmEhkwef15GQQ==}
@@ -857,6 +865,19 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@hono/zod-openapi@0.16.4':
+    resolution: {integrity: sha512-mnF6GthBaKex0D5PsY/4lYNtkaGJNE38bjeUI//EUqq7Ee4TNm2su35IUiFH4HcmJp5fWYMLyOJOpjnkClzEGw==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      hono: '>=4.3.6'
+      zod: 3.*
+
+  '@hono/zod-validator@0.3.0':
+    resolution: {integrity: sha512-7XcTk3yYyk6ldrO/VuqsroE7stvDZxHJQcpATRAyha8rUxJNBPV3+6waDrARfgEqxOVlzIadm3/6sE/dPseXgQ==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.19.1
 
   '@hono/zod-validator@0.4.1':
     resolution: {integrity: sha512-I8LyfeJfvVmC5hPjZ2Iij7RjexlgSBT7QJudZ4JvNPLxn0JQ3sqclz2zydlwISAnw21D2n4LQ0nfZdoiv9fQQA==}
@@ -2277,6 +2298,9 @@ packages:
   oniguruma-to-js@0.3.3:
     resolution: {integrity: sha512-m90/WEhgs8g4BxG37+Nu3YrMfJDs2YXtYtIllhsEPR+wP3+K4EZk6dDUvy2v2K4MNFDDOYKL4/yqYPXDqyozTQ==}
 
+  openapi3-ts@4.4.0:
+    resolution: {integrity: sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==}
+
   ora@8.1.0:
     resolution: {integrity: sha512-GQEkNkH/GHOhPFXcqZs3IDahXEQcQxsSjEkK4KvEEST4t7eNzoMjxTzef+EZ+JluDEV+Raoi3WQ2CflnRdSVnQ==}
     engines: {node: '>=18'}
@@ -3175,6 +3199,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
+  '@asteasolutions/zod-to-openapi@7.2.0(zod@3.23.8)':
+    dependencies:
+      openapi3-ts: 4.4.0
+      zod: 3.23.8
+
   '@astrojs/check@0.9.3(prettier-plugin-astro@0.14.1)(prettier@3.3.3)(typescript@5.6.2)':
     dependencies:
       '@astrojs/language-server': 2.14.2(prettier-plugin-astro@0.14.1)(prettier@3.3.3)(typescript@5.6.2)
@@ -3776,6 +3805,18 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@hono/zod-openapi@0.16.4(hono@4.6.5)(zod@3.23.8)':
+    dependencies:
+      '@asteasolutions/zod-to-openapi': 7.2.0(zod@3.23.8)
+      '@hono/zod-validator': 0.3.0(hono@4.6.5)(zod@3.23.8)
+      hono: 4.6.5
+      zod: 3.23.8
+
+  '@hono/zod-validator@0.3.0(hono@4.6.5)(zod@3.23.8)':
+    dependencies:
+      hono: 4.6.5
+      zod: 3.23.8
 
   '@hono/zod-validator@0.4.1(hono@4.6.5)(zod@3.23.8)':
     dependencies:
@@ -5405,6 +5446,10 @@ snapshots:
       mimic-function: 5.0.1
 
   oniguruma-to-js@0.3.3: {}
+
+  openapi3-ts@4.4.0:
+    dependencies:
+      yaml: 2.5.1
 
   ora@8.1.0:
     dependencies:

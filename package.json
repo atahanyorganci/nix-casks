@@ -17,6 +17,7 @@
     "@astrojs/check": "^0.9.3",
     "@astrojs/cloudflare": "^11.1.0",
     "@astrojs/tailwind": "^5.1.0",
+    "@hono/zod-openapi": "^0.16.4",
     "@hono/zod-validator": "^0.4.1",
     "@libsql/client": "^0.14.0",
     "astro": "^4.15.4",
