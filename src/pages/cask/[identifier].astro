@@ -2,11 +2,11 @@
 import { z } from "zod";
 import { createDatabase } from "~/server/db";
 import Layout from "~/layouts/Layout.astro";
-import { PkgIdentifier, findPackageByIdentifier } from "~/lib/package";
+import { PackageIdentifier, findPackageByIdentifier } from "~/lib/package";
 
 const params = z
   .object({
-    identifier: PkgIdentifier,
+    identifier: PackageIdentifier,
   })
   .parse(Astro.params);
 const db = createDatabase(Astro.locals.runtime.env.DB);
