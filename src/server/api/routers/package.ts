@@ -1,6 +1,11 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { fetchCaskFromUrl } from "~/lib/fetch";
-import { findPackageByIdentifier, Package, PackageNameVersionHash } from "~/lib/package";
+import {
+  findPackageByIdentifier,
+  Package,
+  PackageIdentifier,
+  PackageNameVersionHash,
+} from "~/lib/package";
 import { packages } from "~/server/db";
 import { type AppContext } from "../types";
 import { authorizeRequest } from "../util";
@@ -144,6 +149,84 @@ packagesRouter.openapi(
       return c.json({ message: "Package not found" }, 404);
     }
     return c.json(record, 200);
+  },
+);
+
+packagesRouter.openapi(
+  createRoute({
+    method: "post",
+    path: "/{identifier}/update",
+    description: "Update a package by its identifier",
+    request: {
+      params: z
+        .object({
+          identifier: PackageIdentifier,
+        })
+        .openapi("UpdatePackageParams"),
+    },
+    responses: {
+      200: {
+        description: "Package updated",
+        content: {
+          "application/json": {
+            schema: Package,
+          },
+        },
+      },
+      404: {
+        description: "Package not found",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Package not found",
+              }),
+            }),
+          },
+        },
+      },
+      401: {
+        description: "Unauthorized",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Unauthorized",
+              }),
+            }),
+          },
+        },
+      },
+    },
+  }),
+  async c => {
+    const authorized = await authorizeRequest(c);
+    if (!authorized) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    const { identifier } = c.req.valid("param");
+    const record = await findPackageByIdentifier(c.env.DB, identifier);
+    if (!record) {
+      return c.json({ message: "Package not found" }, 404);
+    }
+
+    const {
+      pname,
+      hash,
+      nix: { artifacts, ...nix },
+      version,
+    } = await fetchCaskFromUrl(record.url);
+    if (version === record.version && hash === record.hash) {
+      return c.json(record);
+    }
+
+    const [{ createdAt, ...persistedPackage }] = await c.env.DB.insert(packages)
+      .values({ pname, hash, version, nix, url: record.url })
+      .returning();
+    return c.json(persistedPackage);
   },
 );
 
