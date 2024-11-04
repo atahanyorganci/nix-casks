@@ -6,6 +6,8 @@
     "astro": "astro",
     "build": "astro build",
     "check": "astro check",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "wrangler d1 migrations apply nix-casks",
     "deploy": "wrangler pages deploy",
     "dev": "astro dev",
     "format:write": "prettier --write '**/*.{ts,tsx,mts,js,jsx,mjs,cjs,md,json,yaml,astro}'",
