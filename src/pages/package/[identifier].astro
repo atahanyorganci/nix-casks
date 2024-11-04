@@ -16,7 +16,7 @@ if (!cask) {
   return await Astro.redirect("/404");
 } else if (!("hash" in params.identifier)) {
   Astro.response.status = 301;
-  Astro.response.headers.set("Location", `/cask/${cask.hash}-${cask.version}-${cask.pname}`);
+  Astro.response.headers.set("Location", `/package/${cask.hash}-${cask.version}-${cask.pname}`);
 }
 ---
 

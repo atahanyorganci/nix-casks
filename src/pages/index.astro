@@ -26,7 +26,7 @@ const casks = records.map(({ nix }) => nix as CaskPackage);
         casks.map(({ pname, meta: { description, homepage } }) => (
           <tr>
             <td>
-              <a href={`/cask/${pname}`} class="curspor-pointer hover:underline">
+              <a href={`/package/${pname}`} class="curspor-pointer hover:underline">
                 {pname}
               </a>
             </td>
