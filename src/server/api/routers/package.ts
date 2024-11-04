@@ -76,7 +76,7 @@ packagesRouter.openapi(
       version,
     } = await fetchCaskFromUrl(url);
     const [{ createdAt, ...persistedPackage }] = await c.env.DB.insert(packages)
-      .values({ pname, hash, version, nix })
+      .values({ pname, hash, version, nix, url })
       .returning();
     return c.json(persistedPackage);
   },

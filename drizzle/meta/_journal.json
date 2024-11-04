@@ -22,6 +22,13 @@
       "when": 1730051720044,
       "tag": "0002_rename_cask_packages",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1730752644866,
+      "tag": "0003_package_url",
+      "breakpoints": true
     }
   ]
 }

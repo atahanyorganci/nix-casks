@@ -8,6 +8,7 @@ export const packages = sqliteTable(
     version: text("version").notNull(),
     hash: text("hash").notNull(),
     nix: text("nix", { mode: "json" }).notNull(),
+    url: text("url").notNull(),
     createdAt: text("created_at")
       .notNull()
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))`),
