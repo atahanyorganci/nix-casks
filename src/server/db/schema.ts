@@ -13,12 +13,10 @@ export const packages = sqliteTable(
       .notNull()
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))`),
   },
-  table => {
-    return {
-      pk: primaryKey({ columns: [table.pname, table.version] }),
-      hashIndex: uniqueIndex("hash_index").on(table.hash),
-    };
-  },
+  table => ({
+    pk: primaryKey({ columns: [table.pname, table.version] }),
+    hashIndex: uniqueIndex("hash_index").on(table.hash),
+  }),
 );
 
 export const apiKeys = sqliteTable("api_keys", {
