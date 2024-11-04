@@ -3,6 +3,7 @@ import { fetchCaskFromUrl } from "~/lib/fetch";
 import { findPackageByIdentifier, Package, PackageNameVersionHash } from "~/lib/package";
 import { packages } from "~/server/db";
 import { type AppContext } from "../types";
+import { authorizeRequest } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
 
@@ -65,9 +66,27 @@ packagesRouter.openapi(
           },
         },
       },
+      401: {
+        description: "Unauthorized",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Unauthorized",
+              }),
+            }),
+          },
+        },
+      },
     },
   }),
   async c => {
+    const authorized = authorizeRequest(c);
+    if (!authorized) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
     const { url } = c.req.valid("json");
     const {
       pname,
