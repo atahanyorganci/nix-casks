@@ -1,11 +1,10 @@
 ---
 import Layout from "~/layouts/Layout.astro";
-import { createDatabase, packages } from "~/server/db";
-import type { CaskPackage } from "~/lib/homebrew";
+import { createDatabase } from "~/server/db";
+import { getLatestVersionPackages } from "~/lib/package";
 
 const db = createDatabase(Astro.locals.runtime.env.DB);
-const records = await db.select({ nix: packages.nix }).from(packages).all();
-const casks = records.map(({ nix }) => nix as CaskPackage);
+const casks = await getLatestVersionPackages(db);
 ---
 
 <Layout title="Nix Casks">

@@ -1,6 +1,7 @@
 import { z } from "@hono/zod-openapi";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, max } from "drizzle-orm";
 import { packages, type Database } from "~/server/db";
+import type { CaskPackage } from "./homebrew";
 
 /**
  * Package is a record that contains the name, version, and Nix definition of a package.
@@ -104,4 +105,24 @@ export async function findPackageByIdentifier(db: Database, identifier: PackageI
       orderBy: desc(packages.version),
     });
   }
+}
+
+export async function getLatestVersionPackages(db: Database) {
+  const latest = db
+    .select({
+      pname: packages.pname,
+      latest_version: max(packages.version).as("latest_version"),
+    })
+    .from(packages)
+    .groupBy(packages.pname)
+    .as("latest");
+  const records = await db
+    .select({ nix: packages.nix })
+    .from(packages)
+    .innerJoin(
+      latest,
+      and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+    )
+    .orderBy(packages.pname);
+  return records.map(({ nix }) => nix as CaskPackage);
 }
