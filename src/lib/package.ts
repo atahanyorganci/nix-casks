@@ -45,7 +45,7 @@ export type PackageName = z.infer<typeof PackageName>;
  */
 export const PackageNameVersion = z
   .string()
-  .regex(/^[0-9.,]+-[a-z0-9-]+$/)
+  .regex(/^[0-9.,_]+-[a-z0-9-]+$/)
   .transform(value => {
     const [version, name] = value.split("-");
     return { name, version };
@@ -61,7 +61,7 @@ export type PackageNameVersion = z.infer<typeof PackageNameVersion>;
  */
 export const PackageNameVersionHash = z
   .string()
-  .regex(/^[A-Za-z0-9+/]+={0,2}-[0-9.,]+-[a-z0-9-]+$/)
+  .regex(/^[A-Za-z0-9+/]+={0,2}-[0-9.,_]+-[a-z0-9-]+$/)
   .transform(value => {
     const [hash, version, name] = value.split("-");
     return { name, version, hash };
