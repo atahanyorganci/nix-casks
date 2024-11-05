@@ -1,31 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import { and, desc, eq, max } from "drizzle-orm";
 import { packages, type Database } from "~/server/db";
-import type { CaskPackage } from "./homebrew";
-
-/**
- * Package is a record that contains the name, version, and Nix definition of a package.
- */
-export const Package = z
-  .object({
-    pname: z.string().openapi({
-      description: "Name of the package",
-      example: "visual-studio-code",
-    }),
-    hash: z.string().openapi({
-      description: "SHA256 hash of the package definition",
-      example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
-    }),
-    version: z.string().openapi({
-      description: "Version of the package",
-      example: "1.94.2",
-    }),
-    nix: z.unknown().openapi({
-      description: "JSON payload of the package definition used by Nix",
-    }),
-  })
-  .openapi("Package");
-export type Package = z.infer<typeof Package>;
+import type { NixPackage } from "./homebrew";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
@@ -124,5 +100,5 @@ export async function getLatestVersionPackages(db: Database) {
       and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
     )
     .orderBy(packages.pname);
-  return records.map(({ nix }) => nix as CaskPackage);
+  return records.map(({ nix }) => nix as NixPackage);
 }

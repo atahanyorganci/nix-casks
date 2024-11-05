@@ -1,8 +1,9 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { fetchCaskFromUrl } from "~/lib/fetch";
+import { NixPackage } from "~/lib/homebrew";
 import {
   findPackageByIdentifier,
-  Package,
+  getLatestVersionPackages,
   PackageIdentifier,
   PackageNameVersionHash,
 } from "~/lib/package";
@@ -22,7 +23,7 @@ packagesRouter.openapi(
         description: "List of packages",
         content: {
           "application/json": {
-            schema: Package.array().openapi({
+            schema: NixPackage.array().openapi({
               description: "List of packages",
             }),
           },
@@ -31,13 +32,8 @@ packagesRouter.openapi(
     },
   }),
   async c => {
-    const records = await c.env.DB.select({
-      pname: packages.pname,
-      hash: packages.hash,
-      version: packages.version,
-      nix: packages.nix,
-    }).from(packages);
-    return c.json(records, 200);
+    const packages = await getLatestVersionPackages(c.env.DB);
+    return c.json(packages, 200);
   },
 );
 
@@ -67,7 +63,7 @@ packagesRouter.openapi(
         description: "Package added",
         content: {
           "application/json": {
-            schema: Package,
+            schema: NixPackage,
           },
         },
       },
@@ -93,16 +89,9 @@ packagesRouter.openapi(
     }
 
     const { url } = c.req.valid("json");
-    const {
-      pname,
-      hash,
-      nix: { artifacts, ...nix },
-      version,
-    } = await fetchCaskFromUrl(url);
-    const [{ createdAt, ...persistedPackage }] = await c.env.DB.insert(packages)
-      .values({ pname, hash, version, nix, url })
-      .returning();
-    return c.json(persistedPackage);
+    const { pname, hash, nix, version } = await fetchCaskFromUrl(url);
+    await c.env.DB.insert(packages).values({ pname, hash, version, nix, url }).execute();
+    return c.json(nix, 200);
   },
 );
 
@@ -123,7 +112,7 @@ packagesRouter.openapi(
         description: "Package found",
         content: {
           "application/json": {
-            schema: Package,
+            schema: NixPackage,
           },
         },
       },
@@ -148,7 +137,7 @@ packagesRouter.openapi(
     if (!record) {
       return c.json({ message: "Package not found" }, 404);
     }
-    return c.json(record, 200);
+    return c.json(record.nix as NixPackage, 200);
   },
 );
 
@@ -169,7 +158,7 @@ packagesRouter.openapi(
         description: "Package updated",
         content: {
           "application/json": {
-            schema: Package,
+            schema: NixPackage,
           },
         },
       },
@@ -213,20 +202,15 @@ packagesRouter.openapi(
       return c.json({ message: "Package not found" }, 404);
     }
 
-    const {
-      pname,
-      hash,
-      nix: { artifacts, ...nix },
-      version,
-    } = await fetchCaskFromUrl(record.url);
+    const { pname, hash, nix, version } = await fetchCaskFromUrl(record.url);
     if (version === record.version && hash === record.hash) {
-      return c.json(record);
+      return c.json(nix, 200);
     }
 
-    const [{ createdAt, ...persistedPackage }] = await c.env.DB.insert(packages)
+    await c.env.DB.insert(packages)
       .values({ pname, hash, version, nix, url: record.url })
       .returning();
-    return c.json(persistedPackage);
+    return c.json(nix, 200);
   },
 );
 

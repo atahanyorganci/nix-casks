@@ -722,23 +722,81 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
   });
 }
 
-export function cask2nix(cask: Cask) {
-  const { token: pname, version, url, sha256, artifacts, desc: description, homepage } = cask;
+export const NixPackage = z
+  .object({
+    pname: z.string().openapi({
+      description: "Name of the package",
+      example: "visual-studio-code",
+    }),
+    version: z.string().openapi({
+      description: "Version of the package",
+      example: "1.94.2",
+    }),
+    src: z.object({
+      url: z.string().url().openapi({
+        description: "URL to the source code, binary or archive",
+        example: "https://update.code.visualstudio.com/1.94.2/darwin-arm64/stable",
+      }),
+      sha256: z.string().openapi({
+        description: "SHA256 hash of the source code, binary or archive",
+        example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
+      }),
+    }),
+    installPhase: z.array(z.string()).openapi({
+      description: "Installation steps to be executed",
+    }),
+    meta: z.object({
+      description: z.string().optional().openapi({
+        description: "Short description of the package",
+        example: "Open-source code editor",
+      }),
+      homepage: z.string().url().optional().openapi({
+        description: "URL to the homepage of the package",
+        example: "https://code.visualstudio.com/",
+      }),
+    }),
+  })
+  .openapi({
+    description: "Nix package definition",
+  });
+export type NixPackage = z.infer<typeof NixPackage>;
+
+export function cask2nix(cask: Cask): NixPackage {
+  let { token: pname, version, url, sha256, desc: description, homepage } = cask;
   const installPhase = artifactToInstallScript(cask);
   return {
     pname,
     version,
-    artifacts,
     src: {
       url,
       sha256,
     },
     installPhase,
     meta: {
-      description,
+      description: description ?? undefined,
       homepage,
     },
   };
 }
 
-export type CaskPackage = ReturnType<typeof cask2nix>;
+/**
+ * Package is a record that contains the name, version, and Nix definition of a package.
+ */
+export const Package = z
+  .object({
+    pname: z.string().openapi({
+      description: "Name of the package",
+      example: "visual-studio-code",
+    }),
+    hash: z.string().openapi({
+      description: "SHA256 hash of the package definition",
+      example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
+    }),
+    version: z.string().openapi({
+      description: "Version of the package",
+      example: "1.94.2",
+    }),
+    nix: NixPackage,
+  })
+  .openapi("Package");
+export type Package = z.infer<typeof Package>;
