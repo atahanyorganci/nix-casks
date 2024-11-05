@@ -583,144 +583,143 @@ export const Cask = z
 export type Cask = z.infer<typeof Cask>;
 
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
-  return artifacts
-    .map(({ type, value: artifact }) => {
-      switch (type) {
-        case "app":
-        case "suite":
-          return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
-        case "pkg": {
-          unimplemented(`pkg ${artifact.pkg}`);
-        }
-        case "installer": {
-          unimplemented(`installer ${artifact}`);
-        }
-        case "binary": {
-          const src = artifact.name
-            .replace("$APPDIR", "$out/Applications")
-            .replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out");
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`${token}'s binary ${artifact.name} has missing target`);
-          const absoluteTarget = pathe.join("$out/bin", target);
-          return `mkdir -p "$out/bin" && ln -s "${src}" "${absoluteTarget}"`;
-        }
-        case "manpage": {
-          const src = artifact.replace("$APPDIR", "$out/Applications");
-          const name =
-            artifact.split("/").pop() ??
-            unreachable(`${token}'s manpage ${artifact} has missing name`);
-          const [_, section] = name.split(".");
-          const dirname = `$out/usr/local/share/man/man${section}`;
-          return `mkdir -p "${dirname}" && ln -s "${src}" "${dirname}/${name}"`;
-        }
-        case "colorpicker": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`colorPicker ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/ColorPickers" && cp -r "${artifact.name}" "$out/Library/ColorPickers/${target}"`;
-        }
-        case "dictionary": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`dictionary ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Dictionaries" && cp -r "${artifact.name}" "$out/Library/Dictionaries/${target}"`;
-        }
-        case "font": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`font ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Fonts" && cp -r "${artifact.name}" "$out/Library/Fonts/${target}"`;
-        }
-        case "input_method": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`inputMethod ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Input Methods" && cp -r "${artifact.name}" "$out/Library/Input Methods/${target}"`;
-        }
-        case "internet_plugin": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`internetPlugin ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Internet Plug-Ins" && cp -r "${artifact.name}" "$out/Library/Internet Plug-Ins/${target}"`;
-        }
-        case "keyboard_layout": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`keyboardLayout ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Keyboard Layouts" && cp -r "${artifact.name}" "$out/Library/Keyboard Layouts/${target}"`;
-        }
-        case "prefpane": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`prefPane ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/PreferencePanes" && cp -r "${artifact.name}" "$out/Library/PreferencePanes/${target}"`;
-        }
-        case "qlplugin": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`qlPlugin ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/QuickLook" && cp -r "${artifact.name}" "$out/Library/QuickLook/${target}"`;
-        }
-        case "mdimporter": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`mdImporter ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Spotlight" && cp -r "${artifact.name}" "$out/Library/Spotlight/${target}"`;
-        }
-        case "screen_saver": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`screenSaver ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Screen Savers" && cp -r "${artifact.name}" "$out/Library/Screen Savers/${target}"`;
-        }
-        case "service": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`service ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Services" && cp -r "${artifact.name}" "$out/Library/Services/${target}"`;
-        }
-        case "audio_unit_plugin": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`audioUnitPlugin ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Audio/Components" && cp -r "${artifact.name}" "$out/Library/Audio/Components/${target}"`;
-        }
-        case "vst_plugin": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`vstPlugin ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Audio/VST" && cp -r "${artifact.name}" "$out/Library/Audio/VST/${target}"`;
-        }
-        case "vst3_plugin": {
-          const target =
-            artifact.target ??
-            artifact.name.split("/").pop() ??
-            unreachable(`vst3Plugin ${artifact.name} has missing target`);
-          return `mkdir -p "$out/Library/Audio/VST3" && cp -r "${artifact.name}" "$out/Library/Audio/VST3/${target}"`;
-        }
-        case "artifact": {
-          const target =
-            artifact.target ?? unreachable(`artifact ${artifact.name} has missing target`);
-          return `cp -r "${artifact.name}" "$out/${target}"`;
-        }
+  return artifacts.map(({ type, value: artifact }) => {
+    switch (type) {
+      case "app":
+      case "suite":
+        return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
+      case "pkg": {
+        unimplemented(`pkg ${artifact.pkg}`);
       }
-    })
-    .filter(Boolean);
+      case "installer": {
+        unimplemented(`installer ${artifact}`);
+      }
+      case "binary": {
+        const src = artifact.name
+          .replace("$APPDIR", "$out/Applications")
+          .replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out");
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`${token}'s binary ${artifact.name} has missing target`);
+        const absoluteTarget = pathe.join("$out/bin", target);
+        return `mkdir -p "$out/bin" && ln -s "${src}" "${absoluteTarget}"`;
+      }
+      case "manpage": {
+        const src = artifact.replace("$APPDIR", "$out/Applications");
+        const name =
+          artifact.split("/").pop() ??
+          unreachable(`${token}'s manpage ${artifact} has missing name`);
+        const [_, section] = name.split(".");
+        const dirname = `$out/usr/local/share/man/man${section}`;
+        return `mkdir -p "${dirname}" && ln -s "${src}" "${dirname}/${name}"`;
+      }
+      case "colorpicker": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`colorPicker ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/ColorPickers" && cp -r "${artifact.name}" "$out/Library/ColorPickers/${target}"`;
+      }
+      case "dictionary": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`dictionary ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Dictionaries" && cp -r "${artifact.name}" "$out/Library/Dictionaries/${target}"`;
+      }
+      case "font": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`font ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Fonts" && cp -r "${artifact.name}" "$out/Library/Fonts/${target}"`;
+      }
+      case "input_method": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`inputMethod ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Input Methods" && cp -r "${artifact.name}" "$out/Library/Input Methods/${target}"`;
+      }
+      case "internet_plugin": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`internetPlugin ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Internet Plug-Ins" && cp -r "${artifact.name}" "$out/Library/Internet Plug-Ins/${target}"`;
+      }
+      case "keyboard_layout": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`keyboardLayout ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Keyboard Layouts" && cp -r "${artifact.name}" "$out/Library/Keyboard Layouts/${target}"`;
+      }
+      case "prefpane": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`prefPane ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/PreferencePanes" && cp -r "${artifact.name}" "$out/Library/PreferencePanes/${target}"`;
+      }
+      case "qlplugin": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`qlPlugin ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/QuickLook" && cp -r "${artifact.name}" "$out/Library/QuickLook/${target}"`;
+      }
+      case "mdimporter": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`mdImporter ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Spotlight" && cp -r "${artifact.name}" "$out/Library/Spotlight/${target}"`;
+      }
+      case "screen_saver": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`screenSaver ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Screen Savers" && cp -r "${artifact.name}" "$out/Library/Screen Savers/${target}"`;
+      }
+      case "service": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`service ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Services" && cp -r "${artifact.name}" "$out/Library/Services/${target}"`;
+      }
+      case "audio_unit_plugin": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`audioUnitPlugin ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Audio/Components" && cp -r "${artifact.name}" "$out/Library/Audio/Components/${target}"`;
+      }
+      case "vst_plugin": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`vstPlugin ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Audio/VST" && cp -r "${artifact.name}" "$out/Library/Audio/VST/${target}"`;
+      }
+      case "vst3_plugin": {
+        const target =
+          artifact.target ??
+          artifact.name.split("/").pop() ??
+          unreachable(`vst3Plugin ${artifact.name} has missing target`);
+        return `mkdir -p "$out/Library/Audio/VST3" && cp -r "${artifact.name}" "$out/Library/Audio/VST3/${target}"`;
+      }
+      case "artifact": {
+        const target =
+          artifact.target ?? unreachable(`artifact ${artifact.name} has missing target`);
+        return `cp -r "${artifact.name}" "$out/${target}"`;
+      }
+    }
+    unreachable(`artifact ${artifact} has unknown type ${type}`);
+  });
 }
 
 export function cask2nix(cask: Cask) {
