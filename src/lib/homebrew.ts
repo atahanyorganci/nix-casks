@@ -542,6 +542,21 @@ export const Latest = z.literal("latest").openapi({
   example: "latest",
 });
 
+export const Sha256 = z
+  .string()
+  .regex(/^[a-f0-9]{64}$/)
+  .openapi({
+    title: "SHA256",
+    description: "SHA256 hash of the package source code, binary or archive",
+    example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
+  });
+
+export const NoCheck = z.literal("no_check").openapi({
+  title: "NoCheck",
+  description: "Homebrew uses 'no_check' as a placeholder where package sources aren't versioned.",
+  example: "no_check",
+});
+
 export const Cask = z
   .object({
     token: z.string().regex(/^[a-z0-9-@+]+$/),
@@ -553,10 +568,16 @@ export const Cask = z
     homepage: z.string(),
     url: z.string().url(),
     url_specs: z.unknown(),
-    version: z.union([Version, Latest]),
+    version: z.union([Version, Latest]).openapi({
+      description: "Version of the package",
+      examples: ["1.94.2", "latest"],
+    }),
     bundle_version: z.string().nullable(),
     bundle_short_version: z.string().nullable(),
-    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+    sha256: z.union([Sha256, NoCheck]).openapi({
+      description: "SHA256 hash of the package source code, binary or archive",
+      examples: ["fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU", "no_check"],
+    }),
     artifacts: z.array(Artifact),
     caveats: z.string().nullable(),
     depends_on: z.unknown(),
