@@ -528,21 +528,35 @@ export const Container = z
     }),
   );
 
+export const Version = z
+  .string()
+  .regex(/[A-z0-9.,_+]+/)
+  .openapi({
+    title: "PackageVersion",
+    examples: ["1.94.2", "1.2.3", "1.2.3-beta", "1.2.3-alpha", "1.2.3+build"],
+  });
+
+export const Latest = z.literal("latest").openapi({
+  title: "LatestVersion",
+  description: "Homebrew uses 'latest' as a placeholder where package sources aren't versioned.",
+  example: "latest",
+});
+
 export const Cask = z
   .object({
-    token: z.string(),
+    token: z.string().regex(/^[a-z0-9-@+]+$/),
     full_token: z.string(),
     old_tokens: z.array(z.string()),
     tap: z.string(),
-    name: z.array(z.string()),
+    name: z.array(z.string()).min(1),
     desc: z.string().nullable(),
     homepage: z.string(),
     url: z.string().url(),
     url_specs: z.unknown(),
-    version: z.string(),
+    version: z.union([Version, Latest]),
     bundle_version: z.string().nullable(),
     bundle_short_version: z.string().nullable(),
-    sha256: z.string(),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/),
     artifacts: z.array(Artifact),
     caveats: z.string().nullable(),
     depends_on: z.unknown(),

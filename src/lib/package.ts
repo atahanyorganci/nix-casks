@@ -8,7 +8,7 @@ import type { NixPackage } from "./homebrew";
  */
 export const PackageName = z
   .string()
-  .regex(/^[a-z0-9-]+$/)
+  .regex(/^[a-z0-9-_]+$/)
   .transform(value => ({ name: value }))
   .openapi({
     description: "Name of the package",
@@ -21,7 +21,7 @@ export type PackageName = z.infer<typeof PackageName>;
  */
 export const PackageNameVersion = z
   .string()
-  .regex(/^[0-9.,_]+-[a-z0-9-]+$/)
+  .regex(/^[A-z0-9.,_+]+-[a-z0-9-_]+$/)
   .transform(value => {
     const [version, name] = value.split("-");
     return { name, version };
@@ -37,13 +37,13 @@ export type PackageNameVersion = z.infer<typeof PackageNameVersion>;
  */
 export const PackageNameVersionHash = z
   .string()
-  .regex(/^[A-Za-z0-9+/]+={0,2}-[0-9.,_]+-[a-z0-9-]+$/)
+  .regex(/^[A-z0-9+/]+={0,2}-[A-z0-9.,_+]+-[a-z0-9-_]+$/)
   .transform(value => {
     const [hash, version, name] = value.split("-");
     return { name, version, hash };
   })
   .openapi({
-    description: "Name, version, and hash of the package",
+    description: "Fully qualified package name including package name, version, and hash",
     example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU-1.94.2-visual-studio-code",
   });
 export type PackageNameVersionHash = z.infer<typeof PackageNameVersionHash>;

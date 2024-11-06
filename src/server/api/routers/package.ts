@@ -67,6 +67,19 @@ packagesRouter.openapi(
           },
         },
       },
+      400: {
+        description: "Bad request",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Bad request",
+              }),
+            }),
+          },
+        },
+      },
       401: {
         description: "Unauthorized",
         content: {
@@ -89,7 +102,12 @@ packagesRouter.openapi(
     }
 
     const { url } = c.req.valid("json");
-    const { pname, hash, nix, version } = await fetchCaskFromUrl(url);
+    const { pname: rawPackageName, hash, nix, version } = await fetchCaskFromUrl(url);
+    if (version === "latest") {
+      return c.json({ message: "Package doesn't have a valid version." }, 400);
+    }
+
+    const pname = rawPackageName.replace(/[^a-zA-Z0-9-]/g, "_");
     await c.env.DB.insert(packages).values({ pname, hash, version, nix, url }).execute();
     return c.json(nix, 200);
   },
