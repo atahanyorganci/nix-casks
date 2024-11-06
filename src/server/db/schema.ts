@@ -4,9 +4,9 @@ import { primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-c
 export const packages = sqliteTable(
   "packages",
   {
+    name: text("name").notNull(),
     pname: text("pname").notNull(),
     version: text("version").notNull(),
-    hash: text("hash").notNull(),
     nix: text("nix", { mode: "json" }).notNull(),
     url: text("url").notNull(),
     createdAt: text("created_at")
@@ -15,7 +15,6 @@ export const packages = sqliteTable(
   },
   table => ({
     pk: primaryKey({ columns: [table.pname, table.version] }),
-    hashIndex: uniqueIndex("hash_index").on(table.hash),
   }),
 );
 

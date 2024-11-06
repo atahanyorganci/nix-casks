@@ -776,7 +776,8 @@ export const NixPackage = z
 export type NixPackage = z.infer<typeof NixPackage>;
 
 export function cask2nix(cask: Cask): NixPackage {
-  let { token: pname, version, url, sha256, desc: description, homepage } = cask;
+  const { token, version, url, sha256, desc: description, homepage } = cask;
+  const pname = token.replace(/[^A-z0-9-]/, "_");
   const installPhase = artifactToInstallScript(cask);
   return {
     pname,
@@ -798,13 +799,13 @@ export function cask2nix(cask: Cask): NixPackage {
  */
 export const Package = z
   .object({
-    pname: z.string().openapi({
-      description: "Name of the package",
-      example: "visual-studio-code",
+    name: z.string().openapi({
+      description: "Package name",
+      example: "Visual Studio Code",
     }),
-    hash: z.string().openapi({
-      description: "SHA256 hash of the package definition",
-      example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
+    pname: z.string().openapi({
+      description: "Package name used in Nix",
+      example: "visual-studio-code",
     }),
     version: z.string().openapi({
       description: "Version of the package",

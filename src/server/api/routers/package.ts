@@ -1,11 +1,11 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { fetchCaskFromUrl } from "~/lib/fetch";
-import { NixPackage } from "~/lib/homebrew";
+import { cask2nix, NixPackage } from "~/lib/homebrew";
 import {
+  fetchCaskFromUrl,
   findPackageByIdentifier,
   getLatestVersionPackages,
   PackageIdentifier,
-  PackageNameVersionHash,
+  PackageNameVersion,
 } from "~/lib/package";
 import { packages } from "~/server/db";
 import { type AppContext } from "../types";
@@ -96,19 +96,27 @@ packagesRouter.openapi(
     },
   }),
   async c => {
-    const authorized = authorizeRequest(c);
+    const authorized = await authorizeRequest(c);
     if (!authorized) {
       return c.json({ message: "Unauthorized" }, 401);
     }
 
     const { url } = c.req.valid("json");
-    const { pname: rawPackageName, hash, nix, version } = await fetchCaskFromUrl(url);
-    if (version === "latest") {
+    const cask = await fetchCaskFromUrl(url);
+    if (cask.version === "latest") {
       return c.json({ message: "Package doesn't have a valid version." }, 400);
     }
+    const nix = cask2nix(cask);
 
-    const pname = rawPackageName.replace(/[^a-zA-Z0-9-]/g, "_");
-    await c.env.DB.insert(packages).values({ pname, hash, version, nix, url }).execute();
+    await c.env.DB.insert(packages)
+      .values({
+        name: cask.name[0],
+        pname: nix.pname,
+        version: nix.version,
+        nix,
+        url,
+      })
+      .execute();
     return c.json(nix, 200);
   },
 );
@@ -121,7 +129,7 @@ packagesRouter.openapi(
     request: {
       params: z
         .object({
-          identifier: PackageNameVersionHash,
+          identifier: PackageNameVersion,
         })
         .openapi("GetPackageParams"),
     },
@@ -180,14 +188,14 @@ packagesRouter.openapi(
           },
         },
       },
-      404: {
-        description: "Package not found",
+      400: {
+        description: "Bad request",
         content: {
           "application/json": {
             schema: z.object({
               message: z.string().openapi({
                 description: "Error message",
-                example: "Package not found",
+                example: "Package doesn't have a valid version.",
               }),
             }),
           },
@@ -201,6 +209,19 @@ packagesRouter.openapi(
               message: z.string().openapi({
                 description: "Error message",
                 example: "Unauthorized",
+              }),
+            }),
+          },
+        },
+      },
+      404: {
+        description: "Package not found",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Package not found",
               }),
             }),
           },
@@ -220,13 +241,16 @@ packagesRouter.openapi(
       return c.json({ message: "Package not found" }, 404);
     }
 
-    const { pname, hash, nix, version } = await fetchCaskFromUrl(record.url);
-    if (version === record.version && hash === record.hash) {
-      return c.json(nix, 200);
+    const cask = await fetchCaskFromUrl(record.url);
+    if (cask.version === "latest") {
+      return c.json({ message: "Package doesn't have a valid version." }, 400);
+    } else if (cask.version === record.version) {
+      return c.json({ message: "Package is already up to date." }, 400);
     }
 
+    const nix = cask2nix(cask);
     await c.env.DB.insert(packages)
-      .values({ pname, hash, version, nix, url: record.url })
+      .values({ name: cask.name[0], pname: nix.pname, version: nix.version, nix, url: record.url })
       .returning();
     return c.json(nix, 200);
   },
