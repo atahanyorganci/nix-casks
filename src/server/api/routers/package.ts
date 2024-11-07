@@ -1,4 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { and, eq } from "drizzle-orm";
+import { UnsupportedArtifactError } from "~/lib";
 import { cask2nix, NixPackage } from "~/lib/homebrew";
 import {
   fetchCaskFromUrl,
@@ -60,7 +62,15 @@ packagesRouter.openapi(
     },
     responses: {
       200: {
-        description: "Package added",
+        description: "Package found",
+        content: {
+          "application/json": {
+            schema: NixPackage,
+          },
+        },
+      },
+      201: {
+        description: "New package created",
         content: {
           "application/json": {
             schema: NixPackage,
@@ -68,13 +78,16 @@ packagesRouter.openapi(
         },
       },
       400: {
-        description: "Bad request",
+        description: "Bad Request",
         content: {
           "application/json": {
             schema: z.object({
               message: z.string().openapi({
                 description: "Error message",
-                example: "Bad request",
+                examples: [
+                  "Package doesn't have a valid version.",
+                  "Package doesn't have a valid checksum.",
+                ],
               }),
             }),
           },
@@ -105,19 +118,35 @@ packagesRouter.openapi(
     const cask = await fetchCaskFromUrl(url);
     if (cask.version === "latest") {
       return c.json({ message: "Package doesn't have a valid version." }, 400);
+    } else if (cask.sha256 === "no_check") {
+      return c.json({ message: "Package doesn't have a valid checksum." }, 400);
     }
-    const nix = cask2nix(cask);
 
-    await c.env.DB.insert(packages)
-      .values({
-        name: cask.name[0],
-        pname: nix.pname,
-        version: nix.version,
-        nix,
-        url,
-      })
-      .execute();
-    return c.json(nix, 200);
+    const record = await c.env.DB.query.packages.findFirst({
+      where: and(eq(packages.pname, cask.token), eq(packages.version, cask.version)),
+    });
+    if (record) {
+      return c.json(record.nix as NixPackage, 200);
+    }
+
+    try {
+      const nix = cask2nix(cask);
+      const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
+        .values({
+          name: cask.name[0],
+          pname: nix.pname,
+          version: nix.version,
+          nix,
+          url,
+        })
+        .returning();
+      return c.json(persistedPackage as NixPackage, 201);
+    } catch (error) {
+      if (error instanceof UnsupportedArtifactError) {
+        return c.json({ message: error.message }, 400);
+      }
+      throw error;
+    }
   },
 );
 
@@ -181,7 +210,15 @@ packagesRouter.openapi(
     },
     responses: {
       200: {
-        description: "Package updated",
+        description: "Package found and up to date",
+        content: {
+          "application/json": {
+            schema: NixPackage,
+          },
+        },
+      },
+      201: {
+        description: "New version of the package created",
         content: {
           "application/json": {
             schema: NixPackage,
@@ -195,7 +232,10 @@ packagesRouter.openapi(
             schema: z.object({
               message: z.string().openapi({
                 description: "Error message",
-                example: "Package doesn't have a valid version.",
+                examples: [
+                  "Package doesn't have a valid version.",
+                  "Package doesn't have a valid checksum.",
+                ],
               }),
             }),
           },
@@ -244,15 +284,30 @@ packagesRouter.openapi(
     const cask = await fetchCaskFromUrl(record.url);
     if (cask.version === "latest") {
       return c.json({ message: "Package doesn't have a valid version." }, 400);
+    } else if (cask.sha256 === "no_check") {
+      return c.json({ message: "Package doesn't have a valid checksum." }, 400);
     } else if (cask.version === record.version) {
-      return c.json({ message: "Package is already up to date." }, 400);
+      return c.json(record.nix as NixPackage, 200);
     }
 
-    const nix = cask2nix(cask);
-    await c.env.DB.insert(packages)
-      .values({ name: cask.name[0], pname: nix.pname, version: nix.version, nix, url: record.url })
-      .returning();
-    return c.json(nix, 200);
+    try {
+      const nix = cask2nix(cask);
+      const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
+        .values({
+          name: cask.name[0],
+          pname: nix.pname,
+          version: nix.version,
+          nix,
+          url: record.url,
+        })
+        .returning();
+      return c.json(persistedPackage as NixPackage, 201);
+    } catch (error) {
+      if (error instanceof UnsupportedArtifactError) {
+        return c.json({ message: error.message }, 400);
+      }
+      throw error;
+    }
   },
 );
 
