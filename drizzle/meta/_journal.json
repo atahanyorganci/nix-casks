@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1728947216755,
-      "tag": "0000_cask_packages",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1728948176133,
-      "tag": "0001_api_keys",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1730051720044,
-      "tag": "0002_rename_cask_packages",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1730752644866,
-      "tag": "0003_package_url",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1730915797455,
-      "tag": "0004_add_package_name_remove_hash",
+      "when": 1731013876298,
+      "tag": "0000_all_tables",
       "breakpoints": true
     }
   ]

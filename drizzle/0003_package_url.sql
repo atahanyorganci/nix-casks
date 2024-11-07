@@ -1,1 +1,0 @@
-ALTER TABLE `packages` ADD `url` text NOT NULL;

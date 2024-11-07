@@ -1,35 +1,21 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "c0c4895c-bcea-4d9f-83e1-9833c724712b",
+  "id": "9f88d3f4-ae31-4768-ac20-81b3ee48b41e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "cask_packages": {
-      "name": "cask_packages",
+    "api_keys": {
+      "name": "api_keys",
       "columns": {
-        "pname": {
-          "name": "pname",
+        "salt": {
+          "name": "salt",
           "type": "text",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
-        "version": {
-          "name": "version",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "hash": {
-          "name": "hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "cask": {
-          "name": "cask",
+        "key": {
+          "name": "key",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -44,23 +30,67 @@
           "default": "(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))"
         }
       },
-      "indexes": {
-        "hash_index": {
-          "name": "hash_index",
-          "columns": [
-            "hash"
-          ],
-          "isUnique": true
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "packages": {
+      "name": "packages",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pname": {
+          "name": "pname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version": {
+          "name": "version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nix": {
+          "name": "nix",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))"
         }
       },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "cask_packages_pname_version_pk": {
+        "packages_pname_version_pk": {
           "columns": [
             "pname",
             "version"
           ],
-          "name": "cask_packages_pname_version_pk"
+          "name": "packages_pname_version_pk"
         }
       },
       "uniqueConstraints": {}
