@@ -26,3 +26,16 @@ export class UnimplementedError extends BaseError {
 export function unimplemented(message: string): never {
   throw new UnimplementedError(message);
 }
+
+export class UnsupportedArtifactError extends BaseError {
+  constructor(
+    public readonly type: string,
+    message: string,
+  ) {
+    super("UnsupportedError", message);
+  }
+}
+
+export function unsupported(type: string, message: string): never {
+  throw new UnsupportedArtifactError(type, message);
+}

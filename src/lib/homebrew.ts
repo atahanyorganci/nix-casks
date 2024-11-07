@@ -1,6 +1,6 @@
 import pathe from "pathe";
 import { z } from "zod";
-import { unimplemented, unreachable } from ".";
+import { unreachable, unsupported } from ".";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
 export type Literal = z.infer<typeof Literal>;
@@ -617,19 +617,29 @@ export const Cask = z
 
 export type Cask = z.infer<typeof Cask>;
 
+const ignoredArtifactTypes = new Set([
+  "zap",
+  "stage_only",
+  "uninstall",
+  "preflight",
+  "postflight",
+  "uninstall_preflight",
+  "uninstall_postflight",
+]);
+
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
   return artifacts
-    .filter(artifact => artifact.type !== "zap" && artifact.type !== "uninstall")
+    .filter(artifact => !ignoredArtifactTypes.has(artifact.type))
     .map(({ type, value: artifact }) => {
       switch (type) {
         case "app":
         case "suite":
           return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
         case "pkg": {
-          unimplemented(`pkg ${artifact.pkg}`);
+          unsupported("pkg", `${token}'s pkg ${artifact.pkg} is not supported`);
         }
         case "installer": {
-          unimplemented(`installer ${artifact}`);
+          unsupported("installer", `${token}'s installer ${artifact} is not supported`);
         }
         case "binary": {
           const src = artifact.name
@@ -755,7 +765,7 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
           return `cp -r "${artifact.name}" "$out/${target}"`;
         }
       }
-      unreachable(`Artifact type ${type} is not supported`);
+      unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);
     });
 }
 
