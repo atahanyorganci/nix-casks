@@ -4,9 +4,13 @@ compatibility_date = "2024-09-19"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "./dist"
 send_metrics = false
+vars = { ENVIRONMENT = "development" }
 
 [[d1_databases]]
 binding = "DB"
 database_name = "nix-casks"
 database_id = "56506b6b-c6f8-4a39-8bf3-8f76ccf333ae"
 migrations_dir = "drizzle"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
