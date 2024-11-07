@@ -3,6 +3,9 @@ import { verifyApiKey } from "~/lib/apikey";
 import type { AppContext } from "./types";
 
 export async function authorizeRequest(c: Context<AppContext>): Promise<boolean> {
+  if (c.env.ENVIRONMENT === "development") {
+    return true;
+  }
   const apiKey = c.req.header("x-api-key");
   if (!apiKey) {
     return false;

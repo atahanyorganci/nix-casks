@@ -4,6 +4,7 @@ import type { Database } from "../db";
 export interface AppContext {
   Bindings: {
     DB: Database;
+    ENVIRONMENT: Env["ENVIRONMENT"];
   };
 }
 
