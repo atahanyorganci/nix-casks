@@ -1,6 +1,6 @@
-{ stdenv, pkgs, fetchurl, lib, cask, ... }:
+{ stdenv, pkgs, fetchurl, lib, pkg, ... }:
 stdenv.mkDerivation rec {
-  inherit (cask) pname version;
+  inherit (pkg) pname version;
   nativeBuildInputs = with pkgs; [
     python312Packages.magika
     unzip
@@ -8,10 +8,10 @@ stdenv.mkDerivation rec {
   ];
   phases = [ "unpackPhase" "installPhase" ];
   unpackPhase = builtins.readFile ./unpack.sh;
-  installPhase = builtins.concatStringsSep "\n" cask.installPhase;
-  src = fetchurl cask.src;
+  installPhase = builtins.concatStringsSep "\n" pkg.installPhase;
+  src = fetchurl pkg.src;
   meta = with stdenv.lib; {
-    inherit (cask.meta) description homepage;
+    inherit (pkg.meta) description homepage;
     platforms = lib.platforms.darwin;
   };
 }

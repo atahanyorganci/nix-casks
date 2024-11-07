@@ -12,6 +12,22 @@
     in
     {
       formatter = eachSystem (pkgs: pkgs.nixpkgs-fmt);
+      packages = eachDarwinSystem (pkgs:
+        let
+          source = pkgs.fetchurl {
+            name = "packages.json";
+            url = "http://localhost:4321/api/package";
+            sha256 = "0lzsj5dcylj4f7p6mcdzcp17afy8v7rhndzj2qc50c3n7yym6zjq";
+          };
+          json = builtins.fromJSON (builtins.readFile source);
+          packages = builtins.listToAttrs (map
+            (pkg: {
+              name = pkg.pname;
+              value = pkgs.callPackage ./packages { inherit pkg; };
+            })
+            json);
+        in
+        packages);
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
           shellHook = ''
