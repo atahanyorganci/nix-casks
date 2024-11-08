@@ -1,0 +1,50 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import { createDatabase } from "~/server/db";
+import { getLatestVersionPackages } from "~/lib/package";
+
+const db = createDatabase(Astro.locals.runtime.env.DB);
+const casks = await getLatestVersionPackages(db);
+---
+
+<Layout title="Nix Casks">
+  <h1 class="text-4xl font-semibold my-4">Nix Casks</h1>
+  <p class="my-4">
+    {casks.length} casks are available in <code>nix-casks</code>.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Version</th>
+        <th>Description</th>
+        <th>Homepage</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        casks.map(({ pname, version, meta: { description, homepage } }) => (
+          <tr>
+            <td>
+              <a href={`/package/${pname}`} class="curspor-pointer hover:underline">
+                {pname}
+              </a>
+            </td>
+            <td>{version}</td>
+            <td>{description}</td>
+            <td>
+              <a
+                href={homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="curspor-pointer hover:underline"
+              >
+                {pname}'s Homepage
+              </a>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</Layout>
