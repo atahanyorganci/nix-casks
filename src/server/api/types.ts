@@ -1,10 +1,11 @@
 import { z } from "@hono/zod-openapi";
+import { NODE_ENV } from "astro:env/server";
 import type { Database } from "../db";
 
 export interface AppContext {
   Bindings: {
     DB: Database;
-    ENVIRONMENT: Env["ENVIRONMENT"];
+    NODE_ENV: typeof NODE_ENV;
   };
 }
 

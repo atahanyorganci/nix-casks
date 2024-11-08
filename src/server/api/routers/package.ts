@@ -132,13 +132,7 @@ packagesRouter.openapi(
     try {
       const nix = cask2nix(cask);
       const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
-        .values({
-          name: cask.name[0],
-          pname: nix.pname,
-          version: nix.version,
-          nix,
-          url,
-        })
+        .values({ name: cask.name[0], nix, url })
         .returning();
       return c.json(persistedPackage as NixPackage, 201);
     } catch (error) {
@@ -293,13 +287,7 @@ packagesRouter.openapi(
     try {
       const nix = cask2nix(cask);
       const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
-        .values({
-          name: cask.name[0],
-          pname: nix.pname,
-          version: nix.version,
-          nix,
-          url: record.url,
-        })
+        .values({ name: cask.name[0], nix, url: record.url })
         .returning();
       return c.json(persistedPackage as NixPackage, 201);
     } catch (error) {

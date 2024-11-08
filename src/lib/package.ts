@@ -1,9 +1,9 @@
 import { z } from "@hono/zod-openapi";
 import { and, desc, eq, max } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { Cask, cask2nix } from "~/lib/homebrew";
+import { Cask } from "~/lib/homebrew";
 import { packages, type Database } from "~/server/db";
-import type { NixPackage, Package } from "./homebrew";
+import type { NixPackage } from "./homebrew";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.

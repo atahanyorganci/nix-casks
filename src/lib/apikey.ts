@@ -20,10 +20,10 @@ export async function createApiKey(db: Database) {
   const secret = generateRandomBase64String(36);
 
   const apiKey = `${salt}.${secret}`;
-  const hash = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(apiKey));
-  const keyHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
+  const digest = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(apiKey));
+  const hash = btoa(String.fromCharCode(...new Uint8Array(digest)));
 
-  await db.insert(apiKeys).values({ salt, keyHash }).returning().execute();
+  await db.insert(apiKeys).values({ salt, hash }).returning().execute();
   return apiKey;
 }
 
@@ -49,11 +49,10 @@ export async function verifyApiKey(db: Database, apiKey: string) {
   const record = await db.query.apiKeys.findFirst({
     where: eq(apiKeys.salt, salt),
   });
-  const keyHash = record?.keyHash ?? ZERO_HASH;
 
   const hash = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(`${salt}.${secret}`));
   const expectedKeyHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
-  return compareStringConstantTime(keyHash, expectedKeyHash);
+  return compareStringConstantTime(record?.hash ?? ZERO_HASH, expectedKeyHash);
 }
 
 function generateRandomBase64String(length: number) {

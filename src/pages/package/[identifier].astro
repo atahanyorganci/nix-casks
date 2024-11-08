@@ -9,7 +9,7 @@ const params = z
     identifier: PackageIdentifier,
   })
   .parse(Astro.params);
-const db = createDatabase(Astro.locals.runtime.env.DB);
+const db = createDatabase();
 const cask = await findPackageByIdentifier(db, params.identifier);
 
 if (!cask) {

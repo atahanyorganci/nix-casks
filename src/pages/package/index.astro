@@ -3,7 +3,7 @@ import Layout from "~/layouts/Layout.astro";
 import { createDatabase } from "~/server/db";
 import { getLatestVersionPackages } from "~/lib/package";
 
-const db = createDatabase(Astro.locals.runtime.env.DB);
+const db = createDatabase();
 const casks = await getLatestVersionPackages(db);
 ---
 

@@ -1,10 +1,10 @@
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle } from "drizzle-orm/vercel-postgres";
 import * as schema from "./schema";
 
 export * from "./schema";
 
-export function createDatabase(db: D1Database) {
-  return drizzle(db, {
+export function createDatabase() {
+  return drizzle({
     schema,
   });
 }

@@ -7,11 +7,8 @@ if (process.env.NODE_ENV !== "production") {
 
 export default defineConfig({
   schema: "./src/server/db/schema.ts",
-  dialect: "sqlite",
-  driver: "d1-http",
+  dialect: "postgresql",
   dbCredentials: {
-    accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    databaseId: process.env.CLOUDFLARE_DATABASE_ID!,
-    token: process.env.CLOUDFLARE_API_TOKEN!,
+    url: process.env.POSTGRES_URL!,
   },
 });
