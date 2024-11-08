@@ -39,6 +39,7 @@
           buildInputs = with pkgs; [
             nodejs_20
             python312Packages.magika
+            nodePackages.vercel
           ];
         };
       });
