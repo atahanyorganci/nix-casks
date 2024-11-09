@@ -14,10 +14,10 @@
       formatter = eachSystem (pkgs: pkgs.nixpkgs-fmt);
       packages = eachDarwinSystem (pkgs:
         let
+          archive = builtins.fromJSON (builtins.readFile ./archive.json);
           source = pkgs.fetchurl {
+            inherit (archive) url sha256;
             name = "packages.json";
-            url = "http://localhost:4321/api/package";
-            sha256 = "0lzsj5dcylj4f7p6mcdzcp17afy8v7rhndzj2qc50c3n7yym6zjq";
           };
           json = builtins.fromJSON (builtins.readFile source);
           packages = builtins.listToAttrs (map
