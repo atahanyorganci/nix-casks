@@ -145,6 +145,52 @@ packagesRouter.openapi(
 packagesRouter.openapi(
   createRoute({
     method: "get",
+    path: "/{pname}",
+    description: "Get latest version of a package by its name",
+    request: {
+      params: z
+        .object({
+          pname: PackageName,
+        })
+        .openapi("GetPackageByNameParams"),
+    },
+    responses: {
+      200: {
+        description: "Package found",
+        content: {
+          "application/json": {
+            schema: NixPackage,
+          },
+        },
+      },
+      404: {
+        description: "Package not found",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Package not found",
+              }),
+            }),
+          },
+        },
+      },
+    },
+  }),
+  async c => {
+    const { pname } = c.req.valid("param");
+    const record = await getLatestPackage(c.env.DB, pname);
+    if (!record) {
+      return c.json({ message: "Package not found" }, 404);
+    }
+    return c.json(record.nix as NixPackage, 200);
+  },
+);
+
+packagesRouter.openapi(
+  createRoute({
+    method: "get",
     path: "/{pname}/{version}",
     description: "Get a package by its name and version",
     request: {
