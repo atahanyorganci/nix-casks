@@ -1,5 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { sql } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
+import { unreachable } from "~/lib";
 import { getLatestVersionPackages } from "~/lib/package";
 import { archives } from "~/server/db";
 import { getUrl, uploadObject } from "~/server/s3";
@@ -97,6 +98,41 @@ archiveRouter.openapi(
       return c.json({ message: "Package archive already exists" }, 409);
     }
     return c.json({ url: getUrl(archive.key), sha256: archive.sha256 }, 200);
+  },
+);
+
+archiveRouter.openapi(
+  createRoute({
+    method: "get",
+    path: "/latest",
+    description: "Get archive details of the latest package definitions",
+    responses: {
+      200: {
+        description: "Latest package definitions",
+        content: {
+          "application/json": {
+            schema: z.object({
+              url: z.string().openapi({
+                description: "URL of the package definitions",
+              }),
+              sha256: z.string().openapi({
+                description: "SHA256 checksum of the package definitions",
+              }),
+            }),
+          },
+        },
+      },
+    },
+  }),
+  async c => {
+    const [{ sha256, key }] = await c.env.DB.select({
+      sha256: archives.sha256,
+      key: sql<string>`CONCAT(${archives.sha256}, '.json')`,
+    })
+      .from(archives)
+      .orderBy(desc(archives.createdAt))
+      .limit(1);
+    return c.json({ sha256, url: getUrl(key) }, 200);
   },
 );
 
