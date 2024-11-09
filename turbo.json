@@ -4,7 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["check"],
-      "inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"]
+      "inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"],
+      "env": ["NODE_ENV", "POSTGRES_URL"]
     },
     "check": {
       "inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"]
