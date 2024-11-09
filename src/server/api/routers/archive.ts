@@ -1,6 +1,7 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import * as ohash from "ohash";
+import { sql } from "drizzle-orm";
 import { getLatestVersionPackages } from "~/lib/package";
+import { archives } from "~/server/db";
 import { getUrl, uploadObject } from "~/server/s3";
 import { type AppContext } from "../types";
 import { authorizeRequest } from "../util";
@@ -41,6 +42,19 @@ archiveRouter.openapi(
           },
         },
       },
+      409: {
+        description: "Conflict",
+        content: {
+          "application/json": {
+            schema: z.object({
+              message: z.string().openapi({
+                description: "Error message",
+                example: "Package archive already exists",
+              }),
+            }),
+          },
+        },
+      },
     },
   }),
   async c => {
@@ -50,18 +64,39 @@ archiveRouter.openapi(
     }
 
     const latestPackages = await getLatestVersionPackages(c.env.DB);
-    const json = JSON.stringify(latestPackages);
-    const sha256 = ohash.sha256(json);
 
-    const today = new Date().toISOString().split("T")[0];
-    const key = `${today}-${sha256}.json`;
-    const { $metadata: metadata, ...response } = await uploadObject({
-      Key: key,
-      Body: json,
+    const archive = await c.env.DB.transaction(async tx => {
+      const result = await tx
+        .insert(archives)
+        .values({ archive: latestPackages })
+        .onConflictDoNothing()
+        .returning({
+          sha256: archives.sha256,
+          createdAt: archives.createdAt,
+          json: sql<string>`${archives.archive}::text`,
+        });
+      if (result.length === 0) {
+        return null;
+      }
+      const { sha256, json } = result[0];
+      const key = `${sha256}.json`;
+      try {
+        const { $metadata: metadata, ...response } = await uploadObject({
+          Key: key,
+          Body: json,
+        });
+        console.log({ metadata, ...response });
+      } catch (error) {
+        console.error(error);
+        tx.rollback();
+      }
+      return { key, sha256 };
     });
-    console.log({ metadata, ...response });
 
-    return c.json({ url: getUrl(key), sha256 }, 200);
+    if (!archive) {
+      return c.json({ message: "Package archive already exists" }, 409);
+    }
+    return c.json({ url: getUrl(archive.key), sha256: archive.sha256 }, 200);
   },
 );
 
