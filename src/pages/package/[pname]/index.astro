@@ -1,0 +1,23 @@
+---
+import { z } from "zod";
+import { createDatabase } from "~/server/db";
+import Layout from "~/layouts/Layout.astro";
+import { getLatestPackage, PackageName } from "~/lib/package";
+
+const { pname } = z
+  .object({
+    pname: PackageName,
+  })
+  .parse(Astro.params);
+const db = createDatabase();
+const pkg = await getLatestPackage(db, pname);
+
+if (!pkg) {
+  return await Astro.redirect("/404", 404);
+}
+---
+
+<Layout title={`${pkg.pname} | Nix Casks`}>
+  <h1 class="text-4xl font-semibold">{pkg.pname} - {pkg.version}</h1>
+  <pre>{JSON.stringify(pkg, null, 2)}</pre>
+</Layout>

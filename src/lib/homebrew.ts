@@ -826,25 +826,3 @@ export function cask2nix(cask: Cask): NixPackage {
     },
   };
 }
-
-/**
- * Package is a record that contains the name, version, and Nix definition of a package.
- */
-export const Package = z
-  .object({
-    name: z.string().openapi({
-      description: "Package name",
-      example: "Visual Studio Code",
-    }),
-    pname: z.string().openapi({
-      description: "Package name used in Nix",
-      example: "visual-studio-code",
-    }),
-    version: z.string().openapi({
-      description: "Version of the package",
-      example: "1.94.2",
-    }),
-    nix: NixPackage,
-  })
-  .openapi("Package");
-export type Package = z.infer<typeof Package>;

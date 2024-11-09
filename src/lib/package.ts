@@ -3,7 +3,7 @@ import { and, desc, eq, max } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask } from "~/lib/homebrew";
 import { packages, type Database } from "~/server/db";
-import type { NixPackage } from "./homebrew";
+import { NixPackage } from "./homebrew";
 
 /**
  * Package name is a string that contains only lowercase letters, numbers, and hyphens.
@@ -11,57 +11,45 @@ import type { NixPackage } from "./homebrew";
 export const PackageName = z
   .string()
   .regex(/^[a-z0-9-_]+$/)
-  .transform(value => ({ name: value }))
   .openapi({
-    description: "Name of the package",
+    description: "Package name used to identify the package",
     example: "visual-studio-code",
   });
 export type PackageName = z.infer<typeof PackageName>;
 
+export const PackageVersion = z.string().openapi({
+  description: "Version of the package",
+  example: "1.94.2",
+});
+export type PackageVersion = z.infer<typeof PackageVersion>;
+
 /**
- * Package name with version is a string that contains a package name and a version number separated by a hyphen.
+ * Package is a record that contains the name, version, and Nix definition of a package.
  */
-export const PackageNameVersion = z
-  .string()
-  .regex(/^[A-z0-9.,_+]+-[a-z0-9-_]+$/)
-  .transform(value => {
-    const [version, name] = value.split("-");
-    return { name, version };
+export const Package = z
+  .object({
+    name: z.string().openapi({
+      description: "Name of program or package",
+      example: "Visual Studio Code",
+    }),
+    pname: PackageName,
+    version: PackageVersion,
+    nix: NixPackage,
   })
-  .openapi({
-    description: "Name and version of the package",
-    example: "1.94.2-visual-studio-code",
+  .openapi("Package");
+export type Package = z.infer<typeof Package>;
+
+export async function getLatestPackage(db: Database, pname: string) {
+  return await db.query.packages.findFirst({
+    where: eq(packages.pname, pname),
+    orderBy: desc(packages.version),
   });
-export type PackageNameVersion = z.infer<typeof PackageNameVersion>;
+}
 
-/**
- * A package identifier can be one of the following:
- * - `name`: the latest version of a package
- * - `name-version`: a specific version of a package
- */
-export const PackageIdentifier = z.union([PackageName, PackageNameVersion]);
-export type PackageIdentifier = z.infer<typeof PackageIdentifier>;
-
-/**
- * Find a package by its identifier. If the identifier has hash, it will use unique index on hash.
- * If the identifier has version, it will use composite index on pname and version. Otherwise, it will
- * use index on pname and order by version in descending order.
- *
- * @param db `Database` instance from Drizzle
- * @param identifier package identifier
- * @returns package
- */
-export async function findPackageByIdentifier(db: Database, identifier: PackageIdentifier) {
-  if ("version" in identifier) {
-    return await db.query.packages.findFirst({
-      where: and(eq(packages.pname, identifier.name), eq(packages.version, identifier.version)),
-    });
-  } else {
-    return await db.query.packages.findFirst({
-      where: eq(packages.pname, identifier.name),
-      orderBy: desc(packages.version),
-    });
-  }
+export async function getPackage(db: Database, pname: string, version: string) {
+  return await db.query.packages.findFirst({
+    where: and(eq(packages.pname, pname), eq(packages.version, version)),
+  });
 }
 
 export async function fetchCaskFromUrl(url: string): Promise<Cask> {

@@ -1,13 +1,13 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { and, eq } from "drizzle-orm";
 import { UnsupportedArtifactError } from "~/lib";
 import { cask2nix, NixPackage } from "~/lib/homebrew";
 import {
   fetchCaskFromUrl,
-  findPackageByIdentifier,
+  getLatestPackage,
   getLatestVersionPackages,
-  PackageIdentifier,
-  PackageNameVersion,
+  getPackage,
+  PackageName,
+  PackageVersion,
 } from "~/lib/package";
 import { packages } from "~/server/db";
 import { type AppContext } from "../types";
@@ -124,9 +124,7 @@ packagesRouter.openapi(
 
     try {
       const nix = cask2nix(cask);
-      const record = await c.env.DB.query.packages.findFirst({
-        where: and(eq(packages.pname, nix.pname), eq(packages.version, nix.version)),
-      });
+      const record = await getPackage(c.env.DB, cask.token, cask.version);
       if (record) {
         return c.json(record.nix as NixPackage, 200);
       }
@@ -147,12 +145,13 @@ packagesRouter.openapi(
 packagesRouter.openapi(
   createRoute({
     method: "get",
-    path: "/{identifier}",
-    description: "Get a package by its identifier",
+    path: "/{pname}/{version}",
+    description: "Get a package by its name and version",
     request: {
       params: z
         .object({
-          identifier: PackageNameVersion,
+          pname: PackageName,
+          version: PackageVersion,
         })
         .openapi("GetPackageParams"),
     },
@@ -181,8 +180,8 @@ packagesRouter.openapi(
     },
   }),
   async c => {
-    const { identifier } = c.req.valid("param");
-    const record = await findPackageByIdentifier(c.env.DB, identifier);
+    const { pname, version } = c.req.valid("param");
+    const record = await getPackage(c.env.DB, pname, version);
     if (!record) {
       return c.json({ message: "Package not found" }, 404);
     }
@@ -193,12 +192,12 @@ packagesRouter.openapi(
 packagesRouter.openapi(
   createRoute({
     method: "post",
-    path: "/{identifier}/update",
-    description: "Update a package by its identifier",
+    path: "/{pname}/update",
+    description: "Update a package by its package name",
     request: {
       params: z
         .object({
-          identifier: PackageIdentifier,
+          pname: PackageName,
         })
         .openapi("UpdatePackageParams"),
     },
@@ -269,8 +268,8 @@ packagesRouter.openapi(
       return c.json({ message: "Unauthorized" }, 401);
     }
 
-    const { identifier } = c.req.valid("param");
-    const record = await findPackageByIdentifier(c.env.DB, identifier);
+    const { pname } = c.req.valid("param");
+    const record = await getLatestPackage(c.env.DB, pname);
     if (!record) {
       return c.json({ message: "Package not found" }, 404);
     }
