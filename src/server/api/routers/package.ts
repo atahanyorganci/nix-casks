@@ -122,15 +122,15 @@ packagesRouter.openapi(
       return c.json({ message: "Package doesn't have a valid checksum." }, 400);
     }
 
-    const record = await c.env.DB.query.packages.findFirst({
-      where: and(eq(packages.pname, cask.token), eq(packages.version, cask.version)),
-    });
-    if (record) {
-      return c.json(record.nix as NixPackage, 200);
-    }
-
     try {
       const nix = cask2nix(cask);
+      const record = await c.env.DB.query.packages.findFirst({
+        where: and(eq(packages.pname, nix.pname), eq(packages.version, nix.version)),
+      });
+      if (record) {
+        return c.json(record.nix as NixPackage, 200);
+      }
+
       const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
         .values({ name: cask.name[0], nix, url })
         .returning();
