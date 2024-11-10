@@ -23,6 +23,10 @@ app.doc("/openapi.json", {
 		version: "0.0.1",
 		title: "Nix Casks API",
 		description: "API for creating/updating Nix derivations from Homebrew Casks",
+		license: {
+			name: "MIT",
+			url: "https://opensource.org/licenses/MIT",
+		},
 	},
 });
 
