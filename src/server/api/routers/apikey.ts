@@ -1,21 +1,27 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { createApiKey } from "~/lib/apikey";
-import { Apikey, type AppContext } from "../types";
+import { ApiKey, createApiKey } from "~/lib/apikey";
+import { type AppContext } from "../types";
 import { authorizeRequest } from "../util";
 
 const apikeyRouter = new OpenAPIHono<AppContext>();
 
 apikeyRouter.openapi(
   createRoute({
+    description: "Create a new API key",
     method: "post",
     path: "/",
+    request: {
+      headers: z.object({
+        "x-api-key": ApiKey,
+      }),
+    },
     responses: {
       200: {
         description: "API key created",
         content: {
           "application/json": {
             schema: z.object({
-              apikey: Apikey,
+              apikey: ApiKey,
             }),
           },
         },

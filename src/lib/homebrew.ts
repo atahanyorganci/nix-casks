@@ -1,6 +1,7 @@
 import pathe from "pathe";
 import { z } from "zod";
 import { unreachable, unsupported } from ".";
+import type { NixPackage } from "./package";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
 export type Literal = z.infer<typeof Literal>;
@@ -768,45 +769,6 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
       unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);
     });
 }
-
-export const NixPackage = z
-  .object({
-    pname: z.string().openapi({
-      description: "Name of the package",
-      example: "visual-studio-code",
-    }),
-    version: z.string().openapi({
-      description: "Version of the package",
-      example: "1.94.2",
-    }),
-    src: z.object({
-      url: z.string().url().openapi({
-        description: "URL to the source code, binary or archive",
-        example: "https://update.code.visualstudio.com/1.94.2/darwin-arm64/stable",
-      }),
-      sha256: z.string().openapi({
-        description: "SHA256 hash of the source code, binary or archive",
-        example: "fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU",
-      }),
-    }),
-    installPhase: z.array(z.string()).openapi({
-      description: "Installation steps to be executed",
-    }),
-    meta: z.object({
-      description: z.string().optional().openapi({
-        description: "Short description of the package",
-        example: "Open-source code editor",
-      }),
-      homepage: z.string().url().optional().openapi({
-        description: "URL to the homepage of the package",
-        example: "https://code.visualstudio.com/",
-      }),
-    }),
-  })
-  .openapi({
-    description: "Nix package definition",
-  });
-export type NixPackage = z.infer<typeof NixPackage>;
 
 export function cask2nix(cask: Cask): NixPackage {
   const { token, version, url, sha256, desc: description, homepage } = cask;

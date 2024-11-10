@@ -20,6 +20,7 @@ app.doc("/doc", {
   openapi: "3.0.0",
   info: {
     version: "0.0.1",
-    title: "Nix Casks Documentation",
+    title: "Nix Casks API",
+    description: "API for creating/updating Nix derivations from Homebrew Casks",
   },
 });

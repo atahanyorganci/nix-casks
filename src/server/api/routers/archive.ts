@@ -1,11 +1,24 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { desc, sql } from "drizzle-orm";
-import { unreachable } from "~/lib";
+import { ApiKey } from "~/lib/apikey";
 import { getLatestVersionPackages } from "~/lib/package";
 import { archives } from "~/server/db";
 import { getUrl, uploadObject } from "~/server/s3";
 import { type AppContext } from "../types";
 import { authorizeRequest } from "../util";
+
+export const ArchiveManifest = z
+  .object({
+    url: z.string().openapi({
+      description: "URL of archive containing package definitions",
+    }),
+    sha256: z.string().openapi({
+      description: "SHA256 checksum of the archive",
+    }),
+  })
+  .openapi("ArchiveManifest", {
+    description: "Manifest containing URL and SHA256 checksum for package definitions",
+  });
 
 const archiveRouter = new OpenAPIHono<AppContext>();
 
@@ -13,20 +26,18 @@ archiveRouter.openapi(
   createRoute({
     method: "post",
     path: "/",
-    description: "Upload package definitions to S3",
+    description: "Upload the latest package definitions as an archive",
+    request: {
+      headers: z.object({
+        "x-api-key": ApiKey,
+      }),
+    },
     responses: {
       200: {
         description: "Packages uploaded",
         content: {
           "application/json": {
-            schema: z.object({
-              url: z.string().openapi({
-                description: "URL of the uploaded package definitions",
-              }),
-              sha256: z.string().openapi({
-                description: "SHA256 checksum of the uploaded package definitions",
-              }),
-            }),
+            schema: ArchiveManifest,
           },
         },
       },
@@ -105,20 +116,13 @@ archiveRouter.openapi(
   createRoute({
     method: "get",
     path: "/latest",
-    description: "Get archive details of the latest package definitions",
+    description: "Get the latest archive with latest package definitions",
     responses: {
       200: {
         description: "Latest package definitions",
         content: {
           "application/json": {
-            schema: z.object({
-              url: z.string().openapi({
-                description: "URL of the package definitions",
-              }),
-              sha256: z.string().openapi({
-                description: "SHA256 checksum of the package definitions",
-              }),
-            }),
+            schema: ArchiveManifest,
           },
         },
       },

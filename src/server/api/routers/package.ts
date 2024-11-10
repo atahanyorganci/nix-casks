@@ -1,11 +1,13 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { UnsupportedArtifactError } from "~/lib";
-import { cask2nix, NixPackage } from "~/lib/homebrew";
+import { ApiKey } from "~/lib/apikey";
+import { cask2nix } from "~/lib/homebrew";
 import {
   fetchCaskFromUrl,
   getLatestPackage,
   getLatestVersionPackages,
   getPackage,
+  NixPackage,
   PackageName,
   PackageVersion,
 } from "~/lib/package";
@@ -45,17 +47,18 @@ packagesRouter.openapi(
     path: "/",
     description: "Add a new package",
     request: {
+      headers: z.object({
+        "x-api-key": ApiKey,
+      }),
       body: {
         content: {
           "application/json": {
-            schema: z
-              .object({
-                url: z.string().url().openapi({
-                  description: "URL of the package to add",
-                  example: "https://formulae.brew.sh/api/cask/visual-studio-code.json",
-                }),
-              })
-              .openapi("CreatePackage"),
+            schema: z.object({
+              url: z.string().url().openapi({
+                description: "URL of the package to add",
+                example: "https://formulae.brew.sh/api/cask/visual-studio-code.json",
+              }),
+            }),
           },
         },
       },
@@ -148,11 +151,9 @@ packagesRouter.openapi(
     path: "/{pname}",
     description: "Get latest version of a package by its name",
     request: {
-      params: z
-        .object({
-          pname: PackageName,
-        })
-        .openapi("GetPackageByNameParams"),
+      params: z.object({
+        pname: PackageName,
+      }),
     },
     responses: {
       200: {
@@ -241,11 +242,12 @@ packagesRouter.openapi(
     path: "/{pname}/update",
     description: "Update a package by its package name",
     request: {
-      params: z
-        .object({
-          pname: PackageName,
-        })
-        .openapi("UpdatePackageParams"),
+      headers: z.object({
+        "x-api-key": ApiKey,
+      }),
+      params: z.object({
+        pname: PackageName,
+      }),
     },
     responses: {
       200: {

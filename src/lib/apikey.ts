@@ -2,6 +2,11 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { apiKeys, type Database } from "~/server/db";
 
+export const ApiKey = z.string().openapi("ApiKey", {
+  description: "API key used to authenticate requests",
+  example: "xxxxxxxxx.xxxxxxxxxxxxxxxxx",
+});
+
 /**
  * The zero hash is a constant value that is used to represent an empty hash. Used when record
  * is not found in the database, but the function should take constant time.
