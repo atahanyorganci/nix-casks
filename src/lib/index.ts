@@ -1,41 +1,41 @@
 export class BaseError extends Error {
-  constructor(
-    public override readonly name: string,
-    public override readonly message: string,
-  ) {
-    super(`${name}: ${message}`);
-  }
+	constructor(
+		public override readonly name: string,
+		public override readonly message: string,
+	) {
+		super(`${name}: ${message}`);
+	}
 }
 
 export class UnreachableError extends BaseError {
-  constructor(message: string) {
-    super("UnreachableError", message);
-  }
+	constructor(message: string) {
+		super("UnreachableError", message);
+	}
 }
 
 export function unreachable(message: string): never {
-  throw new UnreachableError(message);
+	throw new UnreachableError(message);
 }
 
 export class UnimplementedError extends BaseError {
-  constructor(message: string) {
-    super("UnimplementedError", message);
-  }
+	constructor(message: string) {
+		super("UnimplementedError", message);
+	}
 }
 
 export function unimplemented(message: string): never {
-  throw new UnimplementedError(message);
+	throw new UnimplementedError(message);
 }
 
 export class UnsupportedArtifactError extends BaseError {
-  constructor(
-    public readonly type: string,
-    message: string,
-  ) {
-    super("UnsupportedError", message);
-  }
+	constructor(
+		public readonly type: string,
+		message: string,
+	) {
+		super("UnsupportedError", message);
+	}
 }
 
 export function unsupported(type: string, message: string): never {
-  throw new UnsupportedArtifactError(type, message);
+	throw new UnsupportedArtifactError(type, message);
 }
