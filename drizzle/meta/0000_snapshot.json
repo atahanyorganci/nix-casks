@@ -1,117 +1,117 @@
 {
-  "id": "a0979fc9-6e92-4a57-8320-0b7069a6c863",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.api_keys": {
-      "name": "api_keys",
-      "schema": "",
-      "columns": {
-        "salt": {
-          "name": "salt",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "hash": {
-          "name": "hash",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.packages": {
-      "name": "packages",
-      "schema": "",
-      "columns": {
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "pname": {
-          "name": "pname",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true,
-          "generated": {
-            "as": "\"packages\".\"nix\"->>'pname'",
-            "type": "stored"
-          }
-        },
-        "version": {
-          "name": "version",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true,
-          "generated": {
-            "as": "\"packages\".\"nix\"->>'version'",
-            "type": "stored"
-          }
-        },
-        "nix": {
-          "name": "nix",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "packages_pname_version_pk": {
-          "name": "packages_pname_version_pk",
-          "columns": [
-            "pname",
-            "version"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "a0979fc9-6e92-4a57-8320-0b7069a6c863",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.api_keys": {
+			"name": "api_keys",
+			"schema": "",
+			"columns": {
+				"salt": {
+					"name": "salt",
+					"type": "varchar",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"hash": {
+					"name": "hash",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.packages": {
+			"name": "packages",
+			"schema": "",
+			"columns": {
+				"name": {
+					"name": "name",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"pname": {
+					"name": "pname",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true,
+					"generated": {
+						"as": "\"packages\".\"nix\"->>'pname'",
+						"type": "stored"
+					}
+				},
+				"version": {
+					"name": "version",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true,
+					"generated": {
+						"as": "\"packages\".\"nix\"->>'version'",
+						"type": "stored"
+					}
+				},
+				"nix": {
+					"name": "nix",
+					"type": "json",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"url": {
+					"name": "url",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {
+				"packages_pname_version_pk": {
+					"name": "packages_pname_version_pk",
+					"columns": [
+						"pname",
+						"version"
+					]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

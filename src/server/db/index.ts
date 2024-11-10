@@ -4,9 +4,9 @@ import * as schema from "./schema";
 export * from "./schema";
 
 export function createDatabase() {
-  return drizzle({
-    schema,
-  });
+	return drizzle({
+		schema,
+	});
 }
 
 export type Database = ReturnType<typeof createDatabase>;
