@@ -1,4 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import { apiReference } from "@scalar/hono-api-reference";
 import { logger } from "hono/logger";
 import apikeyRouter from "./routers/apikey";
 import archiveRouter from "./routers/archive";
@@ -24,3 +25,14 @@ app.doc("/openapi.json", {
     description: "API for creating/updating Nix derivations from Homebrew Casks",
   },
 });
+
+// Register Scalar documentation
+app.get(
+  "/reference",
+  apiReference({
+    pageTitle: "Nix Casks API Reference",
+    spec: {
+      url: "/api/openapi.json",
+    },
+  }),
+);
