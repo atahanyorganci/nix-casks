@@ -14,9 +14,7 @@
 		"dev": "astro dev",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"preview": "wrangler pages dev --port 4321 --show-interactive-dev-session false",
-		"test": "vitest",
-		"types": "wrangler types"
+		"test": "vitest"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",

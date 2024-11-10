@@ -3,8 +3,9 @@
 	"globalDependencies": ["flake.nix", "flake.lock"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["check"],
+			"dependsOn": ["check", "lint"],
 			"inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"],
+			"outputs": ["dist/**/*"],
 			"env": [
 				"NODE_ENV",
 				"POSTGRES_URL",
@@ -15,9 +16,7 @@
 				"AWS_BUCKET_NAME"
 			]
 		},
-		"check": {
-			"inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"]
-		},
+		"lint": {},
 		"deploy": {
 			"cache": false,
 			"dependsOn": ["build"]
@@ -26,7 +25,6 @@
 			"cache": false,
 			"persistent": true
 		},
-		"format": {},
 		"preview": {
 			"cache": false,
 			"persistent": true,
