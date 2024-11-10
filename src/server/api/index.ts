@@ -16,7 +16,7 @@ app.route("/package", packagesRouter);
 app.route("archive", archiveRouter);
 
 // Register OpenAPI documentation
-app.doc("/doc", {
+app.doc("/openapi.json", {
   openapi: "3.0.0",
   info: {
     version: "0.0.1",
