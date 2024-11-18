@@ -5,7 +5,7 @@ import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
 	fetchCaskFromUrl,
-	getLatestVersionPackages,
+	getLatestNixPackages,
 	getPackage,
 	NixPackage,
 	PackageName,
@@ -35,7 +35,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const packages = await getLatestVersionPackages(c.env.DB);
+		const packages = await getLatestNixPackages(c.env.DB);
 		return c.json(packages, 200);
 	},
 );

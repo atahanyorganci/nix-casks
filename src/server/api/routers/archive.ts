@@ -2,7 +2,7 @@ import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { desc, sql } from "drizzle-orm";
 import { ApiKey } from "~/lib/apikey";
-import { getLatestVersionPackages } from "~/lib/package";
+import { getLatestNixPackages } from "~/lib/package";
 import { archives } from "~/server/db";
 import { getUrl, uploadObject } from "~/server/s3";
 import { authorizeRequest } from "../util";
@@ -75,7 +75,7 @@ archiveRouter.openapi(
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 
-		const latestPackages = await getLatestVersionPackages(c.env.DB);
+		const latestPackages = await getLatestNixPackages(c.env.DB);
 
 		const archive = await c.env.DB.transaction(async (tx) => {
 			const result = await tx

@@ -132,7 +132,7 @@ export async function fetchCaskFromUrl(url: string): Promise<Cask> {
 	return result.data;
 }
 
-export async function getLatestVersionPackages(db: Database) {
+export async function getLatestNixPackages(db: Database): Promise<NixPackage[]> {
 	const latest = db
 		.select({
 			pname: packages.pname,
@@ -149,5 +149,5 @@ export async function getLatestVersionPackages(db: Database) {
 			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
 		)
 		.orderBy(packages.pname);
-	return records.map(({ nix }) => nix as NixPackage);
+	return records.map(({ nix }) => nix) as NixPackage[];
 }
