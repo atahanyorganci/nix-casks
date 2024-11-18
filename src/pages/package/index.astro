@@ -1,45 +1,23 @@
 ---
+import PackagesTable from "~/components/PackagesTable.astro";
 import Layout from "~/layouts/Layout.astro";
+import { getLatestPackages } from "~/lib/package";
 import { createDatabase } from "~/server/db";
-import { getLatestVersionPackages } from "~/lib/package";
 
 const db = createDatabase();
-const casks = await getLatestVersionPackages(db);
+const packages = await getLatestPackages(db);
 ---
 
-<Layout title="Nix Casks">
-	<h1 class="text-4xl font-semibold my-4">Nix Casks</h1>
-	<p class="my-4">
-		{casks.length} casks are available in <code>nix-casks</code>.
-	</p>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Version</th>
-				<th>Description</th>
-				<th>Homepage</th>
-			</tr>
-		</thead>
-		<tbody>
-			{
-				casks.map(({ pname, version, meta: { description, homepage } }) => (
-					<tr>
-						<td>
-							<a href={`/package/${pname}`} class="curspor-pointer hover:underline">
-								{pname}
-							</a>
-						</td>
-						<td>{version}</td>
-						<td>{description}</td>
-						<td>
-							<a href={homepage} target="_blank" rel="noopener noreferrer" class="curspor-pointer hover:underline">
-								{pname}'s Homepage
-							</a>
-						</td>
-					</tr>
-				))
-			}
-		</tbody>
-	</table>
+<Layout title="All Packages - NixCasks">
+	<div class="pt-32 pb-20">
+		<div class="container mx-auto px-4">
+			<div class="max-w-6xl mx-auto">
+				<h1 class="text-4xl font-bold mb-4 text-brutal-white">All Packages</h1>
+				<p class="text-xl text-brutal-white/60 mb-8">
+					Browse all available packages that can be installed through NixCasks.
+				</p>
+				<PackagesTable packages={packages} />
+			</div>
+		</div>
+	</div>
 </Layout>

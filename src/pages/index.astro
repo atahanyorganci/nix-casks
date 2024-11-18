@@ -1,7 +1,12 @@
 ---
-import Layout from "~/layouts/Layout.astro";
+import HeroSection from "../components/HeroSection.astro";
+import KeyFeaturesSection from "../components/KeyFeaturesSection";
+import QuickStart from "../components/QuickStart";
+import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Nix Casks">
-	<h1 class="text-4xl font-semibold my-4">Nix Casks</h1>
+<Layout title="NixCasks - Install Homebrew Casks with Nix">
+	<HeroSection />
+	<KeyFeaturesSection />
+	<QuickStart client:idle />
 </Layout>

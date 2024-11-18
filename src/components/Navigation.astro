@@ -1,0 +1,35 @@
+---
+import GitHubStars from "./GitHubStars.astro";
+import SearchBar from "./SearchBar";
+
+const navLinks = [
+	{ href: "/package", label: "All Packages" },
+	{ href: "/api/reference", label: "API Reference" },
+];
+---
+
+<header
+	class="fixed w-full bg-neon-black/80 backdrop-blur-xl border-b border-neon-white/10 z-50 flex items-center justify-center"
+>
+	<nav class="container mx-auto px-4 py-3 relative flex justify-between items-center">
+		<div class="flex items-center gap-8">
+			<a
+				href="/"
+				class="text-2xl ease-in-out font-bold text-neon-white transition-all hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-neon-purple hover:to-neon-blue"
+			>
+				NixCasks
+			</a>
+			{
+				navLinks.map((link) => (
+					<a href={link.href} class="text-neon-white/80 hover:text-neon-white font-medium transition-colors">
+						{link.label}
+					</a>
+				))
+			}
+		</div>
+		<GitHubStars />
+	</nav>
+	<div class="absolute">
+		<SearchBar client:load />
+	</div>
+</header>

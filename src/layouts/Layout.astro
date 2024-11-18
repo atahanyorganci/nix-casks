@@ -1,4 +1,7 @@
 ---
+import Footer from "../components/Footer.astro";
+import Navigation from "../components/Navigation.astro";
+
 interface Props {
 	title: string;
 	description?: string;
@@ -8,17 +11,22 @@ const { title, description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		{description && <meta name="description" content={description} />}
+		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>{title}</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
-	<body>
-		<main class="container">
+	<body class="min-h-screen flex flex-col font-['Space_Grotesk'] bg-neon-dark text-neon-white">
+		<Navigation />
+		<main class="flex-grow">
 			<slot />
 		</main>
+		<Footer />
 	</body>
 </html>

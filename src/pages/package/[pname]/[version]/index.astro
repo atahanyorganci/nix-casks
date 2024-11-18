@@ -1,0 +1,13 @@
+---
+import { z } from "zod";
+import PackagePage from "~/components/PackagePage.astro";
+
+const { pname, version } = z
+	.object({
+		pname: z.string(),
+		version: z.string(),
+	})
+	.parse(Astro.params);
+---
+
+<PackagePage pname={pname} version={version} />

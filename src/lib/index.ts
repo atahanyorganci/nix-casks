@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export class BaseError extends Error {
 	constructor(
 		public override readonly name: string,
@@ -38,4 +41,8 @@ export class UnsupportedArtifactError extends BaseError {
 
 export function unsupported(type: string, message: string): never {
 	throw new UnsupportedArtifactError(type, message);
+}
+
+export function cn(...classes: ClassValue[]) {
+	return twMerge(clsx(classes));
 }

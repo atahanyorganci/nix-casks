@@ -1,0 +1,139 @@
+---
+import { Code } from "astro:components";
+import { CodeXml, Home } from "lucide-react";
+import Layout from "~/layouts/Layout.astro";
+import { getPackageVersions } from "~/lib/package";
+import { createDatabase } from "~/server/db";
+import { DateTime } from "luxon";
+
+interface Props {
+	pname: string;
+	version?: string;
+}
+
+const { pname, version } = Astro.props;
+const db = createDatabase();
+const pkg = await getPackageVersions(db, pname, version);
+
+if (!pkg) {
+	return Astro.redirect("/404");
+}
+
+let iconUrl: string | undefined;
+if (pkg.nix.meta.homepage) {
+	iconUrl = `https://icon.horse/icon/${new URL(pkg.nix.meta.homepage).hostname}`;
+}
+
+const SYSTEM = `{
+  environment.systemPackages = with nix-casks.packages.\${system}; [
+    ${pkg.pname} # ${pkg.name}
+  ];
+}`;
+
+const HOME = `{
+  home.packages = with nix-casks.packages.\${system}; [
+    ${pkg.pname} # ${pkg.name}
+  ];
+}`;
+
+const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
+	version,
+	createdAt: DateTime.fromISO(createdAt, { zone: "utc" }).toFormat("d LLLL yyyy, HH:mm"),
+}));
+---
+
+<Layout title={`${pkg.name} - NixCasks`}>
+	<div class="container pt-32 pb-20 max-w-4xl gap-y-4 flex flex-col">
+		<div class="flex gap-6">
+			{
+				iconUrl && (
+					<img
+						src={iconUrl}
+						alt={`${pkg.name} icon`}
+						class="w-32 h-32 rounded-2xl bg-neon-black/30 backdrop-blur-xl border border-neon-white/10 flex items-center justify-center p-4 group-hover:border-neon-purple/50 transition-all duration-200"
+					/>
+				)
+			}
+			<div class="flex flex-col justify-center">
+				<h1 class="text-4xl font-bold text-neon-white mb-2">
+					{pkg.name}
+					<span class="text-neon-white/60 text-xl font-medium ml-2">{pkg.version}</span>
+				</h1>
+				<p class="text-neon-white/80">{pkg.nix.meta.description}</p>
+				<div class="flex gap-2 mt-2">
+					<a
+						href={pkg.nix.meta.homepage}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="p-2 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
+						title="Visit homepage"
+					>
+						<Home className="w-5 h-5" />
+					</a>
+					<a
+						href={`/api/packages/${pkg.pname}/${pkg.version}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="p-2 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
+						title="View source"
+					>
+						<CodeXml className="w-5 h-5" />
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="flex gap-6">
+			<div class="flex flex-col h-full justify-center bg-red-50"></div>
+		</div>
+		<div
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-blue/30 hover:shadow-neon hover:shadow-neon-blue/5 transition-all duration-200"
+		>
+			<h2 class="text-xl font-bold text-neon-white mb-3">Installation</h2>
+			<p class="text-neon-white/80 mb-2">System wide:</p>
+			<Code lang="nix" code={SYSTEM} class="bg-transparent" />
+			<p class="text-neon-white/80 mt-4 mb-2">Home Manager:</p>
+			<Code lang="nix" code={HOME} class="bg-transparent" />
+		</div>
+		<div
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-green/30 hover:shadow-neon hover:shadow-neon-green/5 transition-all duration-200"
+		>
+			<h2 class="text-xl font-bold text-neon-white mb-3">Package Definition</h2>
+			<pre
+				class="overflow-x-auto"><Code lang="json" code={JSON.stringify(pkg.nix, null, 2)} class="bg-transparent" /></pre>
+		</div>
+
+		{/* Version History */}
+		<div
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-purple/30 hover:shadow-neon hover:shadow-neon-purple/5 transition-all duration-200"
+		>
+			<h2 class="text-xl font-bold text-neon-white mb-4">Version History</h2>
+			<div class="space-y-3">
+				{
+					versions.map(({ version, createdAt }) => (
+						<a
+							href={`/package/${pkg.pname}/${version}`}
+							class="flex items-center justify-between p-3 bg-neon-black rounded-lg border border-neon-white/5 hover:border-neon-purple/20 transition-all duration-200"
+						>
+							<div class="flex items-center gap-3">
+								<div class="w-2 h-2 rounded-full bg-neon-purple" />
+								<span class="font-medium text-neon-white">{version}</span>
+							</div>
+							<span class="text-sm text-neon-white/60">{createdAt}</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+		<div class="flex justify-center">
+			<a
+				href="/package"
+				class="inline-flex items-center gap-2 px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
+			>
+				<svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+				</svg>
+				<span>Back to Packages</span>
+			</a>
+		</div>
+	</div>
+</Layout>
