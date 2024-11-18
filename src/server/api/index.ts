@@ -14,7 +14,7 @@ app.use(logger());
 // Register routers
 app.route("/apikey", apikeyRouter);
 app.route("/package", packagesRouter);
-app.route("archive", archiveRouter);
+app.route("/archive", archiveRouter);
 
 // Register OpenAPI documentation
 app.doc("/openapi.json", {
