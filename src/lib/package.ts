@@ -192,7 +192,7 @@ export async function getHomebrewCasks() {
 	return { valid, invalid };
 }
 
-export async function getLatestNixPackages(db: Database): Promise<NixPackage[]> {
+export async function getLatestNixPackages(db: Pick<Database, "select">): Promise<NixPackage[]> {
 	const latest = db
 		.select({
 			pname: packages.pname,
@@ -212,7 +212,7 @@ export async function getLatestNixPackages(db: Database): Promise<NixPackage[]> 
 	return records.map(({ nix }) => nix) as NixPackage[];
 }
 
-export async function getLatestPackages(db: Database): Promise<Package[]> {
+export async function getLatestPackages(db: Pick<Database, "select">): Promise<Package[]> {
 	const latest = db
 		.select({
 			pname: packages.pname,
@@ -234,7 +234,7 @@ export async function getLatestPackages(db: Database): Promise<Package[]> {
 
 export type PackageWithVersion = Exclude<Awaited<ReturnType<typeof getPackage>>, undefined>;
 
-export async function getPackageVersions(db: Database, pname: string, version?: string) {
+export async function getPackageVersions(db: Pick<Database, "select">, pname: string, version?: string) {
 	const versionHistory = db
 		.select({
 			pname: packages.pname,
