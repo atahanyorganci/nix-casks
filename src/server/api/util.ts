@@ -2,7 +2,7 @@ import type { Context } from "hono";
 import type { AppContext } from "./types";
 import { verifyApiKey } from "~/lib/apikey";
 
-export async function authorizeRequest(c: Context<AppContext>): Promise<boolean> {
+export async function authorizeApiKey(c: Context<AppContext>): Promise<boolean> {
 	if (c.env.NODE_ENV === "development") {
 		return true;
 	}

@@ -1,7 +1,7 @@
 import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { ApiKey, createApiKey } from "~/lib/apikey";
-import { authorizeRequest } from "../util";
+import { authorizeApiKey } from "../util";
 
 const apikeyRouter = new OpenAPIHono<AppContext>();
 
@@ -42,7 +42,7 @@ apikeyRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeRequest(c);
+		const authorized = await authorizeApiKey(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}

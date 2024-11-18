@@ -13,7 +13,7 @@ import {
 	PackageVersion,
 } from "~/lib/package";
 import { type InsertPackage, packages } from "~/server/db";
-import { authorizeRequest } from "../util";
+import { authorizeApiKey } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
 
@@ -112,7 +112,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeRequest(c);
+		const authorized = await authorizeApiKey(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
@@ -313,7 +313,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeRequest(c);
+		const authorized = await authorizeApiKey(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}

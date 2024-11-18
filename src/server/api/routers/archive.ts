@@ -5,7 +5,7 @@ import { ApiKey } from "~/lib/apikey";
 import { getLatestNixPackages } from "~/lib/package";
 import { archives } from "~/server/db";
 import { getUrl, uploadObject } from "~/server/s3";
-import { authorizeRequest } from "../util";
+import { authorizeApiKey } from "../util";
 
 export const ArchiveManifest = z
 	.object({
@@ -70,7 +70,7 @@ archiveRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeRequest(c);
+		const authorized = await authorizeApiKey(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
