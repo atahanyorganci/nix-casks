@@ -77,17 +77,17 @@ export const Package = z
 	.openapi("Package");
 export type Package = z.infer<typeof Package>;
 
-export async function getLatestPackage(db: Database, pname: string) {
-	return await db.query.packages.findFirst({
-		where: eq(packages.pname, pname),
+export async function getPackage(db: Database, pname: string, version?: string) {
+	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
+	const record = await db.query.packages.findFirst({
 		orderBy: desc(packages.version),
+		where,
 	});
-}
-
-export async function getPackage(db: Database, pname: string, version: string) {
-	return await db.query.packages.findFirst({
-		where: and(eq(packages.pname, pname), eq(packages.version, version)),
-	});
+	if (!record) {
+		return;
+	}
+	const { nix, ...pkg } = record;
+	return { ...pkg, nix: nix as NixPackage };
 }
 
 export async function fetchCaskFromUrl(url: string): Promise<Cask> {

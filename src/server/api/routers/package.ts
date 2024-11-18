@@ -5,7 +5,6 @@ import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
 	fetchCaskFromUrl,
-	getLatestPackage,
 	getLatestVersionPackages,
 	getPackage,
 	NixPackage,
@@ -183,7 +182,7 @@ packagesRouter.openapi(
 	}),
 	async (c) => {
 		const { pname } = c.req.valid("param");
-		const record = await getLatestPackage(c.env.DB, pname);
+		const record = await getPackage(c.env.DB, pname);
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
@@ -319,7 +318,7 @@ packagesRouter.openapi(
 		}
 
 		const { pname } = c.req.valid("param");
-		const record = await getLatestPackage(c.env.DB, pname);
+		const record = await getPackage(c.env.DB, pname);
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
