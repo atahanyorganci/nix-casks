@@ -1,8 +1,9 @@
 import { z } from "@hono/zod-openapi";
-import { and, desc, eq, max } from "drizzle-orm";
+import { and, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask } from "~/lib/homebrew";
 import { type Database, packages } from "~/server/db";
+import { unreachable } from ".";
 
 export const NixPackage = z
 	.object({
@@ -150,4 +151,69 @@ export async function getLatestNixPackages(db: Database): Promise<NixPackage[]> 
 		)
 		.orderBy(packages.pname);
 	return records.map(({ nix }) => nix) as NixPackage[];
+}
+
+export async function getLatestPackages(db: Database): Promise<Package[]> {
+	const latest = db
+		.select({
+			pname: packages.pname,
+			latest_version: max(packages.version).as("latest_version"),
+		})
+		.from(packages)
+		.groupBy(packages.pname)
+		.as("latest");
+	const records = await db
+		.select({ name: packages.name, pname: packages.pname, version: packages.version, nix: packages.nix })
+		.from(packages)
+		.innerJoin(
+			latest,
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+		)
+		.orderBy(packages.pname);
+	return records as Package[];
+}
+
+export type PackageWithVersion = Exclude<Awaited<ReturnType<typeof getPackage>>, undefined>;
+
+export async function getPackageVersions(db: Database, pname: string, version?: string) {
+	const versionHistory = db
+		.select({
+			pname: packages.pname,
+			version_history: sql<{ version: string; createdAt: string }[]>`
+				json_agg(
+						json_build_object(
+								'version', ${packages.version},
+								'createdAt', ${packages.createdAt}
+						)
+						ORDER BY ${packages.createdAt} DESC
+				)`
+				.as("version_history"),
+		})
+		.from(packages)
+		.where(eq(packages.pname, pname))
+		.groupBy(packages.pname)
+		.as("versionHistory");
+	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
+	const pkg = await db
+		.select({
+			name: packages.name,
+			pname: packages.pname,
+			version: packages.version,
+			nix: packages.nix,
+			createdAt: packages.createdAt,
+			versionHistory: versionHistory.version_history,
+		})
+		.from(packages)
+		.where(where)
+		.orderBy(desc(packages.version))
+		.limit(1)
+		.innerJoin(versionHistory, eq(versionHistory.pname, packages.pname));
+	if (pkg.length === 0) {
+		return null;
+	}
+	else if (pkg.length > 1) {
+		unreachable(`Multiple packages found for ${pname}@${version}`);
+	}
+	const [{ nix, ...record }] = pkg;
+	return { ...record, nix: nix as NixPackage };
 }
