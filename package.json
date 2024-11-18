@@ -44,6 +44,7 @@
 		"clsx": "^2.1.1",
 		"dotenv": "^16.4.5",
 		"drizzle-orm": "^0.36.1",
+		"drizzle-zod": "^0.5.1",
 		"hono": "^4.6.5",
 		"lucide-react": "^0.456.0",
 		"luxon": "^3.5.0",
