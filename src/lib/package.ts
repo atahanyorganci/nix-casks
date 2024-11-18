@@ -133,6 +133,65 @@ export async function fetchCaskFromUrl(url: string): Promise<Cask> {
 	return result.data;
 }
 
+const CASKS_URL = "https://formulae.brew.sh/api/cask.json";
+
+async function fetchCasksFromHomebrew() {
+	let response: Response;
+	try {
+		response = await fetch(CASKS_URL);
+	}
+	catch (error) {
+		throw new HTTPException(500, {
+			message: "Failed to fetch casks",
+			cause: error instanceof Error ? error.message : "Internal Server Error",
+		});
+	}
+	if (response.status === 404) {
+		throw new HTTPException(404, {
+			message: "Casks not found",
+		});
+	}
+	else if (!response.ok) {
+		throw new HTTPException(500, {
+			message: "Internal Server Error",
+		});
+	}
+	let json: unknown;
+	try {
+		json = await response.json();
+	}
+	catch (error) {
+		throw new HTTPException(500, {
+			message: "Failed to parse casks",
+			cause: error instanceof Error ? error.message : "Internal Server Error",
+		});
+	}
+	const result = z.unknown().array().safeParse(json);
+	if (!result.success) {
+		throw new HTTPException(400, {
+			message: "Casks is not an array",
+			cause: result.error.flatten(),
+		});
+	}
+	return result.data;
+}
+
+export async function getHomebrewCasks() {
+	const casks = await fetchCasksFromHomebrew();
+	const valid: Cask[] = [];
+	const invalid: unknown[] = [];
+	for (const cask of casks) {
+		const result = Cask.safeParse(cask);
+		if (result.success) {
+			valid.push(result.data);
+		}
+		else {
+			invalid.push(cask);
+		}
+	}
+	return { valid, invalid };
+}
+
 export async function getLatestNixPackages(db: Database): Promise<NixPackage[]> {
 	const latest = db
 		.select({

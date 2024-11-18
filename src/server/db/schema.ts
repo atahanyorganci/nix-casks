@@ -1,5 +1,7 @@
+import type { z } from "zod";
 import { sql, type SQL } from "drizzle-orm";
 import { char, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 
 export const packages = pgTable(
 	"packages",
@@ -17,6 +19,9 @@ export const packages = pgTable(
 	},
 	table => [primaryKey({ columns: [table.pname, table.version] })],
 );
+
+export const insertPackageSchema = createInsertSchema(packages);
+export type InsertPackage = z.infer<typeof insertPackageSchema>;
 
 export const apiKeys = pgTable("api_keys", {
 	salt: varchar().primaryKey(),

@@ -5,13 +5,14 @@ import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
 	fetchCaskFromUrl,
+	getHomebrewCasks,
 	getLatestNixPackages,
 	getPackage,
 	NixPackage,
 	PackageName,
 	PackageVersion,
 } from "~/lib/package";
-import { packages } from "~/server/db";
+import { type InsertPackage, packages } from "~/server/db";
 import { authorizeRequest } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
@@ -347,6 +348,70 @@ packagesRouter.openapi(
 			}
 			throw error;
 		}
+	},
+);
+
+packagesRouter.openapi(
+	createRoute({
+		method: "post",
+		path: "/homebrew",
+		description: "Update packages from Homebrew",
+		request: {
+			headers: z.object({
+				"x-api-key": ApiKey,
+			}),
+		},
+		responses: {
+			200: {
+				description: "Packages updated",
+				content: {
+					"application/json": {
+						schema: NixPackage.array(),
+					},
+				},
+			},
+			401: {
+				description: "Unauthorized",
+				content: {
+					"application/json": {
+						schema: z.object({
+							message: z.string().openapi({
+								description: "Error message",
+								example: "Unauthorized",
+							}),
+						}),
+					},
+				},
+			},
+		},
+	}),
+	async (c) => {
+		const authorized = await authorizeRequest(c);
+		if (!authorized) {
+			return c.json({ message: "Unauthorized" }, 401);
+		}
+
+		const { valid } = await getHomebrewCasks();
+
+		const nixPackages: InsertPackage[] = [];
+		for (const cask of valid) {
+			try {
+				const nix = cask2nix(cask);
+				nixPackages.push({
+					name: cask.name[0],
+					url: `https://formulae.brew.sh/api/cask/${cask.token}.json`,
+					nix,
+				});
+			}
+			catch (error) {
+				if (error instanceof UnsupportedArtifactError) {
+					continue;
+				}
+				throw error;
+			}
+		}
+		const updated = await c.env.DB.insert(packages).values(nixPackages).onConflictDoNothing().returning({ nix: packages.nix });
+		return c.json(updated.map(({ nix }) => nix as NixPackage), 200);
 	},
 );
 
