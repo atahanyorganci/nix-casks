@@ -6,7 +6,17 @@
   outputs = { nixpkgs, ... }:
     let
       systems = nixpkgs.lib.platforms.all;
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      eachSystem = f: nixpkgs.lib.genAttrs systems (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+            };
+          };
+        in
+        f pkgs
+      );
       darwin = nixpkgs.lib.platforms.darwin;
       eachDarwinSystem = f: nixpkgs.lib.genAttrs darwin (system: f nixpkgs.legacyPackages.${system});
     in
@@ -37,6 +47,7 @@
             PATH=$COREPACK_DIR:$PATH
           '';
           buildInputs = with pkgs; [
+            ngrok
             nodejs_20
             python312Packages.magika
             nodePackages.vercel
