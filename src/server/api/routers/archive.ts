@@ -2,9 +2,9 @@ import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { desc, sql } from "drizzle-orm";
 import { ApiKey } from "~/lib/apikey";
-import { getLatestNixPackages } from "~/lib/package";
+import { uploadPackageArchive } from "~/lib/archive";
 import { archives } from "~/server/db";
-import { getUrl, uploadObject } from "~/server/s3";
+import { getUrl } from "~/server/s3";
 import { authorizeApiKey } from "../util";
 
 export const ArchiveManifest = z
@@ -74,37 +74,7 @@ archiveRouter.openapi(
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-
-		const latestPackages = await getLatestNixPackages(c.env.DB);
-
-		const archive = await c.env.DB.transaction(async (tx) => {
-			const result = await tx
-				.insert(archives)
-				.values({ archive: latestPackages })
-				.onConflictDoNothing()
-				.returning({
-					sha256: archives.sha256,
-					createdAt: archives.createdAt,
-					json: sql<string>`${archives.archive}::text`,
-				});
-			if (result.length === 0) {
-				return null;
-			}
-			const { sha256, json } = result[0];
-			const key = `${sha256}.json`;
-			try {
-				const { $metadata: metadata, ..._response } = await uploadObject({
-					Key: key,
-					Body: json,
-				});
-			}
-			catch (error) {
-				console.error(error);
-				tx.rollback();
-			}
-			return { key, sha256 };
-		});
-
+		const archive = await uploadPackageArchive(c.env.DB);
 		if (!archive) {
 			return c.json({ message: "Package archive already exists" }, 409);
 		}

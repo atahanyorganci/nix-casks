@@ -1,9 +1,9 @@
 import { z } from "@hono/zod-openapi";
 import { and, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { Cask } from "~/lib/homebrew";
-import { type Database, packages } from "~/server/db";
-import { unreachable } from ".";
+import { Cask, cask2nix } from "~/lib/homebrew";
+import { type Database, type InsertPackage, packages } from "~/server/db";
+import { unreachable, UnsupportedArtifactError } from ".";
 
 export const NixPackage = z
 	.object({
@@ -275,4 +275,27 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 	}
 	const [{ nix, ...record }] = pkg;
 	return { ...record, nix: nix as NixPackage };
+}
+
+export async function updateHomebrewCasks(db: Database) {
+	const { valid } = await getHomebrewCasks();
+	const nixPackages: InsertPackage[] = [];
+	for (const cask of valid) {
+		try {
+			const nix = cask2nix(cask);
+			nixPackages.push({
+				name: cask.name[0],
+				url: `https://formulae.brew.sh/api/cask/${cask.token}.json`,
+				nix,
+			});
+		}
+		catch (error) {
+			if (error instanceof UnsupportedArtifactError) {
+				continue;
+			}
+			throw error;
+		}
+	}
+	const updatedPackages = await db.insert(packages).values(nixPackages).onConflictDoNothing().returning();
+	return updatedPackages;
 }

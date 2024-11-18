@@ -5,6 +5,7 @@ import { logger } from "hono/logger";
 import apikeyRouter from "./routers/apikey";
 import archiveRouter from "./routers/archive";
 import packagesRouter from "./routers/package";
+import workflowRouter from "./routers/workflow";
 
 export const app = new OpenAPIHono<AppContext>().basePath("/api");
 
@@ -15,6 +16,7 @@ app.use(logger());
 app.route("/apikey", apikeyRouter);
 app.route("/package", packagesRouter);
 app.route("/archive", archiveRouter);
+app.route("/workflow", workflowRouter);
 
 // Register OpenAPI documentation
 app.doc("/openapi.json", {

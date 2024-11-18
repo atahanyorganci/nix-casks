@@ -5,14 +5,14 @@ import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
 	fetchCaskFromUrl,
-	getHomebrewCasks,
 	getLatestNixPackages,
 	getPackage,
 	NixPackage,
 	PackageName,
 	PackageVersion,
+	updateHomebrewCasks,
 } from "~/lib/package";
-import { type InsertPackage, packages } from "~/server/db";
+import { packages } from "~/server/db";
 import { authorizeApiKey, authorizeQstashRequest } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
@@ -388,27 +388,7 @@ packagesRouter.openapi(
 		if (!apiKeyAuthorized || !qstashAuthorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-
-		const { valid } = await getHomebrewCasks();
-
-		const nixPackages: InsertPackage[] = [];
-		for (const cask of valid) {
-			try {
-				const nix = cask2nix(cask);
-				nixPackages.push({
-					name: cask.name[0],
-					url: `https://formulae.brew.sh/api/cask/${cask.token}.json`,
-					nix,
-				});
-			}
-			catch (error) {
-				if (error instanceof UnsupportedArtifactError) {
-					continue;
-				}
-				throw error;
-			}
-		}
-		const updated = await c.env.DB.insert(packages).values(nixPackages).onConflictDoNothing().returning({ nix: packages.nix });
+		const updated = await updateHomebrewCasks(c.env.DB);
 		return c.json(updated.map(({ nix }) => nix as NixPackage), 200);
 	},
 );
