@@ -13,7 +13,7 @@ import {
 	PackageVersion,
 } from "~/lib/package";
 import { type InsertPackage, packages } from "~/server/db";
-import { authorizeApiKey } from "../util";
+import { authorizeApiKey, authorizeQstashRequest } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
 
@@ -356,11 +356,6 @@ packagesRouter.openapi(
 		method: "post",
 		path: "/homebrew",
 		description: "Update packages from Homebrew",
-		request: {
-			headers: z.object({
-				"x-api-key": ApiKey,
-			}),
-		},
 		responses: {
 			200: {
 				description: "Packages updated",
@@ -386,8 +381,11 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeRequest(c);
-		if (!authorized) {
+		const [apiKeyAuthorized, qstashAuthorized] = await Promise.all([
+			authorizeApiKey(c),
+			authorizeQstashRequest(c),
+		]);
+		if (!apiKeyAuthorized || !qstashAuthorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 
