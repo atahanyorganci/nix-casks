@@ -44,6 +44,9 @@ importers:
       '@upstash/qstash':
         specifier: ^2.7.16
         version: 2.7.16
+      '@upstash/workflow':
+        specifier: ^0.1.5
+        version: 0.1.5
       '@vercel/postgres':
         specifier: ^0.10.0
         version: 0.10.0
@@ -2113,6 +2116,9 @@ packages:
 
   '@upstash/qstash@2.7.16':
     resolution: {integrity: sha512-1G1FP+P0/HxQsUe2n+Di8hJBSA3ZV6Y0mF5o0rdnxbmXXHEzCqsrSsRCFbllhd8SS6rzwPhtEQssk2ZKppnGMg==}
+
+  '@upstash/workflow@0.1.5':
+    resolution: {integrity: sha512-EK0CfjRY+UpAkVntzTGCYb2nTsIZXFFeBKccQRP5CTWmKjV6SrpsxfBuDPfzWunWUEXUGqZKNOZiLkpttYNoQw==}
 
   '@vercel/analytics@1.3.2':
     resolution: {integrity: sha512-n/Ws7skBbW+fUBMeg+jrT30+GP00jTHvCcL4fuVrShuML0uveEV/4vVUdvqEVnDgXIGfLm0GXW5EID2mCcRXhg==}
@@ -7237,6 +7243,10 @@ snapshots:
       crypto-js: 4.2.0
       jose: 5.9.6
       neverthrow: 7.2.0
+
+  '@upstash/workflow@0.1.5':
+    dependencies:
+      '@upstash/qstash': 2.7.16
 
   '@vercel/analytics@1.3.2(react@18.3.1)':
     dependencies:

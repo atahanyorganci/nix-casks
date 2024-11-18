@@ -39,6 +39,7 @@
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
 		"@upstash/qstash": "^2.7.16",
+		"@upstash/workflow": "^0.1.5",
 		"@vercel/postgres": "^0.10.0",
 		"astro": "5.0.0-beta.7",
 		"class-variance-authority": "^0.7.0",
