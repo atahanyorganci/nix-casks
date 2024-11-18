@@ -16,6 +16,9 @@ export default defineConfig({
 			AWS_ENDPOINT_URL_S3: envField.string({ context: "server", access: "secret" }),
 			AWS_BUCKET_NAME: envField.string({ context: "server", access: "secret" }),
 			AWS_REGION: envField.string({ context: "server", access: "secret" }),
+			QSTASH_NEXT_SIGNING_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+			QSTASH_CURRENT_SIGNING_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+			QSTASH_TOKEN: envField.string({ context: "server", access: "secret", optional: true }),
 		},
 	},
 });
