@@ -1,34 +1,36 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"globalDependencies": ["flake.nix", "flake.lock"],
+	"globalEnv": ["NODE_ENV"],
+	"globalDependencies": [
+		"package.json",
+		"pnpm-lock.yaml",
+		"tsconfig.json",
+		"turbo.json"
+	],
 	"tasks": {
 		"build": {
 			"dependsOn": ["check", "lint"],
-			"inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"],
+			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"],
 			"outputs": ["dist/**"],
 			"env": [
-				"NODE_ENV",
 				"POSTGRES_URL",
 				"AWS_ACCESS_KEY_ID",
 				"AWS_SECRET_ACCESS_KEY",
 				"AWS_ENDPOINT_URL_S3",
+				"AWS_BUCKET_NAME",
 				"AWS_REGION",
-				"AWS_BUCKET_NAME"
+				"QSTASH_NEXT_SIGNING_KEY",
+				"QSTASH_CURRENT_SIGNING_KEY",
+				"QSTASH_TOKEN"
 			]
 		},
-		"lint": {},
-		"deploy": {
-			"cache": false,
-			"dependsOn": ["build"]
+		"check": {
+			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"]
 		},
 		"dev": {
 			"cache": false,
 			"persistent": true
 		},
-		"preview": {
-			"cache": false,
-			"persistent": true,
-			"dependsOn": ["build"]
-		}
+		"lint": {}
 	}
 }
