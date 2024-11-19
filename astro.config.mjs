@@ -19,6 +19,9 @@ export default defineConfig({
 			QSTASH_NEXT_SIGNING_KEY: envField.string({ context: "server", access: "secret", optional: true }),
 			QSTASH_CURRENT_SIGNING_KEY: envField.string({ context: "server", access: "secret", optional: true }),
 			QSTASH_TOKEN: envField.string({ context: "server", access: "secret", optional: true }),
+			AXIOM_DATASET: envField.string({ context: "server", access: "secret" }),
+			AXIOM_ORG_ID: envField.string({ context: "server", access: "secret" }),
+			AXIOM_TOKEN: envField.string({ context: "server", access: "secret" }),
 		},
 	},
 });

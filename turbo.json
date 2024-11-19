@@ -21,7 +21,10 @@
 				"AWS_REGION",
 				"QSTASH_NEXT_SIGNING_KEY",
 				"QSTASH_CURRENT_SIGNING_KEY",
-				"QSTASH_TOKEN"
+				"QSTASH_TOKEN",
+				"AXIOM_DATASET",
+				"AXIOM_ORG_ID",
+				"AXIOM_TOKEN"
 			]
 		},
 		"check": {
