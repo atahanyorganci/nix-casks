@@ -16,13 +16,19 @@ workflowRouter.post("/homebrew", async (c) => {
 	const handler = serve(async (ctx) => {
 		const { updateCount } = await ctx.run("fetch-homebrew-casks", async () => {
 			const packages = await updateHomebrewCasks(c.env.db);
+			c.env.logger.info("Updated homebrew casks", { count: packages.length });
 			return { updateCount: packages.length };
 		});
 		await ctx.run("upload-archive", async () => {
 			if (updateCount === 0) {
+				c.env.logger.info("No casks updated, skipping archive upload");
 				return;
 			}
-			return await uploadPackageArchive(c.env.db);
+			const archive = await uploadPackageArchive(c.env.db);
+			if (archive) {
+				c.env.logger.info("Uploaded archive", archive);
+			}
+			c.env.logger.error("Failed to upload archive");
 		});
 	}, {
 		env: {
