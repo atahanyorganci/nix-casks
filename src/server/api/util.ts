@@ -13,7 +13,7 @@ export async function authorizeApiKey(c: Context<AppContext>): Promise<boolean> 
 	if (!apiKey) {
 		return false;
 	}
-	return await verifyApiKey(c.env.DB, apiKey);
+	return await verifyApiKey(c.env.db, apiKey);
 }
 
 export async function authorizeQstashRequest(c: Context<AppContext>): Promise<boolean> {

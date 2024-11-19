@@ -74,7 +74,7 @@ archiveRouter.openapi(
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const archive = await uploadPackageArchive(c.env.DB);
+		const archive = await uploadPackageArchive(c.env.db);
 		if (!archive) {
 			return c.json({ message: "Package archive already exists" }, 409);
 		}
@@ -99,7 +99,7 @@ archiveRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const [{ sha256, key }] = await c.env.DB.select({
+		const [{ sha256, key }] = await c.env.db.select({
 			sha256: archives.sha256,
 			key: sql<string>`CONCAT(${archives.sha256}, '.json')`,
 		})

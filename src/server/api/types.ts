@@ -3,7 +3,7 @@ import type { Database } from "../db";
 
 export interface AppContext {
 	Bindings: {
-		DB: Database;
+		db: Database;
 		NODE_ENV: typeof NODE_ENV;
 	};
 }

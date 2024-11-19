@@ -36,7 +36,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const packages = await getLatestNixPackages(c.env.DB);
+		const packages = await getLatestNixPackages(c.env.db);
 		return c.json(packages, 200);
 	},
 );
@@ -128,12 +128,12 @@ packagesRouter.openapi(
 
 		try {
 			const nix = cask2nix(cask);
-			const record = await getPackage(c.env.DB, cask.token, cask.version);
+			const record = await getPackage(c.env.db, cask.token, cask.version);
 			if (record) {
 				return c.json(record.nix as NixPackage, 200);
 			}
 
-			const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
+			const [{ nix: persistedPackage }] = await c.env.db.insert(packages)
 				.values({ name: cask.name[0], nix, url })
 				.returning();
 			return c.json(persistedPackage as NixPackage, 201);
@@ -183,7 +183,7 @@ packagesRouter.openapi(
 	}),
 	async (c) => {
 		const { pname } = c.req.valid("param");
-		const record = await getPackage(c.env.DB, pname);
+		const record = await getPackage(c.env.db, pname);
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
@@ -232,7 +232,7 @@ packagesRouter.openapi(
 	}),
 	async (c) => {
 		const { pname, version } = c.req.valid("param");
-		const record = await getPackage(c.env.DB, pname, version);
+		const record = await getPackage(c.env.db, pname, version);
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
@@ -323,7 +323,7 @@ packagesRouter.openapi(
 		}
 
 		const { pname } = c.req.valid("param");
-		const record = await getPackage(c.env.DB, pname);
+		const record = await getPackage(c.env.db, pname);
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
@@ -341,7 +341,7 @@ packagesRouter.openapi(
 
 		try {
 			const nix = cask2nix(cask);
-			const [{ nix: persistedPackage }] = await c.env.DB.insert(packages)
+			const [{ nix: persistedPackage }] = await c.env.db.insert(packages)
 				.values({ name: cask.name[0], nix, url: record.url })
 				.returning();
 			return c.json(persistedPackage as NixPackage, 201);
@@ -392,7 +392,7 @@ packagesRouter.openapi(
 		if (!apiKeyAuthorized || !qstashAuthorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const updated = await updateHomebrewCasks(c.env.DB);
+		const updated = await updateHomebrewCasks(c.env.db);
 		return c.json(updated.map(({ nix }) => nix as NixPackage), 200);
 	},
 );

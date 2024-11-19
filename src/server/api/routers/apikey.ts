@@ -46,7 +46,7 @@ apikeyRouter.openapi(
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const apikey = await createApiKey(c.env.DB);
+		const apikey = await createApiKey(c.env.db);
 		return c.json({ apikey }, 200);
 	},
 );
