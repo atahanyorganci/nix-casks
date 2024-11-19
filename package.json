@@ -32,6 +32,7 @@
 		"@astrojs/tailwind": "^5.1.2",
 		"@astrojs/vercel": "8.0.0-beta.3",
 		"@aws-sdk/client-s3": "^3.688.0",
+		"@axiomhq/winston": "^1.2.0",
 		"@hono/zod-openapi": "^0.16.4",
 		"@hono/zod-validator": "^0.4.1",
 		"@radix-ui/react-tabs": "^1.1.1",
@@ -56,6 +57,7 @@
 		"react-dom": "^18.3.1",
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss": "^3.4.10",
+		"winston": "^3.17.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
