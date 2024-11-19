@@ -5,7 +5,7 @@
 		"build": {
 			"dependsOn": ["check", "lint"],
 			"inputs": ["tsconfig.json", "astro.config.mjs", "tailwind.config.mjs", "src/**/*"],
-			"outputs": ["dist/**/*"],
+			"outputs": ["dist/**"],
 			"env": [
 				"NODE_ENV",
 				"POSTGRES_URL",
