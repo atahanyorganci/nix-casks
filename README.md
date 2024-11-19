@@ -62,8 +62,8 @@ The website is server rendered Astro app hosted on Vercel. The tech stack is as 
 
 - Atahan Yorgancı, [@atahanyorganci](https://github.com/atahanyorganci)
 
-[website]: http://nix-casks.vercel.app
-[openapi]: http://nix-casks.vercel.app/api/openapi.json
-[reference]: http://nix-casks.vercel.app/api/reference
+[website]: http://nix-casks.yorganci.dev
+[openapi]: http://nix-casks.yorganci.dev/api/openapi.json
+[reference]: http://nix-casks.yorganci.dev/api/reference
 [homebrew]: https://brew.sh
 [cask-cookbook]: https://docs.brew.sh/Cask-Cookbook
