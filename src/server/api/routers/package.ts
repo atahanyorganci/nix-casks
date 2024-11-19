@@ -187,7 +187,9 @@ packagesRouter.openapi(
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
-		return c.json(record.nix as NixPackage, 200);
+		return c.json(record.nix as NixPackage, 200, {
+			"Cache-Control": "public, max-age=3600",
+		});
 	},
 );
 
@@ -234,7 +236,9 @@ packagesRouter.openapi(
 		if (!record) {
 			return c.json({ message: "Package not found" }, 404);
 		}
-		return c.json(record.nix as NixPackage, 200);
+		return c.json(record.nix as NixPackage, 200, {
+			"Cache-Control": "public, max-age=31536000",
+		});
 	},
 );
 

@@ -106,7 +106,9 @@ archiveRouter.openapi(
 			.from(archives)
 			.orderBy(desc(archives.createdAt))
 			.limit(1);
-		return c.json({ sha256, url: getUrl(key) }, 200);
+		return c.json({ sha256, url: getUrl(key) }, 200, {
+			"Cache-Control": "max-age=300",
+		});
 	},
 );
 
