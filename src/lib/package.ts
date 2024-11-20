@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { and, desc, eq, max, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask, cask2nix } from "~/lib/homebrew";
 import { type Database, type InsertPackage, packages } from "~/server/db";
@@ -212,7 +212,17 @@ export async function getLatestNixPackages(db: Pick<Database, "select">): Promis
 	return records.map(({ nix }) => nix) as NixPackage[];
 }
 
-export async function getLatestPackages(db: Pick<Database, "select">): Promise<Package[]> {
+export async function getPackageCount(db: Database) {
+	const [{ count }] = await db.select({ count: countDistinct(packages.pname).as("count") }).from(packages);
+	return count;
+}
+
+export interface Pagination {
+	page: number;
+	perPage: number;
+}
+
+export async function getLatestPackages(db: Pick<Database, "select">, { perPage, page }: Pagination): Promise<Package[]> {
 	const latest = db
 		.select({
 			pname: packages.pname,
@@ -228,6 +238,8 @@ export async function getLatestPackages(db: Pick<Database, "select">): Promise<P
 			latest,
 			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
 		)
+		.limit(perPage)
+		.offset(perPage * (page - 1))
 		.orderBy(packages.pname);
 	return records as Package[];
 }

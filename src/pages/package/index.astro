@@ -1,23 +1,35 @@
 ---
+import { z } from "zod";
 import PackagesTable from "~/components/PackagesTable.astro";
 import Layout from "~/layouts/Layout.astro";
-import { getLatestPackages } from "~/lib/package";
+import { getLatestPackages, getPackageCount } from "~/lib/package";
 import { createDatabase } from "~/server/db";
 
+const searchSchema = z.object({
+	page: z.coerce.number().default(1),
+});
+
+const result = searchSchema.safeParse(Object.fromEntries(new URL(Astro.request.url).searchParams));
+if (!result.success) {
+	return Astro.redirect("/package");
+}
+
+const page = result.data.page;
+const perPage = 20;
+
 const db = createDatabase();
-const packages = await getLatestPackages(db);
+const [packages, count] = await Promise.all([getLatestPackages(db, { page, perPage }), getPackageCount(db)]);
+if (packages.length === 0) {
+	Astro.redirect("/package");
+}
 ---
 
 <Layout title="All Packages - NixCasks">
-	<div class="pt-32 pb-20">
-		<div class="container mx-auto px-4">
-			<div class="max-w-6xl mx-auto">
-				<h1 class="text-4xl font-bold mb-4 text-brutal-white">All Packages</h1>
-				<p class="text-xl text-brutal-white/60 mb-8">
-					Browse all available packages that can be installed through NixCasks.
-				</p>
-				<PackagesTable packages={packages} />
-			</div>
-		</div>
+	<div class="container my-12">
+		<h1 class="text-center text-4xl font-bold mb-4 text-neon-white">All Packages</h1>
+		<p class="text-center text-xl text-neon-white/60 mb-8">
+			Browse all available packages that can be installed through NixCasks.
+		</p>
+		<PackagesTable packages={packages} currentPage={page} pageCount={Math.ceil(count / perPage)} />
 	</div>
 </Layout>
