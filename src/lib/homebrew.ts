@@ -1,7 +1,7 @@
 import type { NixPackage } from "./package";
 import pathe from "pathe";
 import { z } from "zod";
-import { unreachable, unsupported } from ".";
+import { InvalidChecksumError, InvalidVersionError, unreachable, unsupported } from ".";
 
 export const Literal = z.union([z.string(), z.number(), z.boolean()]);
 export type Literal = z.infer<typeof Literal>;
@@ -734,6 +734,12 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 }
 
 export function cask2nix(cask: Cask): NixPackage {
+	if (cask.version === "latest") {
+		throw new InvalidVersionError("Package doesn't have a valid version.");
+	}
+	else if (cask.sha256 === "no_check") {
+		throw new InvalidChecksumError("Package doesn't have a valid checksum.");
+	}
 	const { token, version, url, sha256, desc: description, homepage } = cask;
 	const pname = token.replace(/[^A-z0-9-]/, "_");
 	const installPhase = artifactToInstallScript(cask);

@@ -3,7 +3,7 @@ import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask, cask2nix } from "~/lib/homebrew";
 import { type Database, type InsertPackage, packages } from "~/server/db";
-import { unreachable, UnsupportedArtifactError } from ".";
+import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
 export const NixPackage = z
 	.object({
@@ -302,7 +302,7 @@ export async function updateHomebrewCasks(db: Database) {
 			});
 		}
 		catch (error) {
-			if (error instanceof UnsupportedArtifactError) {
+			if (error instanceof UnsupportedArtifactError || error instanceof InvalidChecksumError || error instanceof InvalidVersionError) {
 				continue;
 			}
 			throw error;

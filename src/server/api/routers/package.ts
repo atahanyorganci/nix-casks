@@ -1,6 +1,6 @@
 import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { UnsupportedArtifactError } from "~/lib";
+import { InvalidChecksumError, InvalidVersionError, UnsupportedArtifactError } from "~/lib";
 import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
@@ -118,15 +118,9 @@ packagesRouter.openapi(
 		}
 
 		const { url } = c.req.valid("json");
-		const cask = await fetchCaskFromUrl(url);
-		if (cask.version === "latest") {
-			return c.json({ message: "Package doesn't have a valid version." }, 400);
-		}
-		else if (cask.sha256 === "no_check") {
-			return c.json({ message: "Package doesn't have a valid checksum." }, 400);
-		}
 
 		try {
+			const cask = await fetchCaskFromUrl(url);
 			const nix = cask2nix(cask);
 			const record = await getPackage(c.env.db, cask.token, cask.version);
 			if (record) {
@@ -141,6 +135,12 @@ packagesRouter.openapi(
 		catch (error) {
 			if (error instanceof UnsupportedArtifactError) {
 				return c.json({ message: error.message }, 400);
+			}
+			else if (error instanceof InvalidChecksumError) {
+				return c.json({ message: "Package doesn't have a valid checksum." }, 400);
+			}
+			else if (error instanceof InvalidVersionError) {
+				return c.json({ message: "Package doesn't have a valid version." }, 400);
 			}
 			throw error;
 		}

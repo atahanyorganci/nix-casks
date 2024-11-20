@@ -39,6 +39,18 @@ export class UnsupportedArtifactError extends BaseError {
 	}
 }
 
+export class InvalidChecksumError extends BaseError {
+	constructor(message: string) {
+		super("InvalidChecksumError", message);
+	}
+}
+
+export class InvalidVersionError extends BaseError {
+	constructor(message: string) {
+		super("InvalidVersionError", message);
+	}
+}
+
 export function unsupported(type: string, message: string): never {
 	throw new UnsupportedArtifactError(type, message);
 }
