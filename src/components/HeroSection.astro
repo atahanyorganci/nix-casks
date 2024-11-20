@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import { Github } from "lucide-react";
 
 const INSTALL = `{
   inputs = {
@@ -15,7 +16,7 @@ const INSTALL = `{
 }`;
 ---
 
-<section class="relative py-48 h-[80vh] border-b border-neon-white/10 shadow-red-100">
+<section class="relative border-b border-neon-white/10 shadow-red-100 lg:py-8 xl:py-12 2xl:py-24">
 	<div class="absolute inset-0">
 		<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(176,38,255,0.1),transparent_50%)]"></div>
 		<div
@@ -23,49 +24,50 @@ const INSTALL = `{
 		>
 		</div>
 	</div>
-	<div class="container relative mx-auto px-4">
-		<div class="max-w-6xl mx-auto">
-			<div class="grid lg:grid-cols-2 gap-12 items-center">
-				<div>
-					<h1 class="text-6xl font-bold mb-6 text-neon-white leading-tight tracking-tight">
-						Install Homebrew Casks with
-						<span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple to-neon-blue"> Nix</span>
-					</h1>
-					<p class="text-xl text-neon-white/80 mb-8 leading-relaxed">
-						Transform Homebrew casks into Nix derivations and install GUI applications directly without Homebrew.
-					</p>
-					<div class="flex flex-wrap gap-4">
-						<a
-							href="#quickstart"
-							class="px-6 py-3 bg-neon-purple text-neon-white font-bold rounded-xl hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/20 transition-all duration-200"
-						>
-							Get Started
-						</a>
-						<a
-							href="https://github.com/atahanyorganci/nix-casks"
-							target="_blank"
-							rel="noopener noreferrer"
-							class="px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
-						>
-							View on GitHub
-						</a>
-					</div>
+	<div class="max-w-7xl container relative mx-auto px-4 sm:px-8 lg:px-16">
+		<div class="grid lg:grid-cols-2 gap-12 items-center">
+			<div class="my-8 sm:my-12 flex flex-col sm:items-center lg:items-start">
+				<h1
+					class="text-4xl sm:text-5xl max-w-lg lg:max-w-max lg:text-left sm:text-center mb-4 xl:text-6xl font-bold text-neon-white leading-tight tracking-tight"
+				>
+					Install Homebrew Casks with
+					<span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple to-neon-blue"> Nix</span>
+				</h1>
+				<p class="text-lg sm:text-center lg:text-left max-w-lg lg:text-xl text-neon-white/80 mb-8 leading-relaxed">
+					Transform Homebrew casks into Nix derivations and install GUI applications directly without Homebrew.
+				</p>
+				<div class="flex flex-wrap flex-col gap-2 sm:flex-row sm:justify-center lg:items-start lg:justify-start">
+					<a
+						href="#quickstart"
+						class="px-6 py-3 bg-neon-purple text-neon-white font-bold rounded-xl hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/20 transition-all duration-200"
+					>
+						Get Started
+					</a>
+					<a
+						href="https://github.com/atahanyorganci/nix-casks"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
+					>
+						<Github size={24} className="inline-block mr-2" />
+						View on GitHub
+					</a>
 				</div>
+			</div>
+			<div class="relative hidden lg:block">
+				<div class="absolute inset-0 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 blur-3xl"></div>
 				<div class="relative">
-					<div class="absolute inset-0 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 blur-3xl"></div>
-					<div class="relative">
-						<div class="flex justify-end">
-							<div
-								class="px-16 border border-neon-blue/30 rounded-xl shadow-2xl shadow-neon-blue/5 bg-neon-black/80 backdrop-blur-xl aspect-video flex items-center justify-center translate-x-24"
-							>
-								<div class="text-8xl">🍺 ➡️ ❄️</div>
-							</div>
-						</div>
+					<div class="flex justify-end">
 						<div
-							class="-translate-y-4 border min-w-max border-neon-purple/30 rounded-xl shadow-2xl shadow-neon-purple/5 bg-neon-black/80 backdrop-blur-xl p-6"
+							class="px-16 border border-neon-blue/30 rounded-xl shadow-2xl shadow-neon-blue/5 bg-neon-black/80 backdrop-blur-xl aspect-video flex items-center justify-center 2xl:translate-x-24 xl:translate-x-12"
 						>
-							<Code code={INSTALL} lang="nix" class="text-sm" />
+							<div class="text-6xl">🍺 ➡️ ❄️</div>
 						</div>
+					</div>
+					<div
+						class="hidden xl:block -translate-y-4 border min-w-max border-neon-purple/30 rounded-xl shadow-2xl shadow-neon-purple/5 bg-neon-black/80 backdrop-blur-xl p-6"
+					>
+						<Code code={INSTALL} lang="nix" class="text-xs 2xl:text-sm" />
 					</div>
 				</div>
 			</div>

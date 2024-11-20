@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { CodeXml, Home } from "lucide-react";
+import { ArrowLeft, CodeXml, Home } from "lucide-react";
 import Layout from "~/layouts/Layout.astro";
 import { getPackageVersions } from "~/lib/package";
 import { createDatabase } from "~/server/db";
@@ -43,41 +43,41 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 ---
 
 <Layout title={`${pkg.name} - NixCasks`}>
-	<div class="container pt-32 pb-20 max-w-4xl gap-y-4 flex flex-col">
-		<div class="flex gap-6">
+	<div class="container py-8 sm:py-12 lg:py-20 max-w-4xl gap-y-4 flex flex-col">
+		<div class="flex gap-2 sm:gap-4">
 			{
 				iconUrl && (
 					<img
 						src={iconUrl}
 						alt={`${pkg.name} icon`}
-						class="w-32 h-32 rounded-2xl bg-neon-black/30 backdrop-blur-xl border border-neon-white/10 flex items-center justify-center p-4 group-hover:border-neon-purple/50 transition-all duration-200"
+						class="w-24 h-24 rounded-lg sm:w-28 sm:h-28 sm:rounded-xl md:w-32 md:h-32 md:rounded-2xl bg-neon-black/30 backdrop-blur-xl border border-neon-white/10 flex items-center justify-center p-4 group-hover:border-neon-purple/50 transition-all duration-200"
 					/>
 				)
 			}
 			<div class="flex flex-col justify-center">
-				<h1 class="text-4xl font-bold text-neon-white mb-2">
+				<h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-neon-white mb-2">
 					{pkg.name}
-					<span class="text-neon-white/60 text-xl font-medium ml-2">{pkg.version}</span>
+					<span class="text-neon-white/60 text-base sm:text-lg md:text-xl font-medium ml-2">{pkg.version}</span>
 				</h1>
-				<p class="text-neon-white/80">{pkg.nix.meta.description}</p>
+				<p class="text-neon-white/80 text-sm sm:text-base">{pkg.nix.meta.description}</p>
 				<div class="flex gap-2 mt-2">
 					<a
 						href={pkg.nix.meta.homepage}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="p-2 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
+						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="Visit homepage"
 					>
-						<Home className="w-5 h-5" />
+						<Home className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 					<a
 						href={`/api/package/${pkg.pname}/${pkg.version}`}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="p-2 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
+						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="View source"
 					>
-						<CodeXml className="w-5 h-5" />
+						<CodeXml className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 				</div>
 			</div>
@@ -86,27 +86,24 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 			<div class="flex flex-col h-full justify-center bg-red-50"></div>
 		</div>
 		<div
-			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-blue/30 hover:shadow-neon hover:shadow-neon-blue/5 transition-all duration-200"
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-4 hover:border-neon-blue/30 hover:shadow-neon hover:shadow-neon-blue/5 transition-all duration-200"
 		>
-			<h2 class="text-xl font-bold text-neon-white mb-3">Installation</h2>
+			<h2 class="text-lg sm:text-xl font-bold text-neon-white mb-2">Installation</h2>
 			<p class="text-neon-white/80 mb-2">System wide:</p>
-			<Code lang="nix" code={SYSTEM} class="bg-transparent" />
+			<Code class="text-xs sm:text-sm" lang="nix" code={SYSTEM} />
 			<p class="text-neon-white/80 mt-4 mb-2">Home Manager:</p>
-			<Code lang="nix" code={HOME} class="bg-transparent" />
+			<Code class="text-xs sm:text-sm" lang="nix" code={HOME} />
 		</div>
 		<div
-			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-green/30 hover:shadow-neon hover:shadow-neon-green/5 transition-all duration-200"
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-4 hover:border-neon-green/30 hover:shadow-neon hover:shadow-neon-green/5 transition-all duration-200"
 		>
-			<h2 class="text-xl font-bold text-neon-white mb-3">Package Definition</h2>
-			<pre
-				class="overflow-x-auto"><Code lang="json" code={JSON.stringify(pkg.nix, null, 2)} class="bg-transparent" /></pre>
+			<h2 class="text-lg sm:text-xl font-bold text-neon-white mb-3">Package Definition</h2>
+			<Code class="text-xs sm:text-sm" lang="json" code={JSON.stringify(pkg.nix, null, 2)} />
 		</div>
-
-		{/* Version History */}
 		<div
-			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-6 hover:border-neon-purple/30 hover:shadow-neon hover:shadow-neon-purple/5 transition-all duration-200"
+			class="bg-neon-black/30 backdrop-blur-xl rounded-xl border border-neon-white/10 p-4 hover:border-neon-purple/30 hover:shadow-neon hover:shadow-neon-purple/5 transition-all duration-200"
 		>
-			<h2 class="text-xl font-bold text-neon-white mb-4">Version History</h2>
+			<h2 class="text-lg sm:text-xl font-bold text-neon-white mb-4">Version History</h2>
 			<div class="space-y-3">
 				{
 					versions.map(({ version, createdAt }) => (
@@ -128,10 +125,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 			<a
 				href="/package"
 				class="inline-flex items-center gap-2 px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
-			>
-				<svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-				</svg>
+				><ArrowLeft className="w-5 h-5" />
 				<span>Back to Packages</span>
 			</a>
 		</div>

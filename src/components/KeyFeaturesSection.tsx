@@ -34,9 +34,9 @@ const features = [
 const Feature: FC<{ icon: string; title: string; description: string; gradient: string; glow: string }> = ({ icon, title, description, gradient, glow }) => (
 	<div className={`group p-6 bg-neon-black border border-neon-white/10 rounded-xl transition-all duration-300 ${glow}`}>
 		<div className="flex items-start gap-4">
-			<div className="text-4xl">{icon}</div>
+			<div className="text-2xl md:text-4xl">{icon}</div>
 			<div>
-				<h3 className={`text-xl font-bold mb-2 text-neon-white bg-clip-text transition-all duration-300 group-hover:text-transparent group-hover:bg-gradient-to-r ${gradient}`}>
+				<h3 className={`text-lg md:text-xl font-bold mb-2 text-neon-white bg-clip-text transition-all duration-300 group-hover:text-transparent group-hover:bg-gradient-to-r ${gradient}`}>
 					{title}
 				</h3>
 				<p className="text-neon-white/70 font-medium leading-relaxed">
@@ -48,7 +48,7 @@ const Feature: FC<{ icon: string; title: string; description: string; gradient: 
 );
 
 const KeyFeaturesSection: FC = () => (
-	<section className="relative py-24 overflow-hidden">
+	<section className="relative py-6 sm:py-12 lg:py-24 overflow-hidden">
 		<div className="absolute inset-0 bg-gradient-to-b from-neon-black to-neon-dark"></div>
 		<div className="absolute inset-0">
 			<div className="absolute left-0 top-1/4 w-1/2 aspect-square bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05),transparent_50%)]"></div>
@@ -56,8 +56,8 @@ const KeyFeaturesSection: FC = () => (
 		</div>
 		<div className="container relative mx-auto px-4">
 			<div className="max-w-5xl mx-auto">
-				<h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-neon-white">Key Features</h2>
-				<p className="text-xl text-neon-white/60 text-center mb-16 max-w-2xl mx-auto">
+				<h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-4 text-neon-white">Key Features</h2>
+				<p className="sm:text-xl text-neon-white/60 text-center mb-16 max-w-2xl mx-auto">
 					Everything you need to manage macOS applications with Nix, without the complexity of Homebrew.
 				</p>
 				<div className="grid md:grid-cols-2 gap-6">

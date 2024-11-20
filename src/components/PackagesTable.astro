@@ -14,10 +14,10 @@ const hasNext = currentPage < pageCount;
 const hasPrev = currentPage > 1;
 ---
 
-<div class="overflow-hidden rounded-xl border border-neon-white/10 bg-neon-black/30 backdrop-blur-xl mx-auto max-w-6xl">
-	<table class="border-collapse border table-fixed">
+<div class="rounded-xl border border-neon-white/10 bg-neon-black/40 backdrop-blur-xl mx-auto max-w-6xl overflow-scroll">
+	<table class="table-fixed">
 		<thead>
-			<tr class="border-b border-neon-white/10 bg-neon-black 40">
+			<tr class="border-b border-neon-white/10">
 				<th scope="col" class="pl-6 py-4 text-left text-sm font-medium text-neon-white/60 w-3/12">Package</th>
 				<th scope="col" class="py-4 text-left text-sm font-medium text-neon-white/60 w-3/12">Nix Name</th>
 				<th scope="col" class="py-4 text-left text-sm font-medium text-neon-white/60 w-5/12">Description</th>
@@ -25,7 +25,7 @@ const hasPrev = currentPage > 1;
 				<th scope="col" class="pr-6 py-4 text-left text-sm font-medium text-neon-white/60 w-1/12">Links</th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-neon-white/10">
+		<tbody class="divide-y divide-neon-white/10 bg-neon-black/30 border-b border-neon-white/10">
 			{
 				packages.map((pkg) => (
 					<tr class="group hover:bg-neon-white/5 transition-colors h-20">
@@ -89,31 +89,22 @@ const hasPrev = currentPage > 1;
 				))
 			}
 		</tbody>
-		<tfoot>
-			<tr class="border-t border-collapse border-neon-white/10">
-				<td colspan="5" class="px-6 py-4">
-					<div class="text-sm text-neon-white/60 flex items-center justify-center">
-						<IconLink href="/package" title="First Page">
-							<ChevronsLeft className="w-5 h-5" />
-						</IconLink>
-						<IconLink href={hasPrev ? `/package?page=${currentPage - 1}` : `/package?page=1`} title="Previous Page">
-							<ChevronLeft className="w-5 h-5" />
-						</IconLink>
-						<span class="mx-4">
-							Page {currentPage} of {pageCount}
-						</span>
-						<IconLink
-							href={hasNext ? `/package?page=${currentPage + 1}` : `/package?page=${pageCount}`}
-							title="Next Page"
-						>
-							<ChevronRight className="w-5 h-5" />
-						</IconLink>
-						<IconLink href={`/package?page=${pageCount}`} title="Last Page">
-							<ChevronsRight className="w-5 h-5" />
-						</IconLink>
-					</div>
-				</td>
-			</tr>
-		</tfoot>
 	</table>
+	<div class="text-sm text-neon-white/60 flex items-center justify-center h-20 w-full">
+		<IconLink href="/package" title="First Page">
+			<ChevronsLeft className="w-5 h-5" />
+		</IconLink>
+		<IconLink href={hasPrev ? `/package?page=${currentPage - 1}` : `/package?page=1`} title="Previous Page">
+			<ChevronLeft className="w-5 h-5" />
+		</IconLink>
+		<span class="mx-4">
+			Page {currentPage} of {pageCount}
+		</span>
+		<IconLink href={hasNext ? `/package?page=${currentPage + 1}` : `/package?page=${pageCount}`} title="Next Page">
+			<ChevronRight className="w-5 h-5" />
+		</IconLink>
+		<IconLink href={`/package?page=${pageCount}`} title="Last Page">
+			<ChevronsRight className="w-5 h-5" />
+		</IconLink>
+	</div>
 </div>
