@@ -1,0 +1,20 @@
+---
+import PackagesTable from "~/components/PackageTable.astro";
+import Layout from "~/layouts/Layout.astro";
+import { searchPackages } from "~/server/algolia";
+
+const query = Astro.url.searchParams.get("q");
+if (!query) {
+	return Astro.redirect("/");
+}
+const { hits } = await searchPackages(query);
+---
+
+<Layout title={`${query} | NixCasks`}>
+	<div class="my-4 sm:my-8 md:my-12 container">
+		<p class="text-neon-white text-lg font-medium max-w-6xl mx-auto px-1 mb-2">
+			Search results for <span class="text-neon-purple">{query}</span>
+		</p>
+		<PackagesTable packages={hits} />
+	</div>
+</Layout>
