@@ -24,7 +24,11 @@
 				"QSTASH_TOKEN",
 				"AXIOM_DATASET",
 				"AXIOM_ORG_ID",
-				"AXIOM_TOKEN"
+				"AXIOM_TOKEN",
+				"ALGOLIA_APPLICATION_ID",
+				"ALGOLIA_SEARCH_API_KEY",
+				"ALGOLIA_WRITE_API_KEY",
+				"ALGOLIA_INDEX_NAME"
 			]
 		},
 		"check": {
