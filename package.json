@@ -42,6 +42,7 @@
 		"@upstash/qstash": "^2.7.16",
 		"@upstash/workflow": "^0.1.5",
 		"@vercel/postgres": "^0.10.0",
+		"algoliasearch": "5",
 		"astro": "5.0.0-beta.7",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",

@@ -22,6 +22,10 @@ export default defineConfig({
 			AXIOM_DATASET: envField.string({ context: "server", access: "secret" }),
 			AXIOM_ORG_ID: envField.string({ context: "server", access: "secret" }),
 			AXIOM_TOKEN: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_APPLICATION_ID: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_SEARCH_API_KEY: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_WRITE_API_KEY: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_INDEX_NAME: envField.string({ context: "server", access: "public" }),
 		},
 	},
 });
