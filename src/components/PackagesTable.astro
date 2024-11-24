@@ -5,13 +5,15 @@ import IconLink from "./IconLink";
 
 interface Props {
 	packages: Package[];
-	currentPage: number;
-	pageCount: number;
+	pagination?: {
+		currentPage: number;
+		pageCount: number;
+	};
 }
 
-const { packages, currentPage, pageCount } = Astro.props;
-const hasNext = currentPage < pageCount;
-const hasPrev = currentPage > 1;
+const { packages, pagination } = Astro.props;
+const hasNext = pagination && pagination.currentPage < pagination.pageCount;
+const hasPrev = pagination && pagination.currentPage > 1;
 ---
 
 <div class="rounded-xl border border-neon-white/10 bg-neon-black/40 backdrop-blur-xl mx-auto max-w-6xl overflow-scroll">
@@ -85,21 +87,31 @@ const hasPrev = currentPage > 1;
 			}
 		</tbody>
 	</table>
-	<div class="text-sm text-neon-white/60 flex items-center justify-center h-20 w-full">
-		<IconLink href="/package" title="First Page">
-			<ChevronsLeft className="w-5 h-5" />
-		</IconLink>
-		<IconLink href={hasPrev ? `/package?page=${currentPage - 1}` : `/package?page=1`} title="Previous Page">
-			<ChevronLeft className="w-5 h-5" />
-		</IconLink>
-		<span class="mx-4">
-			Page {currentPage} of {pageCount}
-		</span>
-		<IconLink href={hasNext ? `/package?page=${currentPage + 1}` : `/package?page=${pageCount}`} title="Next Page">
-			<ChevronRight className="w-5 h-5" />
-		</IconLink>
-		<IconLink href={`/package?page=${pageCount}`} title="Last Page">
-			<ChevronsRight className="w-5 h-5" />
-		</IconLink>
-	</div>
+	{
+		pagination && (
+			<div class="text-sm text-neon-white/60 flex items-center justify-center h-20 w-full">
+				<IconLink href="/package" title="First Page">
+					<ChevronsLeft className="w-5 h-5" />
+				</IconLink>
+				<IconLink
+					href={hasPrev ? `/package?page=${pagination.currentPage - 1}` : `/package?page=1`}
+					title="Previous Page"
+				>
+					<ChevronLeft className="w-5 h-5" />
+				</IconLink>
+				<span class="mx-4">
+					Page {pagination.currentPage} of {pagination.pageCount}
+				</span>
+				<IconLink
+					href={hasNext ? `/package?page=${pagination.currentPage + 1}` : `/package?page=${pagination.pageCount}`}
+					title="Next Page"
+				>
+					<ChevronRight className="w-5 h-5" />
+				</IconLink>
+				<IconLink href={`/package?page=${pagination.pageCount}`} title="Last Page">
+					<ChevronsRight className="w-5 h-5" />
+				</IconLink>
+			</div>
+		)
+	}
 </div>

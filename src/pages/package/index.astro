@@ -14,11 +14,13 @@ if (!result.success) {
 	return Astro.redirect("/package");
 }
 
-const page = result.data.page;
 const perPage = 20;
+const page = result.data.page;
 
 const db = createDatabase();
 const [packages, count] = await Promise.all([getLatestPackages(db, { page, perPage }), getPackageCount(db)]);
+const pageCount = Math.ceil(count / perPage);
+
 if (packages.length === 0) {
 	Astro.redirect("/package");
 }
@@ -32,6 +34,6 @@ if (packages.length === 0) {
 		</p>
 	</div>
 	<div class="mx-auto px-4 my-12">
-		<PackagesTable packages={packages} currentPage={page} pageCount={Math.ceil(count / perPage)} />
+		<PackagesTable packages={packages} pagination={{ currentPage: page, pageCount }} />
 	</div>
 </Layout>
