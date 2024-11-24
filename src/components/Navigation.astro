@@ -21,15 +21,18 @@ const navLinks = [
 			</a>
 			{
 				navLinks.map((link) => (
-					<a href={link.href} class="text-neon-white/80 hover:text-neon-white font-medium transition-colors">
+					<a
+						href={link.href}
+						class="text-neon-white/80 hover:text-neon-white font-medium transition-colors hidden sm:block"
+					>
 						{link.label}
 					</a>
 				))
 			}
 		</div>
-		<GitHubStars />
+		<div class="flex gap-2 items-center">
+			<SearchBar client:load />
+			<GitHubStars />
+		</div>
 	</nav>
-	<div class="absolute">
-		<SearchBar client:load />
-	</div>
 </header>

@@ -15,7 +15,7 @@ export default function SearchBar() {
 	}, []);
 
 	return (
-		<div className="relative w-full max-w-md group">
+		<div className="relative w-full max-w-md group hidden lg:block">
 			<input
 				ref={inputRef}
 				type="search"
