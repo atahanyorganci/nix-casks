@@ -33,7 +33,7 @@ const hasPrev = currentPage > 1;
 							<a href={`/package/${pkg.pname}`} class="flex items-center gap-3 group/link">
 								<div class="w-8 h-8 rounded-lg bg-neon-white/5 flex items-center justify-center">
 									<img
-										src={`https://icon.horse/icon/${new URL(pkg.nix.meta.homepage ?? "").hostname}`}
+										src={`https://icon.horse/icon/${new URL(pkg.homepage ?? "").hostname}`}
 										class="w-5 h-5"
 										loading="lazy"
 									/>
@@ -53,9 +53,9 @@ const hasPrev = currentPage > 1;
 						<td class="px-2 py-4">
 							<p
 								class="text-neon-white/80 line-clamp-2 hover:text-neon-white transition-colors"
-								title={pkg.nix.meta.description}
+								title={pkg.description}
 							>
-								{pkg.nix.meta.description}
+								{pkg.description}
 							</p>
 						</td>
 						<td class="px-2 py-4">
@@ -65,13 +65,8 @@ const hasPrev = currentPage > 1;
 						</td>
 						<td class="px-2 pr-6 py-4">
 							<div class="flex items-center gap-2">
-								{pkg.nix.meta.homepage && (
-									<IconLink
-										href={pkg.nix.meta.homepage}
-										target="_blank"
-										rel="noopener noreferrer"
-										title="Visit homepage"
-									>
+								{pkg.homepage && (
+									<IconLink href={pkg.homepage} target="_blank" rel="noopener noreferrer" title="Visit homepage">
 										<Home className="w-5 h-5" />
 									</IconLink>
 								)}

@@ -5,6 +5,9 @@ import { Cask, cask2nix } from "~/lib/homebrew";
 import { type Database, type InsertPackage, packages } from "~/server/db";
 import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
+/**
+ * `NixPackage` is a record that contains name, version, package source, installation steps, and metadata.
+ */
 export const NixPackage = z
 	.object({
 		pname: z.string().openapi({
@@ -45,16 +48,17 @@ export const NixPackage = z
 export type NixPackage = z.infer<typeof NixPackage>;
 
 /**
- * Package name is a string that contains only lowercase letters, numbers, and hyphens.
+ * `NixPackageName` is a string that contains the name of the package.
  */
-export const PackageName = z
+export const NixPackageName = z
 	.string()
 	.regex(/^[a-z0-9-_]+$/)
 	.openapi({
+		title: "NixPackageName",
 		description: "Package name used to identify the package",
 		example: "visual-studio-code",
 	});
-export type PackageName = z.infer<typeof PackageName>;
+export type PackageName = z.infer<typeof NixPackageName>;
 
 export const PackageVersion = z.string().openapi({
 	description: "Version of the package",
@@ -63,7 +67,7 @@ export const PackageVersion = z.string().openapi({
 export type PackageVersion = z.infer<typeof PackageVersion>;
 
 /**
- * Package is a record that contains the name, version, and Nix definition of a package.
+ * `Package` is a record that contains name, package name, version, description, and homepage.
  */
 export const Package = z
 	.object({
@@ -71,9 +75,16 @@ export const Package = z
 			description: "Name of program or package",
 			example: "Visual Studio Code",
 		}),
-		pname: PackageName,
+		pname: NixPackageName,
 		version: PackageVersion,
-		nix: NixPackage,
+		description: z.string().optional().openapi({
+			description: "Short description of the package",
+			example: "Open-source code editor",
+		}),
+		homepage: z.string().url().optional().openapi({
+			description: "URL to the homepage of the package",
+			example: "https://code.visualstudio.com/",
+		}),
 	})
 	.openapi("Package");
 export type Package = z.infer<typeof Package>;
@@ -232,7 +243,13 @@ export async function getLatestPackages(db: Pick<Database, "select">, { perPage,
 		.groupBy(packages.pname)
 		.as("latest");
 	const records = await db
-		.select({ name: packages.name, pname: packages.pname, version: packages.version, nix: packages.nix })
+		.select({
+			name: packages.name,
+			pname: packages.pname,
+			version: packages.version,
+			description: packages.description,
+			homepage: packages.homepage,
+		})
 		.from(packages)
 		.innerJoin(
 			latest,

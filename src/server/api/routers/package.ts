@@ -8,7 +8,7 @@ import {
 	getLatestNixPackages,
 	getPackage,
 	NixPackage,
-	PackageName,
+	NixPackageName,
 	PackageVersion,
 	updateHomebrewCasks,
 } from "~/lib/package";
@@ -154,7 +154,7 @@ packagesRouter.openapi(
 		description: "Get latest version of a package by its name",
 		request: {
 			params: z.object({
-				pname: PackageName,
+				pname: NixPackageName,
 			}),
 		},
 		responses: {
@@ -202,7 +202,7 @@ packagesRouter.openapi(
 		request: {
 			params: z
 				.object({
-					pname: PackageName,
+					pname: NixPackageName,
 					version: PackageVersion,
 				})
 				.openapi("GetPackageParams"),
@@ -254,7 +254,7 @@ packagesRouter.openapi(
 				"x-api-key": ApiKey,
 			}),
 			params: z.object({
-				pname: PackageName,
+				pname: NixPackageName,
 			}),
 		},
 		responses: {

@@ -13,6 +13,10 @@ export const packages = pgTable(
 		version: varchar()
 			.notNull()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->>'version'`),
+		description: varchar()
+			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'description'`),
+		homepage: varchar()
+			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'homepage'`),
 		nix: json().notNull(),
 		url: varchar().notNull(),
 		createdAt: timestamp().defaultNow().notNull(),
