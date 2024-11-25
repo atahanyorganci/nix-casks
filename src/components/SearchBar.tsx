@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function SearchBar() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -13,11 +13,22 @@ export default function SearchBar() {
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	}, [handleKeyDown]);
+	const [query, setQuery] = useState("");
+	const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key !== "Enter") {
+			return;
+		}
+		e.preventDefault();
+		window.location.assign(`/search?q=${encodeURIComponent(query)}`);
+	}, [query]);
 
 	return (
 		<div className="relative w-full max-w-md group hidden lg:block">
 			<input
 				ref={inputRef}
+				value={query}
+				onChange={e => setQuery(e.target.value)}
+				onKeyDown={handleInputKeyDown}
 				type="search"
 				placeholder="Search packages..."
 				className="w-full px-4 py-2 pl-10 pr-16 border-white/10 border bg-transparent rounded-xl focus:outline-none focus:border-neon-purple/50 focus:ring-2 focus:ring-neon-purple/10 transition-all duration-200"
