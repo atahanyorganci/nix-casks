@@ -38,21 +38,33 @@
             json);
         in
         packages);
-      devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
-          shellHook = ''
-            export COREPACK_DIR=$HOME/.local/share/corepack
-            mkdir -p $COREPACK_DIR
-            corepack enable --install-directory $COREPACK_DIR
-            PATH=$COREPACK_DIR:$PATH
+      devShells = eachSystem (pkgs:
+        let
+          archive = "./archive.json";
+          endpoint = "https://nix-casks.yorganci.dev/api/archive/latest";
+          ci = pkgs.writeShellScriptBin "ci" ''
+            set -e
+            curl -o "${archive}" -L --retry 5 --retry-delay 2 --fail "${endpoint}"
           '';
-          buildInputs = with pkgs; [
-            ngrok
-            nodejs_20
-            python312Packages.magika
-            nodePackages.vercel
-          ];
-        };
-      });
+        in
+        {
+          default = pkgs.mkShell {
+            shellHook = ''
+              export COREPACK_DIR=$HOME/.local/share/corepack
+              mkdir -p $COREPACK_DIR
+              corepack enable --install-directory $COREPACK_DIR
+              PATH=$COREPACK_DIR:$PATH
+            '';
+            buildInputs = with pkgs; [
+              git
+              curl
+              ngrok
+              nodejs_20
+              python312Packages.magika
+              nodePackages.vercel
+              ci
+            ];
+          };
+        });
     };
 }

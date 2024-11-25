@@ -14,4 +14,5 @@ export default antfu({
 		"regexp/no-obscure-range": "off",
 		"antfu/no-top-level-await": "off",
 	},
+	ignores: ["archive.json"],
 });
