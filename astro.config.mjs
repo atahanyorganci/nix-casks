@@ -26,7 +26,7 @@ export default defineConfig({
 			ALGOLIA_SEARCH_API_KEY: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_WRITE_API_KEY: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_INDEX_NAME: envField.string({ context: "server", access: "public" }),
-			ALGOLIA_CONNECTOR_PASSWORD: envField.string({ context: "server", access: "public" }),
+			ALGOLIA_CONNECTOR_PASSWORD: envField.string({ context: "server", access: "secret" }),
 		},
 	},
 });
