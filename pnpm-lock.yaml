@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@algolia/ingestion':
+        specifier: 1.15.0
+        version: 1.15.0
       '@astrojs/check':
         specifier: ^0.9.4
         version: 0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.3.3)(typescript@5.6.2)
@@ -54,7 +57,7 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0
       algoliasearch:
-        specifier: '5'
+        specifier: ^5.15.0
         version: 5.15.0
       astro:
         specifier: 5.0.0-beta.7

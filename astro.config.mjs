@@ -24,9 +24,11 @@ export default defineConfig({
 			AXIOM_TOKEN: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_APPLICATION_ID: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_SEARCH_API_KEY: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_APPLICATION_ID_REGION: envField.enum({ context: "server", access: "public", values: ["us", "eu"] }),
 			ALGOLIA_WRITE_API_KEY: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_INDEX_NAME: envField.string({ context: "server", access: "public" }),
 			ALGOLIA_CONNECTOR_PASSWORD: envField.string({ context: "server", access: "secret" }),
+			ALGOLIA_TASK_ID: envField.string({ context: "server", access: "secret" }),
 		},
 	},
 });

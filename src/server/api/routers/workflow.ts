@@ -4,6 +4,7 @@ import { QSTASH_TOKEN } from "astro:env/server";
 import { Hono } from "hono";
 import { uploadPackageArchive } from "~/lib/archive";
 import { updateHomebrewCasks } from "~/lib/package";
+import { runIngestionTask } from "~/server/algolia";
 import { authorizeQstashRequest } from "../util";
 
 const workflowRouter = new Hono<AppContext>();
@@ -29,6 +30,15 @@ workflowRouter.post("/homebrew", async (c) => {
 				c.env.logger.info("Uploaded archive", archive);
 			}
 			c.env.logger.error("Failed to upload archive");
+		});
+		await ctx.run("update-algolia-index", async () => {
+			if (updateCount === 0) {
+				c.env.logger.info("No casks updated, skipping Algolia update");
+			}
+			else {
+				const task = await runIngestionTask();
+				c.env.logger.info("Running Algolia update task", task);
+			}
 		});
 	}, {
 		env: {
