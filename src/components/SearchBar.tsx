@@ -12,7 +12,7 @@ export default function SearchBar() {
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, []);
+	}, [handleKeyDown]);
 
 	return (
 		<div className="relative w-full max-w-md group hidden lg:block">
