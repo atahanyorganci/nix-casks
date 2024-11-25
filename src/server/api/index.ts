@@ -2,7 +2,6 @@ import type { AppContext } from "./types";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 import algoliaRouter from "./routers/algolia";
-import apikeyRouter from "./routers/apikey";
 import archiveRouter from "./routers/archive";
 import packagesRouter from "./routers/package";
 import workflowRouter from "./routers/workflow";
@@ -33,7 +32,6 @@ app.use("*", async (ctx, next) => {
 });
 
 // Register routers
-app.route("/apikey", apikeyRouter);
 app.route("/algolia", algoliaRouter);
 app.route("/package", packagesRouter);
 app.route("/archive", archiveRouter);

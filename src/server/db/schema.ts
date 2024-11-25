@@ -27,12 +27,6 @@ export const packages = pgTable(
 export const insertPackageSchema = createInsertSchema(packages);
 export type InsertPackage = z.infer<typeof insertPackageSchema>;
 
-export const apiKeys = pgTable("api_keys", {
-	salt: varchar().primaryKey(),
-	hash: varchar().notNull(),
-	createdAt: timestamp().defaultNow().notNull(),
-});
-
 export const archives = pgTable("archives", {
 	archive: json().notNull(),
 	sha256: char({ length: 64 })

@@ -1,7 +1,6 @@
 import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { InvalidChecksumError, InvalidVersionError, UnsupportedArtifactError } from "~/lib";
-import { ApiKey } from "~/lib/apikey";
 import { cask2nix } from "~/lib/homebrew";
 import {
 	fetchCaskFromUrl,
@@ -13,7 +12,7 @@ import {
 	updateHomebrewCasks,
 } from "~/lib/package";
 import { packages } from "~/server/db";
-import { authorizeApiKey, authorizeQstashRequest } from "../util";
+import { authorizeQstashRequest } from "../util";
 
 const packagesRouter = new OpenAPIHono<AppContext>();
 
@@ -47,9 +46,6 @@ packagesRouter.openapi(
 		path: "/",
 		description: "Add a new package",
 		request: {
-			headers: z.object({
-				"x-api-key": ApiKey,
-			}),
 			body: {
 				content: {
 					"application/json": {
@@ -112,7 +108,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeApiKey(c);
+		const authorized = await authorizeQstashRequest(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
@@ -250,9 +246,6 @@ packagesRouter.openapi(
 		path: "/{pname}/update",
 		description: "Update a package by its package name",
 		request: {
-			headers: z.object({
-				"x-api-key": ApiKey,
-			}),
 			params: z.object({
 				pname: NixPackageName,
 			}),
@@ -319,7 +312,7 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeApiKey(c);
+		const authorized = await authorizeQstashRequest(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
@@ -387,11 +380,8 @@ packagesRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const [apiKeyAuthorized, qstashAuthorized] = await Promise.all([
-			authorizeApiKey(c),
-			authorizeQstashRequest(c),
-		]);
-		if (!apiKeyAuthorized || !qstashAuthorized) {
+		const authorized = await authorizeQstashRequest(c);
+		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const updated = await updateHomebrewCasks(c.env.db);

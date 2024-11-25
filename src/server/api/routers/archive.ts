@@ -1,11 +1,10 @@
 import type { AppContext } from "../types";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { desc, sql } from "drizzle-orm";
-import { ApiKey } from "~/lib/apikey";
 import { uploadPackageArchive } from "~/lib/archive";
 import { archives } from "~/server/db";
 import { getUrl } from "~/server/s3";
-import { authorizeApiKey } from "../util";
+import { authorizeQstashRequest } from "../util";
 
 export const ArchiveManifest = z
 	.object({
@@ -27,11 +26,6 @@ archiveRouter.openapi(
 		method: "post",
 		path: "/",
 		description: "Upload the latest package definitions as an archive",
-		request: {
-			headers: z.object({
-				"x-api-key": ApiKey,
-			}),
-		},
 		responses: {
 			200: {
 				description: "Packages uploaded",
@@ -70,7 +64,7 @@ archiveRouter.openapi(
 		},
 	}),
 	async (c) => {
-		const authorized = await authorizeApiKey(c);
+		const authorized = await authorizeQstashRequest(c);
 		if (!authorized) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
