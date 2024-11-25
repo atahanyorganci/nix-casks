@@ -233,7 +233,7 @@ export interface Pagination {
 	perPage: number;
 }
 
-export async function getLatestPackages(db: Pick<Database, "select">, { perPage, page }: Pagination): Promise<Package[]> {
+export async function getLatestPackages(db: Pick<Database, "select">, pagination?: Pagination): Promise<Package[]> {
 	const latest = db
 		.select({
 			pname: packages.pname,
@@ -242,7 +242,7 @@ export async function getLatestPackages(db: Pick<Database, "select">, { perPage,
 		.from(packages)
 		.groupBy(packages.pname)
 		.as("latest");
-	const records = await db
+	let query = db
 		.select({
 			name: packages.name,
 			pname: packages.pname,
@@ -255,9 +255,13 @@ export async function getLatestPackages(db: Pick<Database, "select">, { perPage,
 			latest,
 			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
 		)
-		.limit(perPage)
-		.offset(perPage * (page - 1))
-		.orderBy(packages.pname);
+		.orderBy(packages.pname)
+		.$dynamic();
+	if (pagination) {
+		const { page, perPage } = pagination;
+		query = query.limit(perPage).offset((page - 1) * perPage);
+	}
+	const records = await query;
 	return records as Package[];
 }
 
