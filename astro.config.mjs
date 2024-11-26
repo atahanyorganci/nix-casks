@@ -4,6 +4,7 @@ import vercel from "@astrojs/vercel/serverless";
 import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
+	site: "https://nix-casks.yorganci.dev",
 	output: "server",
 	adapter: vercel(),
 	integrations: [tailwind(), react()],
