@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "~/lib";
 
 const INPUTS = `nix-casks = {
-  url = "github:atahanyorganci/nix-casks";
+  url = "github:atahanyorganci/nix-casks/archive";
   inputs.nixpkgs.follows = "nixpkgs";
 };`;
 

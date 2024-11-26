@@ -10,7 +10,7 @@ NixCasks is a flake that exports compatible Homebrew cask through `packages.<sys
 
 ```nix
 nix-casks = {
-  url = "github:atahanyorganci/nix-casks";
+  url = "github:atahanyorganci/nix-casks/archive";
   inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
