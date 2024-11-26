@@ -289,6 +289,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 	const pkg = await db
 		.select({
 			name: packages.name,
+			description: packages.description,
 			pname: packages.pname,
 			version: packages.version,
 			nix: packages.nix,

@@ -4,7 +4,7 @@ import Navigation from "../components/Navigation.astro";
 
 interface Props {
 	title: string;
-	description?: string;
+	description?: string | null;
 }
 
 const { title, description } = Astro.props;
@@ -13,10 +13,22 @@ const { title, description } = Astro.props;
 <!doctype html>
 <html lang="en" class="scroll-smooth">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
 		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		{/* Favicon */}
+		{/* Twitter */}
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		{description && <meta name="twitter:description" content={description} />}
+		<meta name="twitter:creator" content="@AtahanYorganci" />
+		{/* Open Graph */}
+		<meta name="og:title" content={title} />
+		{description && <meta name="og:description" content={description} />}
+		<meta name="og:type" content="website" />
+		<meta name="og:url" content="https://nix-casks.yorganci.dev" />
+		{/* ... */}
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap"
 			rel="stylesheet"
