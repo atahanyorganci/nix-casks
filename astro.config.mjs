@@ -29,6 +29,11 @@ export default defineConfig({
 			ALGOLIA_INDEX_NAME: envField.string({ context: "server", access: "public" }),
 			ALGOLIA_CONNECTOR_PASSWORD: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_TASK_ID: envField.string({ context: "server", access: "secret" }),
+			GITHUB_TOKEN: envField.string({ context: "server", access: "secret" }),
+			GITHUB_OWNER: envField.string({ context: "server", access: "public" }),
+			GITHUB_REPO: envField.string({ context: "server", access: "public" }),
+			GITHUB_BRANCH: envField.string({ context: "server", access: "public" }),
+			GITHUB_WORKFLOW_ID: envField.number({ context: "server", access: "public" }),
 		},
 	},
 });

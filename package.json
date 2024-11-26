@@ -36,6 +36,7 @@
 		"@axiomhq/winston": "^1.2.0",
 		"@hono/zod-openapi": "^0.16.4",
 		"@hono/zod-validator": "^0.4.1",
+		"@octokit/rest": "^21.0.2",
 		"@radix-ui/react-tabs": "^1.1.1",
 		"@scalar/hono-api-reference": "^0.5.159",
 		"@upstash/qstash": "^2.7.16",
