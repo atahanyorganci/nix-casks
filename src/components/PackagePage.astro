@@ -1,10 +1,10 @@
 ---
 import { Code } from "astro:components";
 import { ArrowLeft, CodeXml, Home } from "lucide-react";
+import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
 import { getPackageVersions } from "~/lib/package";
 import { createDatabase } from "~/server/db";
-import { DateTime } from "luxon";
 
 interface Props {
 	pname: string;
