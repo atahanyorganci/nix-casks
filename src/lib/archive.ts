@@ -1,5 +1,6 @@
+import type { Database } from "~/server/db";
 import { sql } from "drizzle-orm";
-import { archives, type Database } from "~/server/db";
+import { archives } from "~/server/db";
 import { uploadObject } from "~/server/s3";
 import { getLatestNixPackages } from "./package";
 

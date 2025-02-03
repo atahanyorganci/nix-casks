@@ -1,8 +1,9 @@
+import type { Database, InsertPackage } from "~/server/db";
 import { z } from "@hono/zod-openapi";
 import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask, cask2nix } from "~/lib/homebrew";
-import { type Database, type InsertPackage, packages } from "~/server/db";
+import { packages } from "~/server/db";
 import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
 /**

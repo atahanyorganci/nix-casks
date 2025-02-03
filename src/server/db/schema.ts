@@ -1,5 +1,6 @@
+import type { SQL } from "drizzle-orm";
 import type { z } from "zod";
-import { sql, type SQL } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { char, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
