@@ -1,5 +1,7 @@
 import type { Logger } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/vercel-postgres";
+import { neon } from "@neondatabase/serverless";
+import { POSTGRES_URL } from "astro:env/server";
+import { drizzle } from "drizzle-orm/neon-http";
 import { createLogger } from "../logger";
 import * as schema from "./schema";
 
@@ -15,6 +17,7 @@ class DrizzleLogger implements Logger {
 
 export function createDatabase() {
 	return drizzle({
+		client: neon(POSTGRES_URL),
 		schema,
 		logger: new DrizzleLogger(),
 	});
