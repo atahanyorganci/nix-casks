@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { ArrowLeft, CodeXml, Home } from "lucide-react";
+import { IconArrowLeft, IconCode, IconHome } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
 import { getPackageVersions } from "~/lib/package";
@@ -68,7 +68,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="Visit homepage"
 					>
-						<Home className="h-4 w-4 md:w-5 md:h-5" />
+						<IconHome className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 					<a
 						href={`/api/package/${pkg.pname}/${pkg.version}`}
@@ -77,7 +77,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="View source"
 					>
-						<CodeXml className="h-4 w-4 md:w-5 md:h-5" />
+						<IconCode className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 				</div>
 			</div>
@@ -125,7 +125,8 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 			<a
 				href="/package"
 				class="inline-flex items-center gap-2 px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
-				><ArrowLeft className="w-5 h-5" />
+			>
+				<IconArrowLeft className="w-5 h-5" />
 				<span>Back to Packages</span>
 			</a>
 		</div>

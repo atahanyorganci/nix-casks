@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { cn } from "~/lib";
 
 const INPUTS = `nix-casks = {
@@ -99,7 +99,7 @@ const QuickStart: FC = () => (
 					className="inline-flex items-center gap-2 rounded-xl border border-neon-purple/30 bg-neon-black px-6 py-3 font-bold text-neon-white transition-all duration-200 hover:translate-y-[-2px] hover:border-neon-purple/60 hover:shadow-lg hover:shadow-neon-purple/10"
 				>
 					<span>View Full Documentation</span>
-					<ArrowRight />
+					<IconArrowRight />
 				</a>
 			</div>
 		</div>

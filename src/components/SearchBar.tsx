@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function SearchBar() {
@@ -40,7 +40,7 @@ export default function SearchBar() {
 					<kbd className="flex size-5 items-center justify-center rounded border border-white/40 text-xs text-white/40 group-focus-within:border-white group-focus-within:text-white">K</kbd>
 				</div>
 			</div>
-			<Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40 group-focus-within:text-white" />
+			<IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40 group-focus-within:text-white" />
 		</div>
 	);
 }
