@@ -56,12 +56,10 @@
               PATH=$COREPACK_DIR:$PATH
             '';
             buildInputs = with pkgs; [
-              git
+              nodejs-slim
               curl
+              git
               ngrok
-              nodejs_20
-              python312Packages.magika
-              nodePackages.vercel
               ci
             ];
           };
