@@ -8,6 +8,11 @@ export default defineConfig({
 	output: "server",
 	adapter: vercel(),
 	integrations: [tailwind(), react()],
+	vite: {
+		server: {
+			allowedHosts: true,
+		},
+	},
 	env: {
 		schema: {
 			NODE_ENV: envField.enum({ context: "server", access: "public", values: ["development", "production"] }),
