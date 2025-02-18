@@ -648,7 +648,10 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 				case "binary": {
 					const src = artifact.name
 						.replace("$APPDIR", "$out/Applications")
-						.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out");
+						.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out")
+						.replace("$HOMEBREW_PREFIX/etc/bash_completion.d", "$out/share/bash-completion/completions")
+						.replace("$HOMEBREW_PREFIX/share/zsh/site-functions", "$out/share/zsh/site-functions")
+						.replace("$HOMEBREW_PREFIX/share/fish/vendor_completions.d", "$out/share/fish/vendor_completions.d");
 					const target = artifact.target
 						?? artifact.name.split("/").pop()
 						?? unreachable(`${token}'s binary ${artifact.name} has missing target`);
