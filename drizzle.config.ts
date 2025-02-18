@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
 if (process.env.NODE_ENV !== "production") {
-	config({ path: ".env" });
+	config({ path: ".env.local" });
 }
 
 export default defineConfig({
