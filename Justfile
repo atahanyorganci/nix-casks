@@ -2,6 +2,8 @@ set dotenv-filename := ".env.local"
 set dotenv-load
 set export
 
+POSTGRES_URL := env("POSTGRES_URL", "postgres://admin:admin@localhost:5432/db")
+
 [group("setup")]
 install:
     pnpm install --frozen-lockfile
