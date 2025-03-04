@@ -1,3 +1,4 @@
+import type { SQL } from "drizzle-orm";
 import type { Database, InsertPackage } from "~/server/db";
 import { z } from "@hono/zod-openapi";
 import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
@@ -208,7 +209,7 @@ export async function getLatestNixPackages(db: Pick<Database, "select">): Promis
 	const latest = db
 		.select({
 			pname: packages.pname,
-			latest_version: max(packages.version).as("latest_version"),
+			lastVersion: max(packages.version).as("latest_version"),
 		})
 		.from(packages)
 		.groupBy(packages.pname)
@@ -216,9 +217,10 @@ export async function getLatestNixPackages(db: Pick<Database, "select">): Promis
 	const records = await db
 		.select({ nix: packages.nix })
 		.from(packages)
+		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.innerJoin(
 			latest,
-			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.lastVersion)),
 		)
 		.orderBy(packages.pname);
 	return records.map(({ nix }) => nix) as NixPackage[];
@@ -241,6 +243,7 @@ export async function getLatestPackages(db: Pick<Database, "select">, pagination
 			latest_version: max(packages.version).as("latest_version"),
 		})
 		.from(packages)
+		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.groupBy(packages.pname)
 		.as("latest");
 	let query = db
@@ -254,7 +257,11 @@ export async function getLatestPackages(db: Pick<Database, "select">, pagination
 		.from(packages)
 		.innerJoin(
 			latest,
-			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+			and(
+				eq(packages.generatorVersion, GENERATOR_VERSION),
+				eq(packages.pname, latest.pname),
+				eq(packages.version, latest.latest_version),
+			),
 		)
 		.orderBy(packages.pname)
 		.$dynamic();
@@ -272,7 +279,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 	const versionHistory = db
 		.select({
 			pname: packages.pname,
-			version_history: sql<{ version: string; createdAt: string }[]>`
+			versionHistory: sql<{ version: string; createdAt: string; generatorVersion: number }[]>`
 				json_agg(
 						json_build_object(
 								'version', ${packages.version},
@@ -287,7 +294,13 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		.where(eq(packages.pname, pname))
 		.groupBy(packages.pname)
 		.as("versionHistory");
-	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
+	let where: SQL;
+	if (version) {
+		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname), eq(packages.version, version))!;
+	}
+	else {
+		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname))!;
+	}
 	const pkg = await db
 		.select({
 			name: packages.name,
@@ -296,7 +309,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 			version: packages.version,
 			nix: packages.nix,
 			createdAt: packages.createdAt,
-			versionHistory: versionHistory.version_history,
+			versionHistory: versionHistory.versionHistory,
 		})
 		.from(packages)
 		.where(where)
