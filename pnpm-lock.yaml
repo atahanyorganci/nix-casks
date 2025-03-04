@@ -68,9 +68,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
       drizzle-orm:
         specifier: ^0.39.2
         version: 0.39.2(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(@types/react@19.0.8)(@vercel/postgres@0.10.0)(react@19.0.0)
@@ -2845,10 +2842,6 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
-
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
-    engines: {node: '>=12'}
 
   drizzle-kit@0.30.4:
     resolution: {integrity: sha512-B2oJN5UkvwwNHscPWXDG5KqAixu7AUzZ3qbe++KU9SsQ+cZWR4DXEPYcvWplyFAno0dhRJECNEhNxiDmFaPGyQ==}
@@ -8086,7 +8079,7 @@ snapshots:
       '@vue/shared': 3.5.12
       estree-walker: 2.0.2
       magic-string: 0.30.17
-      postcss: 8.5.1
+      postcss: 8.5.3
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.5.12':
@@ -8583,8 +8576,6 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
-
-  dotenv@16.4.7: {}
 
   drizzle-kit@0.30.4:
     dependencies:
