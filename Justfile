@@ -22,3 +22,7 @@ env: vercel
 
 [group("setup")]
 setup: install env
+
+[group("dev")]
+dev:
+    process-compose up

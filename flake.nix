@@ -61,6 +61,7 @@
               pnpm-shim
               nodejs-slim
               just
+              process-compose
               curl
               git
               ngrok
