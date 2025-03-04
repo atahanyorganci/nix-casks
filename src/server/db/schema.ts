@@ -1,7 +1,7 @@
 import type { SQL } from "drizzle-orm";
 import type { z } from "zod";
 import { sql } from "drizzle-orm";
-import { char, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
+import { char, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 export const packages = pgTable(
@@ -18,11 +18,12 @@ export const packages = pgTable(
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'description'`),
 		homepage: varchar()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'homepage'`),
+		generatorVersion: integer().default(1).notNull(),
 		nix: json().notNull(),
 		url: varchar().notNull(),
 		createdAt: timestamp().defaultNow().notNull(),
 	},
-	table => [primaryKey({ columns: [table.pname, table.version] })],
+	table => [primaryKey({ columns: [table.generatorVersion, table.pname, table.version] })],
 );
 
 export const insertPackageSchema = createInsertSchema(packages);

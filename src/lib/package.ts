@@ -2,7 +2,7 @@ import type { Database, InsertPackage } from "~/server/db";
 import { z } from "@hono/zod-openapi";
 import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { Cask, cask2nix } from "~/lib/homebrew";
+import { Cask, cask2nix, GENERATOR_VERSION } from "~/lib/homebrew";
 import { packages } from "~/server/db";
 import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
@@ -276,6 +276,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 				json_agg(
 						json_build_object(
 								'version', ${packages.version},
+								'generatorVersion', ${packages.generatorVersion},
 								'createdAt', ${packages.createdAt}
 						)
 						ORDER BY ${packages.createdAt} DESC
@@ -322,6 +323,7 @@ export async function updateHomebrewCasks(db: Database) {
 				name: cask.name[0],
 				url: `https://formulae.brew.sh/api/cask/${cask.token}.json`,
 				nix,
+				generatorVersion: GENERATOR_VERSION,
 			});
 		}
 		catch (error) {
