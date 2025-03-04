@@ -46,16 +46,19 @@
             set -e
             curl -o "${archive}" -L --retry 5 --retry-delay 2 --fail "${endpoint}"
           '';
+          packageJson = builtins.fromJSON (builtins.readFile ./package.json);
+          packageManager = builtins.elemAt (builtins.split "\\+" packageJson.packageManager) 0;
+          pnpm-shim = pkgs.writeShellScriptBin "pnpm" ''
+            exec ${pkgs.nodejs-slim}/bin/node ${pkgs.nodejs-slim}/bin/corepack pnpm "$@"
+          '';
         in
         {
           default = pkgs.mkShell {
             shellHook = ''
-              export COREPACK_DIR=$HOME/.local/share/corepack
-              mkdir -p $COREPACK_DIR
-              corepack enable --install-directory $COREPACK_DIR
-              PATH=$COREPACK_DIR:$PATH
+              corepack install -g ${packageManager}
             '';
             buildInputs = with pkgs; [
+              pnpm-shim
               nodejs-slim
               curl
               git
