@@ -4,7 +4,7 @@ import { IconArrowLeft, IconCode, IconHome } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
 import { getPackageVersions } from "~/lib/package";
-import { createNeonHttp } from "~/server/db";
+import { createDatabase } from "~/server/db";
 
 interface Props {
 	pname: string;
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { pname, version } = Astro.props;
-const db = createNeonHttp();
+const db = createDatabase();
 const pkg = await getPackageVersions(db, pname, version);
 
 if (!pkg) {
