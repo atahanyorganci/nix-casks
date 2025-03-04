@@ -1,6 +1,6 @@
 import type { Logger } from "drizzle-orm";
 import { neon } from "@neondatabase/serverless";
-import { POSTGRES_URL } from "astro:env/server";
+import { NODE_ENV, POSTGRES_URL } from "astro:env/server";
 import { drizzle as drizzleNeonHttp } from "drizzle-orm/neon-http";
 import { drizzle as drizzleNodePostgres } from "drizzle-orm/node-postgres";
 import { createLogger } from "../logger";
@@ -16,7 +16,7 @@ class DrizzleLogger implements Logger {
 	}
 }
 
-export function createNeonHttp() {
+function createNeonHttp() {
 	return drizzleNeonHttp({
 		client: neon(POSTGRES_URL),
 		schema,
@@ -24,12 +24,19 @@ export function createNeonHttp() {
 	});
 }
 
-export type Database = ReturnType<typeof createNeonHttp>;
-
-export function createNodePostgres() {
+function createNodePostgres() {
 	return drizzleNodePostgres({
 		connection: POSTGRES_URL,
 		schema,
 		logger: new DrizzleLogger(),
 	});
 }
+
+export function createDatabase(): Database {
+	if (NODE_ENV === "development") {
+		return createNodePostgres() as unknown as Database;
+	}
+	return createNeonHttp();
+}
+
+export type Database = ReturnType<typeof createNeonHttp>;

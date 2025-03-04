@@ -1,10 +1,10 @@
 import type { APIRoute } from "astro";
 import { desc } from "drizzle-orm";
 import { SitemapStream, streamToPromise } from "sitemap";
-import { createNeonHttp, packages } from "~/server/db";
+import { createDatabase, packages } from "~/server/db";
 
 export const GET: APIRoute = async ({ site }) => {
-	const db = createNeonHttp();
+	const db = createDatabase();
 	const sitemapStream = new SitemapStream({
 		hostname: site?.origin,
 	});
