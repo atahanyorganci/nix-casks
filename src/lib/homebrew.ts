@@ -738,6 +738,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 		});
 }
 
+export const GENERATOR_VERSION = 2;
+
 export function cask2nix(cask: Cask): NixPackage {
 	if (cask.version === "latest") {
 		throw new InvalidVersionError("Package doesn't have a valid version.");
