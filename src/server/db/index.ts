@@ -25,3 +25,11 @@ export function createNeonHttp() {
 }
 
 export type Database = ReturnType<typeof createNeonHttp>;
+
+export function createNodePostgres() {
+	return drizzleNodePostgres({
+		connection: POSTGRES_URL,
+		schema,
+		logger: new DrizzleLogger(),
+	});
+}
