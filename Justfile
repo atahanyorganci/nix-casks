@@ -44,3 +44,7 @@ studio:
 [group("db")]
 push:
     pnpm db:push
+
+[group("db")]
+seed:
+    pnpm tsx "src/server/db/seed.ts"
