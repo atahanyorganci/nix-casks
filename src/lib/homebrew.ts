@@ -631,6 +631,40 @@ const ignoredArtifactTypes = new Set([
 	"uninstall_postflight",
 ]);
 
+function replaceVariables(value: string, token: string, version: string) {
+	return value
+		.replace("/$HOME", "$out")
+		.replace("$APPDIR", "$out/Applications")
+		.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out")
+		.replace("$HOMEBREW_PREFIX/etc/bash_completion.d", "$out/share/bash-completion/completions")
+		.replace("$HOMEBREW_PREFIX/share/zsh/site-functions", "$out/share/zsh/site-functions")
+		.replace("$HOMEBREW_PREFIX/share/fish/vendor_completions.d", "$out/share/fish/vendor_completions.d")
+		.replace("$HOMEBREW_PREFIX", "$out");
+}
+
+function generateArtifactSrcDest(artifact: { name: string; target?: string }, token: string, version: string) {
+	const src = replaceVariables(artifact.name, token, version);
+	let target: string;
+	if (artifact.target) {
+		target = replaceVariables(artifact.target, token, version);
+	}
+	else {
+		const name = artifact.name.split("/").pop();
+		if (!name) {
+			throw new Error(`Binary ${artifact.name} has missing name`);
+		}
+		target = name;
+	}
+	let dest: string;
+	if (target.startsWith("$out")) {
+		dest = target;
+	}
+	else {
+		dest = pathe.join("$out/bin", target);
+	}
+	return { dest, src };
+}
+
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
 	return artifacts
 		.filter(artifact => !ignoredArtifactTypes.has(artifact.type))
@@ -648,17 +682,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					return unsupported("installer", `${token}'s installer ${artifact} is not supported`);
 				}
 				case "binary": {
-					const src = artifact.name
-						.replace("$APPDIR", "$out/Applications")
-						.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out")
-						.replace("$HOMEBREW_PREFIX/etc/bash_completion.d", "$out/share/bash-completion/completions")
-						.replace("$HOMEBREW_PREFIX/share/zsh/site-functions", "$out/share/zsh/site-functions")
-						.replace("$HOMEBREW_PREFIX/share/fish/vendor_completions.d", "$out/share/fish/vendor_completions.d");
-					const target = artifact.target
-						?? artifact.name.split("/").pop()
-						?? unreachable(`${token}'s binary ${artifact.name} has missing target`);
-					const absoluteTarget = pathe.join("$out/bin", target);
-					return `mkdir -p "$out/bin" && ln -s "${src}" "${absoluteTarget}"`;
+					const { src, dest } = generateArtifactSrcDest(artifact, token, version);
+					return `mkdir -p "${dest}" && ln -s "${src}" "${dest}"`;
 				}
 				case "manpage": {
 					const src = artifact.replace("$APPDIR", "$out/Applications");
@@ -730,15 +755,16 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					return `mkdir -p "$out/Library/Audio/VST3/${target}" && cp -r "${artifact.name}" "$out/Library/Audio/VST3"`;
 				}
 				case "artifact": {
-					const target = artifact.target ?? unreachable(`artifact ${artifact.name} has missing target`);
-					return `cp -r "${artifact.name}" "$out/${target}"`;
+					const { src, dest } = generateArtifactSrcDest(artifact, token, version);
+					const destDir = pathe.dirname(dest);
+					return `mkdir -p "${destDir}" && cp -r "${src}" "${dest}"`;
 				}
 			}
 			return unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);
 		});
 }
 
-export const GENERATOR_VERSION = 2;
+export const GENERATOR_VERSION = 3;
 
 export function cask2nix(cask: Cask): NixPackage {
 	if (cask.version === "latest") {
