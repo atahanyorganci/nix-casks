@@ -60,6 +60,7 @@
             buildInputs = with pkgs; [
               pnpm-shim
               nodejs-slim
+              just
               curl
               git
               ngrok

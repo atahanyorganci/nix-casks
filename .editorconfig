@@ -13,3 +13,7 @@ indent_style = space
 
 [*.yaml]
 indent_style = space
+
+[Justfile]
+indent_size = 4
+indent_style = space
