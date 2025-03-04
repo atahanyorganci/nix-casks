@@ -1,0 +1,7 @@
+version: "0.5"
+
+processes:
+  postgres:
+    command: docker compose up postgres
+  web:
+    command: pnpm dev
