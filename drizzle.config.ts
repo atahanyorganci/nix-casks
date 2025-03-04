@@ -1,10 +1,5 @@
 import process from "node:process";
-import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
-
-if (process.env.NODE_ENV !== "production") {
-	config({ path: ".env.local" });
-}
 
 export default defineConfig({
 	schema: "./src/server/db/schema.ts",
