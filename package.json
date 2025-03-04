@@ -48,6 +48,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "^0.39.2",
+		"drizzle-seed": "^0.3.1",
 		"drizzle-zod": "^0.7.0",
 		"hono": "^4.6.20",
 		"luxon": "^3.5.0",
@@ -58,6 +59,7 @@
 		"sitemap": "^8.0.0",
 		"tailwind-merge": "^3.0.1",
 		"tailwindcss": "^3.4.17",
+		"tsx": "^4.19.3",
 		"winston": "^3.17.0",
 		"zod": "^3.24.1"
 	},

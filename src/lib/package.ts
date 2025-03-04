@@ -4,7 +4,7 @@ import { z } from "@hono/zod-openapi";
 import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask, cask2nix, GENERATOR_VERSION } from "~/lib/homebrew";
-import { packages } from "~/server/db";
+import { packages } from "~/server/db/schema";
 import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
 /**
