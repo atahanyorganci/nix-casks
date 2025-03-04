@@ -26,3 +26,19 @@ setup: install env
 [group("dev")]
 dev:
     process-compose up
+
+[group("db")]
+generate name:
+    pnpm db:generate --name {{name}}
+
+[group("db")]
+migrate:
+    pnpm db:migrate
+
+[group("db")]
+studio:
+    pnpm db:studio
+
+[group("db")]
+push:
+    pnpm db:push
