@@ -662,7 +662,8 @@ function generateArtifactSrcDest(artifact: { name: string; target?: string }, to
 	else {
 		dest = pathe.join("$out/bin", target);
 	}
-	return { dest, src };
+	const destDir = pathe.dirname(dest);
+	return { dest, destDir, src };
 }
 
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
@@ -682,8 +683,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					return unsupported("installer", `${token}'s installer ${artifact} is not supported`);
 				}
 				case "binary": {
-					const { src, dest } = generateArtifactSrcDest(artifact, token, version);
-					return `mkdir -p "${dest}" && ln -s "${src}" "${dest}"`;
+					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
+					return `mkdir -p "${destDir}" && ln -s "${src}" "${dest}"`;
 				}
 				case "manpage": {
 					const src = artifact.replace("$APPDIR", "$out/Applications");
@@ -755,8 +756,7 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					return `mkdir -p "$out/Library/Audio/VST3/${target}" && cp -r "${artifact.name}" "$out/Library/Audio/VST3"`;
 				}
 				case "artifact": {
-					const { src, dest } = generateArtifactSrcDest(artifact, token, version);
-					const destDir = pathe.dirname(dest);
+					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
 					return `mkdir -p "${destDir}" && cp -r "${src}" "${dest}"`;
 				}
 			}
@@ -764,7 +764,7 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 		});
 }
 
-export const GENERATOR_VERSION = 3;
+export const GENERATOR_VERSION = 4;
 
 export function cask2nix(cask: Cask): NixPackage {
 	if (cask.version === "latest") {
