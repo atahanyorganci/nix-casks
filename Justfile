@@ -2,8 +2,6 @@ set dotenv-filename := ".env.local"
 set dotenv-load
 set export
 
-POSTGRES_URL := env("POSTGRES_URL", "postgres://admin:admin@localhost:5432/db")
-
 [group("setup")]
 install:
     pnpm install --frozen-lockfile
@@ -48,3 +46,7 @@ push:
 [group("db")]
 seed:
     pnpm tsx "src/server/db/seed.ts"
+
+[group("db")]
+b:
+    echo $NEON_API_KEY $NEON_PROJECT_ID
