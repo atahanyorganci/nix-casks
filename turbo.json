@@ -9,7 +9,7 @@
 	],
 	"tasks": {
 		"build": {
-			"dependsOn": ["check", "lint"],
+			"dependsOn": ["check", "lint", "db:migrate"],
 			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"],
 			"outputs": ["dist/**"],
 			"env": [
@@ -41,6 +41,9 @@
 		},
 		"check": {
 			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"]
+		},
+		"db:migrate": {
+			"cache": false
 		},
 		"dev": {
 			"cache": false,
