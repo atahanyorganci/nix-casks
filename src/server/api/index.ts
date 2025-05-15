@@ -1,6 +1,6 @@
 import type { AppContext } from "./types";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { apiReference } from "@scalar/hono-api-reference";
+import { Scalar } from "@scalar/hono-api-reference";
 import algoliaRouter from "./routers/algolia";
 import archiveRouter from "./routers/archive";
 import packagesRouter from "./routers/package";
@@ -54,10 +54,8 @@ app.doc("/openapi.json", {
 // Register Scalar documentation
 app.get(
 	"/reference",
-	apiReference({
+	Scalar({
 		pageTitle: "Nix Casks API Reference",
-		spec: {
-			url: "/api/openapi.json",
-		},
+		url: "/api/openapi.json",
 	}),
 );
