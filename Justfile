@@ -2,30 +2,36 @@ set dotenv-filename := ".env.local"
 set dotenv-load
 set export
 
+[group("vercel")]
+vercel *args='':
+    pnpm dlx vercel@latest {{args}}
+
+[group("vercel")]
+vercel-login:
+    just vercel whoami
+
+[group("vercel")]
+vercel-link: vercel-login
+    #!/usr/bin/env bash
+
+    rm -rf .vercel
+    just vercel link --repo
+    pnpm turbo link
+
 [group("setup")]
 install:
     pnpm install --frozen-lockfile
 
 [group("setup")]
-vercel:
-    #!/usr/bin/env bash
-    set -euxo pipefail
-
-    rm -rf .vercel
-    pnpm vercel whoami
-    pnpm vercel link --repo --yes
-    pnpm turbo link --yes
-
-[group("setup")]
-env: vercel
-    pnpm vercel env pull ".env.local"
+env: vercel-link
+    just vercel env pull
 
 [group("setup")]
 setup: install env
 
 [group("dev")]
-dev:
-    process-compose up
+dev *args='':
+    process-compose up {{args}}
 
 [group("db")]
 generate name:
