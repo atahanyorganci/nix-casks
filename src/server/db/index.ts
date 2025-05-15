@@ -1,6 +1,6 @@
 import type { Logger } from "drizzle-orm";
-import { neon } from "@neondatabase/serverless";
-import { NEON_DATABASE_URL } from "astro:env/server";
+import { neon, neonConfig } from "@neondatabase/serverless";
+import { NEON_DATABASE_URL, NODE_ENV } from "astro:env/server";
 import { drizzle } from "drizzle-orm/neon-http";
 import { createLogger } from "../logger";
 import * as schema from "./schema";
@@ -16,6 +16,10 @@ class DrizzleLogger implements Logger {
 }
 
 export function createDatabase() {
+	if (NODE_ENV === "development") {
+		const url = new URL(NEON_DATABASE_URL);
+		neonConfig.fetchEndpoint = `http://${url.hostname}:${url.port}/sql`;
+	}
 	return drizzle({
 		client: neon(NEON_DATABASE_URL),
 		schema,
