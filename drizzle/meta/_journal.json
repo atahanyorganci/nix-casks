@@ -15,6 +15,13 @@
 			"when": 1747344123059,
 			"tag": "0001_semver",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1747348682270,
+			"tag": "0002_packages-semver",
+			"breakpoints": true
 		}
 	]
 }
