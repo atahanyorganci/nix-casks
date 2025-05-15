@@ -591,14 +591,18 @@ export const Cask = z
 			.nullable(),
 		container: Container.nullable(),
 		auto_updates: z.boolean().nullable(),
+		// Deprecation
 		deprecated: z.boolean(),
 		deprecation_date: z.string().nullable(),
 		deprecation_reason: z.string().nullable(),
-		deprecation_replacement: z.string().nullable(),
+		deprecation_replacement_cask: z.string().nullable(),
+		deprecation_replacement_formula: z.string().nullable(),
+		// Disable
 		disabled: z.boolean(),
 		disable_date: z.string().nullable(),
 		disable_reason: z.string().nullable(),
-		disable_replacement: z.string().nullable(),
+		disable_replacement_cask: z.string().nullable(),
+		disable_replacement_formula: z.string().nullable(),
 		tap_git_head: z.string().nullable(),
 		languages: z.array(z.string()),
 		ruby_source_path: z.string(),
@@ -616,6 +620,9 @@ export const Cask = z
 			.regex(/^\d{4}-\d{2}-\d{2}$/)
 			.optional(),
 		analytics: z.unknown(),
+		autobump: z.boolean(),
+		no_autobump_message: z.string().nullable(),
+		skip_livecheck: z.boolean(),
 	})
 	.strict();
 
