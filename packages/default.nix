@@ -2,7 +2,7 @@
 stdenv.mkDerivation rec {
   inherit (pkg) pname version;
   nativeBuildInputs = with pkgs; [
-    python312Packages.magika
+    magika
     unzip
     jq
   ];
