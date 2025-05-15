@@ -1,8 +1,14 @@
 import type { SQL } from "drizzle-orm";
 import type { z } from "zod";
 import { sql } from "drizzle-orm";
-import { char, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
+import { char, customType, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+
+const semver = customType<{ data: string }>({
+	dataType() {
+		return "semver";
+	},
+});
 
 export const packages = pgTable(
 	"packages",
@@ -14,6 +20,7 @@ export const packages = pgTable(
 		version: varchar()
 			.notNull()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->>'version'`),
+		semver: semver().generatedAlwaysAs((): SQL => sql`try_cast_to_semver(${packages.nix}->>'version')`),
 		description: varchar()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'description'`),
 		homepage: varchar()
