@@ -24,6 +24,8 @@ const pageCount = Math.ceil(count / perPage);
 if (packages.length === 0) {
 	Astro.redirect("/package");
 }
+
+Astro.response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300, stale-while-revalidate=600");
 ---
 
 <Layout title="All Packages - NixCasks" description="Latest packages from NixCasks">
