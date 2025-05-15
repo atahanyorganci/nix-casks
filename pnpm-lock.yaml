@@ -71,9 +71,6 @@ importers:
       drizzle-orm:
         specifier: ^0.43.1
         version: 0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3)
-      drizzle-seed:
-        specifier: ^0.3.1
-        version: 0.3.1(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3))
       drizzle-zod:
         specifier: ^0.7.1
         version: 0.7.1(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3))(zod@3.24.4)
@@ -101,9 +98,6 @@ importers:
       tailwindcss:
         specifier: 3.4.17
         version: 3.4.17(ts-node@10.9.1(@types/node@22.15.18)(typescript@5.8.3))
-      tsx:
-        specifier: ^4.19.4
-        version: 4.19.4
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -2895,14 +2889,6 @@ packages:
       sqlite3:
         optional: true
 
-  drizzle-seed@0.3.1:
-    resolution: {integrity: sha512-F/0lgvfOAsqlYoHM/QAGut4xXIOXoE5VoAdv2FIl7DpGYVXlAzKuJO+IphkKUFK3Dz+rFlOsQLnMNrvoQ0cx7g==}
-    peerDependencies:
-      drizzle-orm: '>=0.36.4'
-    peerDependenciesMeta:
-      drizzle-orm:
-        optional: true
-
   drizzle-zod@0.7.1:
     resolution: {integrity: sha512-nZzALOdz44/AL2U005UlmMqaQ1qe5JfanvLujiTHiiT8+vZJTBFhj3pY4Vk+L6UWyKFfNmLhk602Hn4kCTynKQ==}
     peerDependencies:
@@ -4457,9 +4443,6 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
-
-  pure-rand@6.1.0:
-    resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
   qs@6.14.0:
     resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
@@ -8833,12 +8816,6 @@ snapshots:
       '@vercel/postgres': 0.10.0
       pg: 8.13.3
 
-  drizzle-seed@0.3.1(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3)):
-    dependencies:
-      pure-rand: 6.1.0
-    optionalDependencies:
-      drizzle-orm: 0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3)
-
   drizzle-zod@0.7.1(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3))(zod@3.24.4):
     dependencies:
       drizzle-orm: 0.43.1(@cloudflare/workers-types@4.20240919.0)(@libsql/client@0.14.0(bufferutil@4.0.9))(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(@vercel/postgres@0.10.0)(pg@8.13.3)
@@ -10763,8 +10740,6 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  pure-rand@6.1.0: {}
-
   qs@6.14.0:
     dependencies:
       side-channel: 1.1.0
@@ -11387,6 +11362,7 @@ snapshots:
       get-tsconfig: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   turbo-darwin-64@2.5.3:
     optional: true

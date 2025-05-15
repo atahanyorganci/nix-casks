@@ -48,11 +48,3 @@ studio:
 [group("db")]
 push:
     pnpm db:push
-
-[group("db")]
-seed:
-    pnpm tsx "src/server/db/seed.ts"
-
-[group("db")]
-b:
-    echo $NEON_API_KEY $NEON_PROJECT_ID
