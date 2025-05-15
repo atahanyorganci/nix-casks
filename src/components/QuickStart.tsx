@@ -29,7 +29,7 @@ const Code: FC<{ code: string }> = ({ code }) => (
 	<pre className="my-6 overflow-x-scroll rounded-lg text-sm text-neon-white/90"><code>{code}</code></pre>
 );
 
-const Step: FC<{ step: number;text: string;gradient: string }> = ({ step, text, gradient }) => (
+const Step: FC<{ step: number; text: string; gradient: string }> = ({ step, text, gradient }) => (
 	<Tabs.Trigger value={step.toString()} className="group flex items-center gap-4 rounded-xl border border-neon-white/40 bg-neon-black/30 p-4 text-left transition-all duration-200 data-[state=active]:border-neon-white">
 		<div className={cn("w-8 h-8 rounded-lg bg-gradient-to-r flex items-center justify-center text-neon-white font-bold", gradient)}>{step}</div>
 		<div className="text-neon-white/40 group-data-[state=active]:text-white">{text}</div>
