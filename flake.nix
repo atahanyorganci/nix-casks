@@ -66,6 +66,7 @@
               git
               ngrok
               ci
+              magika
             ];
           };
         });
