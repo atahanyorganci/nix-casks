@@ -5,6 +5,7 @@ const { pname } = Astro.params;
 if (!pname) {
 	return Astro.redirect("/404");
 }
+Astro.response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300, stale-while-revalidate=600");
 ---
 
 <PackagePage pname={pname} />
