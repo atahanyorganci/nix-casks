@@ -1,7 +1,7 @@
 import type { SQL } from "drizzle-orm";
 import type { Database, InsertPackage } from "~/server/db";
 import { z } from "@hono/zod-openapi";
-import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Cask, cask2nix, GENERATOR_VERSION } from "~/lib/homebrew";
 import { packages } from "~/server/db/schema";
@@ -205,22 +205,31 @@ export async function getHomebrewCasks() {
 	return { valid, invalid };
 }
 
-export async function getLatestNixPackages(db: Pick<Database, "select">): Promise<NixPackage[]> {
-	const latest = db
-		.select({
+function selectLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">, generatorVersion: number) {
+	return db
+		.selectDistinctOn([packages.pname], {
 			pname: packages.pname,
-			lastVersion: max(packages.version).as("latest_version"),
+			version: packages.version,
 		})
 		.from(packages)
-		.groupBy(packages.pname)
+		.where(eq(packages.generatorVersion, generatorVersion))
+		.orderBy(
+			desc(packages.pname),
+			desc(packages.semver),
+			desc(packages.createdAt),
+		)
 		.as("latest");
+}
+
+export async function getLatestNixPackages(db: Pick<Database, "select" | "selectDistinctOn">): Promise<NixPackage[]> {
+	const latest = selectLatestPackages(db, GENERATOR_VERSION);
 	const records = await db
 		.select({ nix: packages.nix })
 		.from(packages)
 		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.innerJoin(
 			latest,
-			and(eq(packages.pname, latest.pname), eq(packages.version, latest.lastVersion)),
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.version)),
 		)
 		.orderBy(packages.pname);
 	return records.map(({ nix }) => nix) as NixPackage[];
@@ -236,16 +245,8 @@ export interface Pagination {
 	perPage: number;
 }
 
-export async function getLatestPackages(db: Pick<Database, "select">, pagination?: Pagination): Promise<Package[]> {
-	const latest = db
-		.select({
-			pname: packages.pname,
-			latest_version: max(packages.version).as("latest_version"),
-		})
-		.from(packages)
-		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
-		.groupBy(packages.pname)
-		.as("latest");
+export async function getLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">, pagination?: Pagination): Promise<Package[]> {
+	const latest = selectLatestPackages(db, GENERATOR_VERSION);
 	let query = db
 		.select({
 			name: packages.name,
@@ -255,13 +256,10 @@ export async function getLatestPackages(db: Pick<Database, "select">, pagination
 			homepage: packages.homepage,
 		})
 		.from(packages)
+		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.innerJoin(
 			latest,
-			and(
-				eq(packages.generatorVersion, GENERATOR_VERSION),
-				eq(packages.pname, latest.pname),
-				eq(packages.version, latest.latest_version),
-			),
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.version)),
 		)
 		.orderBy(packages.pname)
 		.$dynamic();
