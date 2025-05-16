@@ -286,7 +286,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 								'generatorVersion', ${packages.generatorVersion},
 								'createdAt', ${packages.createdAt}
 						)
-						ORDER BY ${packages.createdAt} DESC
+						ORDER BY ${packages.semver} DESC, ${packages.createdAt} DESC
 				)`
 				.as("version_history"),
 		})
