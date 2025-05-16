@@ -93,14 +93,16 @@ export type Package = z.infer<typeof Package>;
 
 export async function getPackage(db: Database, pname: string, version?: string) {
 	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
-	const record = await db.query.packages.findFirst({
-		orderBy: desc(packages.version),
-		where,
-	});
-	if (!record) {
+	const record = await db
+		.select()
+		.from(packages)
+		.where(where)
+		.orderBy(desc(packages.semver), desc(packages.createdAt))
+		.limit(1);
+	if (record.length !== 1) {
 		return;
 	}
-	const { nix, ...pkg } = record;
+	const { nix, ...pkg } = record[0];
 	return { ...pkg, nix: nix as NixPackage };
 }
 
