@@ -67,6 +67,7 @@
               ngrok
               ci
               magika
+              flyctl
             ];
           };
         });
