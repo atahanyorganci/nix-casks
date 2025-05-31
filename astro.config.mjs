@@ -1,16 +1,22 @@
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
+	site: "https://nix-casks.yorganci.dev",
 	output: "server",
 	adapter: vercel(),
 	integrations: [tailwind(), react()],
+	vite: {
+		server: {
+			allowedHosts: true,
+		},
+	},
 	env: {
 		schema: {
 			NODE_ENV: envField.enum({ context: "server", access: "public", values: ["development", "production"] }),
-			POSTGRES_URL: envField.string({ context: "server", access: "secret" }),
+			NEON_DATABASE_URL: envField.string({ context: "server", access: "secret" }),
 			AWS_ACCESS_KEY_ID: envField.string({ context: "server", access: "secret" }),
 			AWS_SECRET_ACCESS_KEY: envField.string({ context: "server", access: "secret" }),
 			AWS_ENDPOINT_URL_S3: envField.string({ context: "server", access: "secret" }),
@@ -29,6 +35,11 @@ export default defineConfig({
 			ALGOLIA_INDEX_NAME: envField.string({ context: "server", access: "public" }),
 			ALGOLIA_CONNECTOR_PASSWORD: envField.string({ context: "server", access: "secret" }),
 			ALGOLIA_TASK_ID: envField.string({ context: "server", access: "secret" }),
+			GITHUB_TOKEN: envField.string({ context: "server", access: "secret" }),
+			GITHUB_OWNER: envField.string({ context: "server", access: "public" }),
+			GITHUB_REPO: envField.string({ context: "server", access: "public" }),
+			GITHUB_BRANCH: envField.string({ context: "server", access: "public" }),
+			GITHUB_WORKFLOW_ID: envField.number({ context: "server", access: "public" }),
 		},
 	},
 });

@@ -9,33 +9,44 @@
 	],
 	"tasks": {
 		"build": {
-			"dependsOn": ["check", "lint"],
+			"dependsOn": ["check", "lint", "db:migrate"],
 			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"],
 			"outputs": ["dist/**"],
 			"env": [
-				"POSTGRES_URL",
+				"ALGOLIA_APPLICATION_ID_REGION",
+				"ALGOLIA_APPLICATION_ID",
+				"ALGOLIA_CONNECTOR_PASSWORD",
+				"ALGOLIA_INDEX_NAME",
+				"ALGOLIA_SEARCH_API_KEY",
+				"ALGOLIA_TASK_ID",
+				"ALGOLIA_WRITE_API_KEY",
 				"AWS_ACCESS_KEY_ID",
-				"AWS_SECRET_ACCESS_KEY",
-				"AWS_ENDPOINT_URL_S3",
 				"AWS_BUCKET_NAME",
+				"AWS_ENDPOINT_URL_S3",
 				"AWS_REGION",
-				"QSTASH_NEXT_SIGNING_KEY",
-				"QSTASH_CURRENT_SIGNING_KEY",
-				"QSTASH_TOKEN",
+				"AWS_SECRET_ACCESS_KEY",
 				"AXIOM_DATASET",
 				"AXIOM_ORG_ID",
 				"AXIOM_TOKEN",
-				"ALGOLIA_APPLICATION_ID",
-				"ALGOLIA_SEARCH_API_KEY",
-				"ALGOLIA_APPLICATION_ID_REGION",
-				"ALGOLIA_WRITE_API_KEY",
-				"ALGOLIA_INDEX_NAME",
-				"ALGOLIA_CONNECTOR_PASSWORD",
-				"ALGOLIA_TASK_ID"
+				"GITHUB_BRANCH",
+				"GITHUB_OWNER",
+				"GITHUB_REPO",
+				"GITHUB_TOKEN",
+				"GITHUB_WORKFLOW_ID",
+				"NEON_DATABASE_URL",
+				"QSTASH_CURRENT_SIGNING_KEY",
+				"QSTASH_NEXT_SIGNING_KEY",
+				"QSTASH_TOKEN"
 			]
 		},
 		"check": {
 			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"]
+		},
+		"db:migrate": {
+			"cache": false,
+			"env": [
+				"NEON_DATABASE_URL"
+			]
 		},
 		"dev": {
 			"cache": false,

@@ -591,14 +591,18 @@ export const Cask = z
 			.nullable(),
 		container: Container.nullable(),
 		auto_updates: z.boolean().nullable(),
+		// Deprecation
 		deprecated: z.boolean(),
 		deprecation_date: z.string().nullable(),
 		deprecation_reason: z.string().nullable(),
-		deprecation_replacement: z.string().nullable(),
+		deprecation_replacement_cask: z.string().nullable(),
+		deprecation_replacement_formula: z.string().nullable(),
+		// Disable
 		disabled: z.boolean(),
 		disable_date: z.string().nullable(),
 		disable_reason: z.string().nullable(),
-		disable_replacement: z.string().nullable(),
+		disable_replacement_cask: z.string().nullable(),
+		disable_replacement_formula: z.string().nullable(),
 		tap_git_head: z.string().nullable(),
 		languages: z.array(z.string()),
 		ruby_source_path: z.string(),
@@ -616,6 +620,9 @@ export const Cask = z
 			.regex(/^\d{4}-\d{2}-\d{2}$/)
 			.optional(),
 		analytics: z.unknown(),
+		autobump: z.boolean(),
+		no_autobump_message: z.string().nullable(),
+		skip_livecheck: z.boolean(),
 	})
 	.strict();
 
@@ -631,14 +638,51 @@ const ignoredArtifactTypes = new Set([
 	"uninstall_postflight",
 ]);
 
+function replaceVariables(value: string, token: string, version: string) {
+	return value
+		.replace("/$HOME", "$out")
+		.replace("$APPDIR", "$out/Applications")
+		.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out")
+		.replace("$HOMEBREW_PREFIX/etc/bash_completion.d", "$out/share/bash-completion/completions")
+		.replace("$HOMEBREW_PREFIX/share/zsh/site-functions", "$out/share/zsh/site-functions")
+		.replace("$HOMEBREW_PREFIX/share/fish/vendor_completions.d", "$out/share/fish/vendor_completions.d")
+		.replace("$HOMEBREW_PREFIX", "$out");
+}
+
+function generateArtifactSrcDest(artifact: { name: string; target?: string }, token: string, version: string) {
+	const src = replaceVariables(artifact.name, token, version);
+	let target: string;
+	if (artifact.target) {
+		target = replaceVariables(artifact.target, token, version);
+	}
+	else {
+		const name = artifact.name.split("/").pop();
+		if (!name) {
+			throw new Error(`Binary ${artifact.name} has missing name`);
+		}
+		target = name;
+	}
+	let dest: string;
+	if (target.startsWith("$out")) {
+		dest = target;
+	}
+	else {
+		dest = pathe.join("$out/bin", target);
+	}
+	const destDir = pathe.dirname(dest);
+	return { dest, destDir, src };
+}
+
 function artifactToInstallScript({ token, version, artifacts }: Cask) {
 	return artifacts
 		.filter(artifact => !ignoredArtifactTypes.has(artifact.type))
 		.map(({ type, value: artifact }) => {
 			switch (type) {
 				case "app":
-				case "suite":
-					return `mkdir -p "$out/Applications" && cp -r "${artifact.name}" "$out/Applications/${artifact.target ?? artifact.name}"`;
+				case "suite": {
+					const target = artifact.target ?? artifact.name;
+					return `mkdir -p "$out/Applications/${target}" && cp -r "${artifact.name}" "$out/Applications"`;
+				}
 				case "pkg": {
 					return unsupported("pkg", `${token}'s pkg ${artifact.pkg} is not supported`);
 				}
@@ -646,14 +690,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					return unsupported("installer", `${token}'s installer ${artifact} is not supported`);
 				}
 				case "binary": {
-					const src = artifact.name
-						.replace("$APPDIR", "$out/Applications")
-						.replace(`$HOMEBREW_PREFIX/Caskroom/${token}/${version}`, "$out");
-					const target = artifact.target
-						?? artifact.name.split("/").pop()
-						?? unreachable(`${token}'s binary ${artifact.name} has missing target`);
-					const absoluteTarget = pathe.join("$out/bin", target);
-					return `mkdir -p "$out/bin" && ln -s "${src}" "${absoluteTarget}"`;
+					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
+					return `mkdir -p "${destDir}" && ln -s "${src}" "${dest}"`;
 				}
 				case "manpage": {
 					const src = artifact.replace("$APPDIR", "$out/Applications");
@@ -666,72 +704,74 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 					const target = artifact.target
 						?? artifact.name.split("/").pop()
 						?? unreachable(`colorPicker ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/ColorPickers" && cp -r "${artifact.name}" "$out/Library/ColorPickers/${target}"`;
+					return `mkdir -p "$out/Library/ColorPickers/${target}" && cp -r "${artifact.name}" "$out/Library/ColorPickers"`;
 				}
 				case "dictionary": {
 					const target = artifact.target
 						?? artifact.name.split("/").pop()
 						?? unreachable(`dictionary ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Dictionaries" && cp -r "${artifact.name}" "$out/Library/Dictionaries/${target}"`;
+					return `mkdir -p "$out/Library/Dictionaries/${target}" && cp -r "${artifact.name}" "$out/Library/Dictionaries"`;
 				}
 				case "font": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`font ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Fonts" && cp -r "${artifact.name}" "$out/Library/Fonts/${target}"`;
+					return `mkdir -p "$out/Library/Fonts/${target}" && cp -r "${artifact.name}" "$out/Library/Fonts"`;
 				}
 				case "input_method": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`inputMethod ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Input Methods" && cp -r "${artifact.name}" "$out/Library/Input Methods/${target}"`;
+					return `mkdir -p "$out/Library/Input Methods/${target}" && cp -r "${artifact.name}" "$out/Library/Input Methods"`;
 				}
 				case "internet_plugin": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`internetPlugin ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Internet Plug-Ins" && cp -r "${artifact.name}" "$out/Library/Internet Plug-Ins/${target}"`;
+					return `mkdir -p "$out/Library/Internet Plug-Ins/${target}" && cp -r "${artifact.name}" "$out/Library/Internet Plug-Ins"`;
 				}
 				case "keyboard_layout": {
 					const target = artifact.target
 						?? artifact.name.split("/").pop()
 						?? unreachable(`keyboardLayout ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Keyboard Layouts" && cp -r "${artifact.name}" "$out/Library/Keyboard Layouts/${target}"`;
+					return `mkdir -p "$out/Library/Keyboard Layouts/${target}" && cp -r "${artifact.name}" "$out/Library/Keyboard Layouts"`;
 				}
 				case "prefpane": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`prefPane ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/PreferencePanes" && cp -r "${artifact.name}" "$out/Library/PreferencePanes/${target}"`;
+					return `mkdir -p "$out/Library/PreferencePanes/${target}" && cp -r "${artifact.name}" "$out/Library/PreferencePanes"`;
 				}
 				case "qlplugin": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`qlPlugin ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/QuickLook" && cp -r "${artifact.name}" "$out/Library/QuickLook/${target}"`;
+					return `mkdir -p "$out/Library/QuickLook/${target}" && cp -r "${artifact.name}" "$out/Library/QuickLook"`;
 				}
 				case "mdimporter": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`mdImporter ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Spotlight" && cp -r "${artifact.name}" "$out/Library/Spotlight/${target}"`;
+					return `mkdir -p "$out/Library/Spotlight/${target}" && cp -r "${artifact.name}" "$out/Library/Spotlight"`;
 				}
 				case "screen_saver": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`screenSaver ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Screen Savers" && cp -r "${artifact.name}" "$out/Library/Screen Savers/${target}"`;
+					return `mkdir -p "$out/Library/Screen Savers/${target}" && cp -r "${artifact.name}" "$out/Library/Screen Savers"`;
 				}
 				case "service": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`service ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Services" && cp -r "${artifact.name}" "$out/Library/Services/${target}"`;
+					return `mkdir -p "$out/Library/Services/${target}" && cp -r "${artifact.name}" "$out/Library/Services"`;
 				}
 				case "audio_unit_plugin": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`audioUnitPlugin ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Audio/Components" && cp -r "${artifact.name}" "$out/Library/Audio/Components/${target}"`;
+					return `mkdir -p "$out/Library/Audio/Components/${target}" && cp -r "${artifact.name}" "$out/Library/Audio/Components"`;
 				}
 				case "vst_plugin": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`vstPlugin ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Audio/VST" && cp -r "${artifact.name}" "$out/Library/Audio/VST/${target}"`;
+					return `mkdir -p "$out/Library/Audio/VST/${target}" && cp -r "${artifact.name}" "$out/Library/Audio/VST"`;
 				}
 				case "vst3_plugin": {
 					const target = artifact.target ?? artifact.name.split("/").pop() ?? unreachable(`vst3Plugin ${artifact.name} has missing target`);
-					return `mkdir -p "$out/Library/Audio/VST3" && cp -r "${artifact.name}" "$out/Library/Audio/VST3/${target}"`;
+					return `mkdir -p "$out/Library/Audio/VST3/${target}" && cp -r "${artifact.name}" "$out/Library/Audio/VST3"`;
 				}
 				case "artifact": {
-					const target = artifact.target ?? unreachable(`artifact ${artifact.name} has missing target`);
-					return `cp -r "${artifact.name}" "$out/${target}"`;
+					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
+					return `mkdir -p "${destDir}" && cp -r "${src}" "${dest}"`;
 				}
 			}
 			return unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);
 		});
 }
+
+export const GENERATOR_VERSION = 4;
 
 export function cask2nix(cask: Cask): NixPackage {
 	if (cask.version === "latest") {

@@ -1,10 +1,10 @@
 ---
 import { Code } from "astro:components";
-import { ArrowLeft, CodeXml, Home } from "lucide-react";
+import { IconArrowLeft, IconCode, IconHome } from "@tabler/icons-react";
+import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
 import { getPackageVersions } from "~/lib/package";
 import { createDatabase } from "~/server/db";
-import { DateTime } from "luxon";
 
 interface Props {
 	pname: string;
@@ -36,13 +36,14 @@ const HOME = `{
   ];
 }`;
 
-const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
+const versions = pkg.versionHistory.map(({ version, createdAt, generatorVersion }) => ({
 	version,
+	generatorVersion,
 	createdAt: DateTime.fromISO(createdAt, { zone: "utc" }).toFormat("d LLLL yyyy, HH:mm"),
 }));
 ---
 
-<Layout title={`${pkg.name} - NixCasks`}>
+<Layout title={`${pkg.name} - NixCasks`} description={pkg.description}>
 	<div class="container py-8 sm:py-12 lg:py-20 max-w-4xl gap-y-4 flex flex-col">
 		<div class="flex gap-2 sm:gap-4">
 			{
@@ -59,7 +60,9 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 					{pkg.name}
 					<span class="text-neon-white/60 text-base sm:text-lg md:text-xl font-medium ml-2">{pkg.version}</span>
 				</h1>
-				<p class="text-neon-white/80 text-sm sm:text-base">{pkg.nix.meta.description}</p>
+				<p class="text-neon-white/80 text-sm sm:text-base">
+					{pkg.nix.meta.description}
+				</p>
 				<div class="flex gap-2 mt-2">
 					<a
 						href={pkg.nix.meta.homepage}
@@ -68,7 +71,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="Visit homepage"
 					>
-						<Home className="h-4 w-4 md:w-5 md:h-5" />
+						<IconHome className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 					<a
 						href={`/api/package/${pkg.pname}/${pkg.version}`}
@@ -77,7 +80,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
 						title="View source"
 					>
-						<CodeXml className="h-4 w-4 md:w-5 md:h-5" />
+						<IconCode className="h-4 w-4 md:w-5 md:h-5" />
 					</a>
 				</div>
 			</div>
@@ -106,7 +109,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 			<h2 class="text-lg sm:text-xl font-bold text-neon-white mb-4">Version History</h2>
 			<div class="space-y-3">
 				{
-					versions.map(({ version, createdAt }) => (
+					versions.map(({ version, generatorVersion, createdAt }) => (
 						<a
 							href={`/package/${pkg.pname}/${version}`}
 							class="flex items-center justify-between p-3 bg-neon-black rounded-lg border border-neon-white/5 hover:border-neon-purple/20 transition-all duration-200"
@@ -114,6 +117,7 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 							<div class="flex items-center gap-3">
 								<div class="w-2 h-2 rounded-full bg-neon-purple" />
 								<span class="font-medium text-neon-white">{version}</span>
+								<span class="text-sm text-neon-white/50">{`(NixCasks v${generatorVersion})`}</span>
 							</div>
 							<span class="text-sm text-neon-white/60">{createdAt}</span>
 						</a>
@@ -125,7 +129,8 @@ const versions = pkg.versionHistory.map(({ version, createdAt }) => ({
 			<a
 				href="/package"
 				class="inline-flex items-center gap-2 px-6 py-3 bg-neon-black text-neon-white font-bold rounded-xl border border-neon-purple/30 hover:border-neon-purple/60 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-neon-purple/10 transition-all duration-200"
-				><ArrowLeft className="w-5 h-5" />
+			>
+				<IconArrowLeft className="w-5 h-5" />
 				<span>Back to Packages</span>
 			</a>
 		</div>

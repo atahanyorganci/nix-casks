@@ -14,11 +14,13 @@ function cleanup {
 
 trap cleanup EXIT
 
-OUTPUT=$(magika --json -i "$src" | jq -r '.[0].output')
+FILE_NAME=$(basename "$src")
+
+OUTPUT=$(magika-python-client --json --mime-type "$src" | jq -r '.[0].prediction.output')
 MIME_TYPE=$(echo "$OUTPUT" | jq -r '.mime_type')
-MAGIC=$(echo "$OUTPUT" | jq -r '.magic')
-NAME=$(basename "$src")
-echo "File $NAME is $MAGIC ($MIME_TYPE)"
+DESCRIPTION=$(echo "$OUTPUT" | jq -r '.description')
+
+echo "File $FILE_NAME is $DESCRIPTION ($MIME_TYPE)"
 
 if [ "$MIME_TYPE" = "application/zip" ]; then
     echo "Unzipping $src to $DEST"

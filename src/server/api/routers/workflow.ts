@@ -5,6 +5,7 @@ import { Hono } from "hono";
 import { uploadPackageArchive } from "~/lib/archive";
 import { updateHomebrewCasks } from "~/lib/package";
 import { runIngestionTask } from "~/server/algolia";
+import { triggerUpdateArchiveWorkflow } from "~/server/github";
 import { authorizeQstashRequest } from "../util";
 
 const workflowRouter = new Hono<AppContext>();
@@ -39,6 +40,10 @@ workflowRouter.post("/homebrew", async (c) => {
 				const task = await runIngestionTask();
 				c.env.logger.info("Running Algolia update task", task);
 			}
+		});
+		await ctx.run("trigger-update-archive-workflow", async () => {
+			const { status, data: workflowData } = await triggerUpdateArchiveWorkflow();
+			c.env.logger.info("Triggered update archive workflow", { status, workflowData });
 		});
 	}, {
 		env: {

@@ -48,10 +48,12 @@ The website is server rendered Astro app hosted on Vercel. The tech stack is as 
 - [Astro](https://astro.build/) for server-side rendering of mostly static pages
 - [Drizzle](https://orm.drizzle.team/) for schema management and querying
 - [TailwindCSS](https://tailwindcss.com/) for sane CSS
-- [Neon/Vercel PostgreSQL Database](https://vercel.com/docs/storage/vercel-postgres)
-- [Tigris](https://www.tigrisdata.com) for storing package bundles and CDN
+- [Neon Database](https://neon.tech/)
+- [Upstash Qstash](https://upstash.com/) for securely invoking update workflow on CRON schedule
+- [Tigris](https://www.tigrisdata.com) for storing package bundles and hosting archives
 - [Vercel](https://vercel.com) for hosting
-- [Cloudflare](https://cloudflare.com) for DNS, DDoS protection and
+- [Cloudflare](https://cloudflare.com) for DNS and DDoS protection
+- [GitHub Actions](https://docs.github.com/en/actions) for updating [`archive.json`](./archive.json) after scheduled package update
 
 ## Limitations
 

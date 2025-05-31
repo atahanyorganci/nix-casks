@@ -1,4 +1,5 @@
 import antfu from "@antfu/eslint-config";
+import tailwind from "eslint-plugin-tailwindcss";
 
 export default antfu({
 	astro: true,
@@ -14,5 +15,7 @@ export default antfu({
 		"regexp/no-obscure-range": "off",
 		"antfu/no-top-level-await": "off",
 	},
-	ignores: ["archive.json"],
-});
+	ignores: ["archive.json", "vercel.json"],
+}).append(
+	tailwind.configs["flat/recommended"],
+);

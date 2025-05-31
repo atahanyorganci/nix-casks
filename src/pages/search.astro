@@ -1,8 +1,8 @@
 ---
+import algoliaIcon from "~/assets/algolia.svg";
 import PackagesTable from "~/components/PackageTable.astro";
 import Layout from "~/layouts/Layout.astro";
 import { searchPackages } from "~/server/algolia";
-import algoliaIcon from "~/assets/algolia.svg";
 
 const query = Astro.url.searchParams.get("q");
 if (!query) {

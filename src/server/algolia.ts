@@ -1,7 +1,7 @@
+import type { Package } from "~/lib/package";
 import { ingestionClient } from "@algolia/ingestion";
 import { algoliasearch } from "algoliasearch";
 import { ALGOLIA_APPLICATION_ID, ALGOLIA_APPLICATION_ID_REGION, ALGOLIA_SEARCH_API_KEY, ALGOLIA_TASK_ID, ALGOLIA_WRITE_API_KEY } from "astro:env/server";
-import type { Package } from "~/lib/package";
 
 export const algolia = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_SEARCH_API_KEY);
 

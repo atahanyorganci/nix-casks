@@ -1,5 +1,12 @@
 ---
-import { ChevronLeft, ChevronRight, ChevronsRight, ChevronsLeft, CodeXml, Home } from "lucide-react";
+import {
+	IconChevronLeft,
+	IconChevronRight,
+	IconChevronsLeft,
+	IconChevronsRight,
+	IconCode,
+	IconHome,
+} from "@tabler/icons-react";
 import { Package } from "~/lib/package";
 import IconLink from "./IconLink";
 
@@ -69,7 +76,7 @@ const hasPrev = pagination && pagination.currentPage > 1;
 							<div class="flex items-center gap-2">
 								{pkg.homepage && (
 									<IconLink href={pkg.homepage} target="_blank" rel="noopener noreferrer" title="Visit homepage">
-										<Home className="w-5 h-5" />
+										<IconHome className="w-5 h-5" />
 									</IconLink>
 								)}
 								<IconLink
@@ -78,7 +85,7 @@ const hasPrev = pagination && pagination.currentPage > 1;
 									rel="noopener noreferrer"
 									title="View source"
 								>
-									<CodeXml className="w-5 h-5" />
+									<IconCode className="w-5 h-5" />
 								</IconLink>
 							</div>
 						</td>
@@ -91,13 +98,13 @@ const hasPrev = pagination && pagination.currentPage > 1;
 		pagination && (
 			<div class="text-sm text-neon-white/60 flex items-center justify-center h-20 w-full">
 				<IconLink href="/package" title="First Page">
-					<ChevronsLeft className="w-5 h-5" />
+					<IconChevronsLeft className="w-5 h-5" />
 				</IconLink>
 				<IconLink
 					href={hasPrev ? `/package?page=${pagination.currentPage - 1}` : `/package?page=1`}
 					title="Previous Page"
 				>
-					<ChevronLeft className="w-5 h-5" />
+					<IconChevronLeft className="w-5 h-5" />
 				</IconLink>
 				<span class="mx-4">
 					Page {pagination.currentPage} of {pagination.pageCount}
@@ -106,10 +113,10 @@ const hasPrev = pagination && pagination.currentPage > 1;
 					href={hasNext ? `/package?page=${pagination.currentPage + 1}` : `/package?page=${pagination.pageCount}`}
 					title="Next Page"
 				>
-					<ChevronRight className="w-5 h-5" />
+					<IconChevronRight className="w-5 h-5" />
 				</IconLink>
 				<IconLink href={`/package?page=${pagination.pageCount}`} title="Last Page">
-					<ChevronsRight className="w-5 h-5" />
+					<IconChevronsRight className="w-5 h-5" />
 				</IconLink>
 			</div>
 		)

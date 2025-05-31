@@ -1,8 +1,10 @@
+import type { SQL } from "drizzle-orm";
+import type { Database, InsertPackage } from "~/server/db";
 import { z } from "@hono/zod-openapi";
-import { and, countDistinct, desc, eq, max, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { Cask, cask2nix } from "~/lib/homebrew";
-import { type Database, type InsertPackage, packages } from "~/server/db";
+import { Cask, cask2nix, GENERATOR_VERSION } from "~/lib/homebrew";
+import { packages } from "~/server/db/schema";
 import { InvalidChecksumError, InvalidVersionError, unreachable, UnsupportedArtifactError } from ".";
 
 /**
@@ -91,14 +93,16 @@ export type Package = z.infer<typeof Package>;
 
 export async function getPackage(db: Database, pname: string, version?: string) {
 	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
-	const record = await db.query.packages.findFirst({
-		orderBy: desc(packages.version),
-		where,
-	});
-	if (!record) {
+	const record = await db
+		.select()
+		.from(packages)
+		.where(where)
+		.orderBy(desc(packages.semver), desc(packages.createdAt))
+		.limit(1);
+	if (record.length !== 1) {
 		return;
 	}
-	const { nix, ...pkg } = record;
+	const { nix, ...pkg } = record[0];
 	return { ...pkg, nix: nix as NixPackage };
 }
 
@@ -203,21 +207,31 @@ export async function getHomebrewCasks() {
 	return { valid, invalid };
 }
 
-export async function getLatestNixPackages(db: Pick<Database, "select">): Promise<NixPackage[]> {
-	const latest = db
-		.select({
+function selectLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">, generatorVersion: number) {
+	return db
+		.selectDistinctOn([packages.pname], {
 			pname: packages.pname,
-			latest_version: max(packages.version).as("latest_version"),
+			version: packages.version,
 		})
 		.from(packages)
-		.groupBy(packages.pname)
+		.where(eq(packages.generatorVersion, generatorVersion))
+		.orderBy(
+			desc(packages.pname),
+			desc(packages.semver),
+			desc(packages.createdAt),
+		)
 		.as("latest");
+}
+
+export async function getLatestNixPackages(db: Pick<Database, "select" | "selectDistinctOn">): Promise<NixPackage[]> {
+	const latest = selectLatestPackages(db, GENERATOR_VERSION);
 	const records = await db
 		.select({ nix: packages.nix })
 		.from(packages)
+		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.innerJoin(
 			latest,
-			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.version)),
 		)
 		.orderBy(packages.pname);
 	return records.map(({ nix }) => nix) as NixPackage[];
@@ -233,15 +247,8 @@ export interface Pagination {
 	perPage: number;
 }
 
-export async function getLatestPackages(db: Pick<Database, "select">, pagination?: Pagination): Promise<Package[]> {
-	const latest = db
-		.select({
-			pname: packages.pname,
-			latest_version: max(packages.version).as("latest_version"),
-		})
-		.from(packages)
-		.groupBy(packages.pname)
-		.as("latest");
+export async function getLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">, pagination?: Pagination): Promise<Package[]> {
+	const latest = selectLatestPackages(db, GENERATOR_VERSION);
 	let query = db
 		.select({
 			name: packages.name,
@@ -251,9 +258,10 @@ export async function getLatestPackages(db: Pick<Database, "select">, pagination
 			homepage: packages.homepage,
 		})
 		.from(packages)
+		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.innerJoin(
 			latest,
-			and(eq(packages.pname, latest.pname), eq(packages.version, latest.latest_version)),
+			and(eq(packages.pname, latest.pname), eq(packages.version, latest.version)),
 		)
 		.orderBy(packages.pname)
 		.$dynamic();
@@ -271,13 +279,14 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 	const versionHistory = db
 		.select({
 			pname: packages.pname,
-			version_history: sql<{ version: string; createdAt: string }[]>`
+			versionHistory: sql<{ version: string; createdAt: string; generatorVersion: number }[]>`
 				json_agg(
 						json_build_object(
 								'version', ${packages.version},
+								'generatorVersion', ${packages.generatorVersion},
 								'createdAt', ${packages.createdAt}
 						)
-						ORDER BY ${packages.createdAt} DESC
+						ORDER BY ${packages.semver} DESC, ${packages.createdAt} DESC
 				)`
 				.as("version_history"),
 		})
@@ -285,15 +294,22 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		.where(eq(packages.pname, pname))
 		.groupBy(packages.pname)
 		.as("versionHistory");
-	const where = version ? and(eq(packages.pname, pname), eq(packages.version, version)) : eq(packages.pname, pname);
+	let where: SQL;
+	if (version) {
+		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname), eq(packages.version, version))!;
+	}
+	else {
+		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname))!;
+	}
 	const pkg = await db
 		.select({
 			name: packages.name,
+			description: packages.description,
 			pname: packages.pname,
 			version: packages.version,
 			nix: packages.nix,
 			createdAt: packages.createdAt,
-			versionHistory: versionHistory.version_history,
+			versionHistory: versionHistory.versionHistory,
 		})
 		.from(packages)
 		.where(where)
@@ -320,6 +336,7 @@ export async function updateHomebrewCasks(db: Database) {
 				name: cask.name[0],
 				url: `https://formulae.brew.sh/api/cask/${cask.token}.json`,
 				nix,
+				generatorVersion: GENERATOR_VERSION,
 			});
 		}
 		catch (error) {
