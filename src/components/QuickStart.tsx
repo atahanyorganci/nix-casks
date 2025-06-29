@@ -54,7 +54,7 @@ const QuickStart: FC = () => (
 			<p className="mx-auto mb-16 max-w-2xl text-center text-neon-white/60 sm:text-xl">
 				Get started with NixCasks in minutes. Follow these simple steps to integrate with your existing Nix setup.
 			</p>
-			<Tabs.Root className="grid gap-8 lg:grid-cols-[300px,1fr]" defaultValue="1">
+			<Tabs.Root className="grid gap-8 lg:grid-cols-[300px_1fr]" defaultValue="1">
 				<Tabs.List className="flex flex-col space-y-3">
 					<Step step={1} gradient="from-neon-purple to-neon-blue" text="Add to your flake inputs" />
 					<Step step={2} gradient="from-neon-blue to-neon-green" text="Install packages" />

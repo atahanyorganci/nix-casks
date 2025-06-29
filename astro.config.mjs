@@ -1,17 +1,18 @@
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
 	site: "https://nix-casks.yorganci.dev",
 	output: "server",
 	adapter: vercel(),
-	integrations: [tailwind(), react()],
+	integrations: [react()],
 	vite: {
 		server: {
 			allowedHosts: true,
 		},
+		plugins: [tailwindcss()],
 	},
 	env: {
 		schema: {
