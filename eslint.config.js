@@ -1,4 +1,5 @@
 import antfu from "@antfu/eslint-config";
+import tailwindcss from "eslint-plugin-better-tailwindcss";
 
 export default antfu({
 	astro: true,
@@ -15,4 +16,19 @@ export default antfu({
 		"antfu/no-top-level-await": "off",
 	},
 	ignores: ["archive.json", "vercel.json"],
+}).append({
+	plugins: {
+		tailwindcss,
+	},
+	settings: {
+		tailwindcss: {
+			entrypoint: "./src/styles/global.css",
+		},
+	},
+	rules: {
+		"tailwindcss/enforce-consistent-class-order": "error",
+		"tailwindcss/no-conflicting-classes": "error",
+		"tailwindcss/no-duplicate-classes": "error",
+		"tailwindcss/no-unnecessary-whitespace": "error",
+	},
 });
