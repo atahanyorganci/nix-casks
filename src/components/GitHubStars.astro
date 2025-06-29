@@ -1,5 +1,7 @@
 ---
 import { IconBrandGithub } from "@tabler/icons-react";
+import { GITHUB_OWNER } from "astro:env/server";
+import { GITHUB_REPO } from "astro:env/server";
 import { z } from "zod";
 
 const RepoSchema = z.object({
@@ -13,7 +15,7 @@ async function fetchGitHubRepoStars(owner: string, repo: string) {
 	return stargazerCount;
 }
 
-const stargazerCount = await fetchGitHubRepoStars("atahanyorganci", "nix-casks");
+const stargazerCount = await fetchGitHubRepoStars(GITHUB_OWNER, GITHUB_REPO);
 
 Astro.response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300, stale-while-revalidate=600");
 ---
