@@ -14,3 +14,8 @@
 	--shadow-neon: 0 0 5px var(--tw-shadow-color), 0 0 20px var(--tw-shadow-color);
 	--shadow-neon-lg: 0 0 10px var(--tw-shadow-color), 0 0 40px var(--tw-shadow-color);
 }
+
+.astro-code,
+.astro-code span {
+	background-color: transparent !important;
+}
