@@ -296,10 +296,10 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		.as("versionHistory");
 	let where: SQL;
 	if (version) {
-		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname), eq(packages.version, version))!;
+		where = and(eq(packages.pname, pname), eq(packages.version, version))!;
 	}
 	else {
-		where = and(eq(packages.generatorVersion, GENERATOR_VERSION), eq(packages.pname, pname))!;
+		where = eq(packages.pname, pname);
 	}
 	const pkg = await db
 		.select({
@@ -313,7 +313,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		})
 		.from(packages)
 		.where(where)
-		.orderBy(desc(packages.version))
+		.orderBy(desc(packages.generatorVersion), desc(packages.version))
 		.limit(1)
 		.innerJoin(versionHistory, eq(versionHistory.pname, packages.pname));
 	if (pkg.length === 0) {
