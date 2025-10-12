@@ -15,7 +15,7 @@ export default antfu({
 		"regexp/no-obscure-range": "off",
 		"antfu/no-top-level-await": "off",
 	},
-	ignores: ["archive.json", "vercel.json"],
+	ignores: ["archive.json", "vercel.json", ".pnpm-store"],
 }).append({
 	plugins: {
 		tailwindcss,
