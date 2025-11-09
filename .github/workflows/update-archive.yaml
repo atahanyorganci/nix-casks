@@ -1,9 +1,6 @@
----
 name: Update Package Archive
-
 on:
   workflow_dispatch:
-
 jobs:
   update-version:
     runs-on: ubuntu-latest

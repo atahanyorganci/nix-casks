@@ -6,8 +6,8 @@ MOUNTED=0
 function cleanup {
     echo "Cleaning up $TEMP"
     if [ $MOUNTED -eq 1 ]; then
-    echo "Detaching $TEMP"
-    /usr/bin/hdiutil detach "$TEMP" -force
+        echo "Detaching $TEMP"
+        /usr/bin/hdiutil detach "$TEMP" -force
     fi
     rm -rf "$TEMP"
 }
