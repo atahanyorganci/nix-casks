@@ -3,21 +3,13 @@ import { Code } from "astro:components";
 import { IconArrowLeft, IconCode, IconHome } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
-import { getPackageVersions } from "~/lib/package";
-import { createDatabase } from "~/server/db";
+import type { PackageWithVersion } from "~/lib/package";
 
 interface Props {
-	pname: string;
-	version?: string;
+	pkg: PackageWithVersion;
 }
 
-const { pname, version } = Astro.props;
-const db = createDatabase();
-const pkg = await getPackageVersions(db, pname, version);
-
-if (!pkg) {
-	return Astro.redirect("/404");
-}
+const { pkg } = Astro.props;
 
 let iconUrl: string | undefined;
 if (pkg.nix.meta.homepage) {

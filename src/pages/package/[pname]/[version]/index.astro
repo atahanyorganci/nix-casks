@@ -1,14 +1,27 @@
 ---
 import { z } from "zod";
 import PackagePage from "~/components/PackagePage.astro";
+import { getPackageVersions } from "~/lib/package";
+import { createDatabase } from "~/server/db";
 
-const { pname, version } = z
+const params = z
 	.object({
 		pname: z.string(),
 		version: z.string(),
 	})
-	.parse(Astro.params);
+	.safeParse(Astro.params);
+if (!params.success) {
+	return Astro.redirect("/404");
+}
+
+const db = createDatabase();
+const pkg = await getPackageVersions(db, params.data.pname, params.data.version);
+
+if (!pkg) {
+	return Astro.redirect("/404");
+}
+
 Astro.response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300, stale-while-revalidate=600");
 ---
 
-<PackagePage pname={pname} version={version} />
+<PackagePage pkg={pkg} />

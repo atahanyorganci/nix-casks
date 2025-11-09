@@ -273,7 +273,7 @@ export async function getLatestPackages(db: Pick<Database, "select" | "selectDis
 	return records as Package[];
 }
 
-export type PackageWithVersion = Exclude<Awaited<ReturnType<typeof getPackage>>, undefined>;
+export type PackageWithVersion = Exclude<Awaited<ReturnType<typeof getPackageVersions>>, null>;
 
 export async function getPackageVersions(db: Pick<Database, "select">, pname: string, version?: string) {
 	const versionHistory = db
