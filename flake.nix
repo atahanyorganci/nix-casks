@@ -13,6 +13,9 @@
           "x86_64-darwin"
           "x86_64-linux"
         ];
+        imports = [
+          ./nix
+        ];
         perSystem = { system, ... }: {
           _module.args.pkgs = import self.inputs.nixpkgs {
             inherit system;
