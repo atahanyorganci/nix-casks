@@ -1,5 +1,6 @@
 {
   imports = [
+    ./casks
     ./shell.nix
   ];
 }
