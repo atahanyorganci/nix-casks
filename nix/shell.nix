@@ -1,5 +1,5 @@
 {
-  perSystem = { pkgs, ... }:
+  perSystem = { pkgs, self', ... }:
     let
       packageJson = builtins.fromJSON (builtins.readFile ../package.json);
       packageManager = builtins.elemAt (builtins.split "\\+" packageJson.packageManager) 0;
@@ -22,6 +22,7 @@
           ngrok
           magika
           flyctl
+          self'.packages.ci
         ];
       };
     };
