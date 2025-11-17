@@ -1,10 +1,9 @@
-{
-  stdenv,
-  pkgs,
-  fetchurl,
-  lib,
-  cask,
-  ...
+{ stdenv
+, pkgs
+, fetchurl
+, lib
+, cask
+, ...
 }:
 stdenv.mkDerivation rec {
   inherit (cask) pname version;
@@ -14,7 +13,7 @@ stdenv.mkDerivation rec {
     jq
     bzip2
   ];
-  phases = ["unpackPhase" "installPhase"];
+  phases = [ "unpackPhase" "installPhase" ];
   unpackPhase = builtins.readFile ./unpack.sh;
   installPhase = builtins.concatStringsSep "\n" cask.installPhase;
   src = fetchurl {
