@@ -11,6 +11,7 @@ stdenv.mkDerivation rec {
     magika
     unzip
     jq
+    bzip2
   ];
   phases = [ "unpackPhase" "installPhase" ];
   unpackPhase = builtins.readFile ./unpack.sh;
