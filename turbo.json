@@ -10,7 +10,7 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["check", "lint", "db:migrate"],
-			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"],
+			"inputs": ["src/**", "astro.config.mjs"],
 			"outputs": ["dist/**"],
 			"env": [
 				"ALGOLIA_APPLICATION_ID_REGION",
@@ -40,7 +40,7 @@
 			]
 		},
 		"check": {
-			"inputs": ["src/**", "astro.config.mjs", "tailwind.config.js"]
+			"inputs": ["src/**", "astro.config.mjs"]
 		},
 		"db:migrate": {
 			"cache": false,

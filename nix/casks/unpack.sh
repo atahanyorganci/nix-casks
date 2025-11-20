@@ -6,8 +6,8 @@ MOUNTED=0
 function cleanup {
     echo "Cleaning up $TEMP"
     if [ $MOUNTED -eq 1 ]; then
-    echo "Detaching $TEMP"
-    /usr/bin/hdiutil detach "$TEMP" -force
+        echo "Detaching $TEMP"
+        /usr/bin/hdiutil detach "$TEMP" -force
     fi
     rm -rf "$TEMP"
 }
@@ -37,6 +37,13 @@ elif [ "$MIME_TYPE" = "application/x-apple-diskimage" ]; then
     ls -l "$TEMP"
     echo "Copying $TEMP to $DEST"
     cd "$TEMP" && cp -a !(Applications) "$DEST/" || exit 1
+elif [ "$MIME_TYPE" = "application/x-bzip2" ]; then
+    echo "Unpacking $src to $DEST"
+    tar -xjf "$src" -C "$TEMP"
+    echo "Contents of $TEMP:"
+    ls -l "$TEMP"
+    echo "Copying $TEMP to $DEST"
+    cd "$TEMP" && cp -a . "$DEST" && cd "$DEST" || exit 1
 else
     echo "Unknown type $TYPE"
     exit 1

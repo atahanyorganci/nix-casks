@@ -32,14 +32,14 @@ const features = [
 ];
 
 const Feature: FC<{ icon: string; title: string; description: string; gradient: string; glow: string }> = ({ icon, title, description, gradient, glow }) => (
-	<div className={`group rounded-xl border border-neon-white/10 bg-neon-black p-6 transition-all duration-300 ${glow}`}>
+	<div className={`group border-neon-white/10 bg-neon-black rounded-xl border p-6 transition-all duration-300 ${glow}`}>
 		<div className="flex items-start gap-4">
 			<div className="text-2xl md:text-4xl">{icon}</div>
 			<div>
-				<h3 className={`mb-2 bg-clip-text text-lg font-bold text-neon-white transition-all duration-300 group-hover:bg-gradient-to-r group-hover:text-transparent md:text-xl ${gradient}`}>
+				<h3 className={`text-neon-white mb-2 bg-clip-text text-lg font-bold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:text-transparent md:text-xl ${gradient}`}>
 					{title}
 				</h3>
-				<p className="font-medium leading-relaxed text-neon-white/70">
+				<p className="text-neon-white/70 leading-relaxed font-medium">
 					{description}
 				</p>
 			</div>
@@ -49,15 +49,15 @@ const Feature: FC<{ icon: string; title: string; description: string; gradient: 
 
 const KeyFeaturesSection: FC = () => (
 	<section className="relative overflow-hidden py-6 sm:py-12 lg:py-24">
-		<div className="absolute inset-0 bg-gradient-to-b from-neon-black to-neon-dark"></div>
+		<div className="from-neon-black to-neon-dark absolute inset-0 bg-gradient-to-b"></div>
 		<div className="absolute inset-0">
-			<div className="absolute left-0 top-1/4 aspect-square w-1/2 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05),transparent_50%)]"></div>
-			<div className="absolute bottom-1/4 right-0 aspect-square w-1/2 bg-[radial-gradient(circle_at_center,rgba(176,38,255,0.05),transparent_50%)]"></div>
+			<div className="absolute top-1/4 left-0 aspect-square w-1/2 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05),transparent_50%)]"></div>
+			<div className="absolute right-0 bottom-1/4 aspect-square w-1/2 bg-[radial-gradient(circle_at_center,rgba(176,38,255,0.05),transparent_50%)]"></div>
 		</div>
-		<div className="container relative mx-auto px-4">
+		<div className="relative container mx-auto px-4">
 			<div className="mx-auto max-w-5xl">
-				<h2 className="mb-4 text-center text-2xl font-bold text-neon-white sm:text-4xl md:text-5xl">Key Features</h2>
-				<p className="mx-auto mb-16 max-w-2xl text-center text-neon-white/60 sm:text-xl">
+				<h2 className="text-neon-white mb-4 text-center text-2xl font-bold sm:text-4xl md:text-5xl">Key Features</h2>
+				<p className="text-neon-white/60 mx-auto mb-16 max-w-2xl text-center sm:text-xl">
 					Everything you need to manage macOS applications with Nix, without the complexity of Homebrew.
 				</p>
 				<div className="grid gap-6 md:grid-cols-2">

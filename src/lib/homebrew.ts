@@ -623,6 +623,7 @@ export const Cask = z
 		autobump: z.boolean(),
 		no_autobump_message: z.string().nullable(),
 		skip_livecheck: z.boolean(),
+		rename: z.string().array(),
 	})
 	.strict();
 

@@ -31,16 +31,16 @@ export default function SearchBar() {
 				onKeyDown={handleInputKeyDown}
 				type="search"
 				placeholder="Search packages..."
-				className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2 pl-10 pr-16 transition-all duration-200 focus:border-neon-purple/50 focus:outline-none focus:ring-2 focus:ring-neon-purple/10"
+				className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2 pr-16 pl-10 transition-all duration-200 focus:border-neon-purple/50 focus:ring-neon-purple/10 focus:ring-2 focus:outline-none"
 			/>
-			<div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1">
+			<div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1">
 				<div className="flex items-center gap-1">
 					<kbd className="flex size-5 items-center justify-center rounded border border-white/40 text-xs text-white/40 group-focus-within:border-white group-focus-within:text-white">⌘</kbd>
 					<span className="text-xs text-white/40 group-focus-within:text-white">+</span>
 					<kbd className="flex size-5 items-center justify-center rounded border border-white/40 text-xs text-white/40 group-focus-within:border-white group-focus-within:text-white">K</kbd>
 				</div>
 			</div>
-			<IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40 group-focus-within:text-white" />
+			<IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/40 group-focus-within:text-white" />
 		</div>
 	);
 }

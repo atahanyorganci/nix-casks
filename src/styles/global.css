@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+	--color-neon-purple: #b026ff;
+	--color-neon-blue: #00f0ff;
+	--color-neon-pink: #ff00ff;
+	--color-neon-yellow: #faff00;
+	--color-neon-green: #39ff14;
+	--color-neon-red: #ff3131;
+	--color-neon-white: #ffffff;
+	--color-neon-black: #0a0a0a;
+	--color-neon-gray: #1e1e1e;
+	--color-neon-dark: #121212;
+	--shadow-neon: 0 0 5px var(--tw-shadow-color), 0 0 20px var(--tw-shadow-color);
+	--shadow-neon-lg: 0 0 10px var(--tw-shadow-color), 0 0 40px var(--tw-shadow-color);
+}
+
+@utility container {
+	margin-inline: auto;
+	padding-inline: 1rem;
+}
+
+.astro-code,
+.astro-code span {
+	background-color: transparent !important;
+}

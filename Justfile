@@ -29,6 +29,10 @@ env: vercel-link
 [group("setup")]
 setup: install env
 
+[group("build")]
+build:
+    pnpm turbo run build
+
 [group("dev")]
 dev *args='':
     process-compose up {{args}}
