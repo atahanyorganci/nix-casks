@@ -21,7 +21,8 @@ stdenv.mkDerivation rec {
     name = cask.pname;
   };
   meta = with stdenv.lib; {
-    inherit (cask.meta) description homepage;
+    description = cask.meta.description or null;
+    homepage = cask.meta.homepage or null;
     platforms = lib.platforms.darwin;
   };
 }
