@@ -312,7 +312,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		})
 		.from(packages)
 		.where(where)
-		.orderBy(desc(packages.generatorVersion), desc(packages.version))
+		.orderBy(desc(packages.generatorVersion), desc(packages.createdAt))
 		.limit(1)
 		.innerJoin(versionHistory, eq(versionHistory.pname, packages.pname));
 	if (pkg.length === 0) {
