@@ -38,6 +38,10 @@ dev *args='':
     process-compose up {{args}}
 
 [group("db")]
+db:
+    docker compose up
+
+[group("db")]
 generate name:
     pnpm db:generate --name {{name}}
 
