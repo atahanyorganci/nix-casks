@@ -97,7 +97,7 @@ export async function getPackage(db: Database, pname: string, version?: string) 
 		.select()
 		.from(packages)
 		.where(where)
-		.orderBy(desc(packages.semver), desc(packages.createdAt))
+		.orderBy(desc(packages.createdAt))
 		.limit(1);
 	if (record.length !== 1) {
 		return;
@@ -217,7 +217,6 @@ function selectLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">,
 		.where(eq(packages.generatorVersion, generatorVersion))
 		.orderBy(
 			desc(packages.pname),
-			desc(packages.semver),
 			desc(packages.createdAt),
 		)
 		.as("latest");
@@ -286,7 +285,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 								'generatorVersion', ${packages.generatorVersion},
 								'createdAt', ${packages.createdAt}
 						)
-						ORDER BY ${packages.semver} DESC, ${packages.createdAt} DESC
+						ORDER BY ${packages.createdAt} DESC
 				)`
 				.as("version_history"),
 		})

@@ -1,0 +1,149 @@
+{
+	"id": "da79f20e-5e52-450d-8abc-8b8fd2bd110e",
+	"prevId": "cc323c7d-9188-46df-a01e-5304668cedd8",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.archives": {
+			"name": "archives",
+			"schema": "",
+			"columns": {
+				"archive": {
+					"name": "archive",
+					"type": "json",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"sha256": {
+					"name": "sha256",
+					"type": "char(64)",
+					"primaryKey": true,
+					"notNull": true,
+					"generated": {
+						"as": "encode(digest(\"archives\".\"archive\"::text, 'sha256'), 'hex')",
+						"type": "stored"
+					}
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.packages": {
+			"name": "packages",
+			"schema": "",
+			"columns": {
+				"name": {
+					"name": "name",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"pname": {
+					"name": "pname",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true,
+					"generated": {
+						"as": "\"packages\".\"nix\"->>'pname'",
+						"type": "stored"
+					}
+				},
+				"version": {
+					"name": "version",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true,
+					"generated": {
+						"as": "\"packages\".\"nix\"->>'version'",
+						"type": "stored"
+					}
+				},
+				"description": {
+					"name": "description",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": false,
+					"generated": {
+						"as": "\"packages\".\"nix\"->'meta'->>'description'",
+						"type": "stored"
+					}
+				},
+				"homepage": {
+					"name": "homepage",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": false,
+					"generated": {
+						"as": "\"packages\".\"nix\"->'meta'->>'homepage'",
+						"type": "stored"
+					}
+				},
+				"generatorVersion": {
+					"name": "generatorVersion",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 1
+				},
+				"nix": {
+					"name": "nix",
+					"type": "json",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"url": {
+					"name": "url",
+					"type": "varchar",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {
+				"packages_generatorVersion_pname_version_pk": {
+					"name": "packages_generatorVersion_pname_version_pk",
+					"columns": [
+						"generatorVersion",
+						"pname",
+						"version"
+					]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
+}
