@@ -23,6 +23,7 @@
           magika
           flyctl
           self'.packages.ci
+          postgresql_18
         ];
       };
     };
