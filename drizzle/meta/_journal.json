@@ -5,29 +5,8 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1741126077972,
-			"tag": "0000_init",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1747344123059,
-			"tag": "0001_semver",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1747348682270,
-			"tag": "0002_packages-semver",
-			"breakpoints": true
-		},
-		{
-			"idx": 3,
-			"version": "7",
-			"when": 1767701443530,
-			"tag": "0003_fast_mister_sinister",
+			"when": 1767780061345,
+			"tag": "0000_ps-reinit",
 			"breakpoints": true
 		}
 	]
