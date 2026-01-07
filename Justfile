@@ -15,7 +15,7 @@ vercel-link: vercel-login
     #!/usr/bin/env bash
 
     rm -rf .vercel
-    just vercel link --repo
+    just vercel link --repo --yes
     pnpm turbo link
 
 [group("setup")]
