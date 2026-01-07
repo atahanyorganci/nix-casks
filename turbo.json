@@ -33,7 +33,7 @@
 				"GITHUB_REPO",
 				"GITHUB_TOKEN",
 				"GITHUB_WORKFLOW_ID",
-				"NEON_DATABASE_URL",
+				"DATABASE_URL",
 				"QSTASH_CURRENT_SIGNING_KEY",
 				"QSTASH_NEXT_SIGNING_KEY",
 				"QSTASH_TOKEN"
@@ -45,7 +45,7 @@
 		"db:migrate": {
 			"cache": false,
 			"env": [
-				"NEON_DATABASE_URL"
+				"DATABASE_URL"
 			]
 		},
 		"dev": {

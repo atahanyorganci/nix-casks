@@ -17,7 +17,7 @@ export default defineConfig({
 	env: {
 		schema: {
 			NODE_ENV: envField.enum({ context: "server", access: "public", values: ["development", "production"] }),
-			NEON_DATABASE_URL: envField.string({ context: "server", access: "secret" }),
+			DATABASE_URL: envField.string({ context: "server", access: "secret" }),
 			AWS_ACCESS_KEY_ID: envField.string({ context: "server", access: "secret" }),
 			AWS_SECRET_ACCESS_KEY: envField.string({ context: "server", access: "secret" }),
 			AWS_ENDPOINT_URL_S3: envField.string({ context: "server", access: "secret" }),
