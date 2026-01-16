@@ -41,6 +41,7 @@ export default defineConfig({
 			GITHUB_REPO: envField.string({ context: "server", access: "public" }),
 			GITHUB_BRANCH: envField.string({ context: "server", access: "public" }),
 			GITHUB_WORKFLOW_ID: envField.number({ context: "server", access: "public" }),
+			SITEMAP_PAGE_SIZE: envField.number({ context: "server", access: "public", default: 50_000 }),
 		},
 	},
 });

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "@hono/zod-openapi";
 import { generateSitemap } from "@yorganci/sitemap";
+import { SITEMAP_PAGE_SIZE } from "astro:env/server";
 import { desc, eq } from "drizzle-orm";
 import { GENERATOR_VERSION } from "~/lib/homebrew";
 import { createDatabase, packages } from "~/server/db";
@@ -29,8 +30,8 @@ export const GET: APIRoute = async ({ site, params }) => {
 		.from(packages)
 		.where(eq(packages.generatorVersion, GENERATOR_VERSION))
 		.orderBy(packages.pname, desc(packages.version))
-		.limit(50_000)
-		.offset((page - 1) * 50_000);
+		.limit(SITEMAP_PAGE_SIZE)
+		.offset((page - 1) * SITEMAP_PAGE_SIZE);
 
 	const sitemap = generateSitemap(packageVersions.map(({ pname, version, createdAt }) => ({
 		loc: `https://${site?.hostname}/package/${pname}/${version}`,

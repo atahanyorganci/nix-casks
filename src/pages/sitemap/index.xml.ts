@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import type { Database } from "~/server/db";
 import { generateSitemapIndex } from "@yorganci/sitemap";
+import { SITEMAP_PAGE_SIZE } from "astro:env/server";
 import { sql } from "drizzle-orm";
 import { createDatabase, packages } from "~/server/db";
 
@@ -27,8 +28,8 @@ export const GET: APIRoute = async ({ site }) => {
 
 	// Count distinct package versions via aggregation
 	const [packageVersionCount, uniquePackageNamesCount] = await Promise.all([countPackageVersions(db), countUniquePackageNames(db)]);
-	const packageVersionSitemapCount = Math.ceil(packageVersionCount / 50_000);
-	const uniquePackageNamesSitemapCount = Math.ceil(uniquePackageNamesCount / 50_000);
+	const packageVersionSitemapCount = Math.ceil(packageVersionCount / SITEMAP_PAGE_SIZE);
+	const uniquePackageNamesSitemapCount = Math.ceil(uniquePackageNamesCount / SITEMAP_PAGE_SIZE);
 
 	const sitemap = generateSitemapIndex([
 		{ loc: `https://${site!.hostname}/sitemap/static.xml` },
