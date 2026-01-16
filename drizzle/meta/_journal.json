@@ -8,6 +8,13 @@
 			"when": 1767780061345,
 			"tag": "0000_ps-reinit",
 			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1768579832669,
+			"tag": "0001_index",
+			"breakpoints": true
 		}
 	]
 }
