@@ -21,7 +21,7 @@ export const NixPackage = z
 			example: "1.94.2",
 		}),
 		src: z.object({
-			url: z.string().url().openapi({
+			url: z.url().openapi({
 				description: "URL to the source code, binary or archive",
 				example: "https://update.code.visualstudio.com/1.94.2/darwin-arm64/stable",
 			}),
@@ -38,7 +38,7 @@ export const NixPackage = z
 				description: "Short description of the package",
 				example: "Open-source code editor",
 			}),
-			homepage: z.string().url().optional().openapi({
+			homepage: z.url().optional().openapi({
 				description: "URL to the homepage of the package",
 				example: "https://code.visualstudio.com/",
 			}),
@@ -83,7 +83,7 @@ export const Package = z
 			description: "Short description of the package",
 			example: "Open-source code editor",
 		}),
-		homepage: z.string().url().optional().openapi({
+		homepage: z.url().optional().openapi({
 			description: "URL to the homepage of the package",
 			example: "https://code.visualstudio.com/",
 		}),
@@ -142,7 +142,7 @@ export async function fetchCaskFromUrl(url: string): Promise<Cask> {
 	if (!result.success) {
 		throw new HTTPException(400, {
 			message: "Invalid cask definition",
-			cause: result.error.flatten(),
+			cause: z.treeifyError(result.error),
 		});
 	}
 	return result.data;
@@ -185,7 +185,7 @@ async function fetchCasksFromHomebrew() {
 	if (!result.success) {
 		throw new HTTPException(400, {
 			message: "Casks is not an array",
-			cause: result.error.flatten(),
+			cause: z.treeifyError(result.error),
 		});
 	}
 	return result.data;

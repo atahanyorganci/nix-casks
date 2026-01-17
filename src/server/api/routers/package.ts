@@ -50,7 +50,7 @@ packagesRouter.openapi(
 				content: {
 					"application/json": {
 						schema: z.object({
-							url: z.string().url().openapi({
+							url: z.url().openapi({
 								description: "URL of the package to add",
 								example: "https://formulae.brew.sh/api/cask/visual-studio-code.json",
 							}),

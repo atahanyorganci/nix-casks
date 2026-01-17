@@ -567,7 +567,7 @@ export const Cask = z.object({
 	name: z.array(z.string()).min(1),
 	desc: z.string().nullable(),
 	homepage: z.string(),
-	url: z.string().url(),
+	url: z.url(),
 	url_specs: z.unknown(),
 	version: z.union([Version, Latest]).openapi({
 		description: "Version of the package",
@@ -609,7 +609,7 @@ export const Cask = z.object({
 		sha256: z.string(),
 	}),
 	// Used in local installations
-	variations: z.record(z.unknown()),
+	variations: z.record(z.string(), z.unknown()),
 	installed: z.null(),
 	installed_time: z.null(),
 	outdated: z.literal(false),

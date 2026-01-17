@@ -30,7 +30,7 @@ const Code: FC<{ code: string }> = ({ code }) => (
 );
 
 const Step: FC<{ step: number; text: string; gradient: string }> = ({ step, text, gradient }) => (
-	<Tabs.Trigger value={step.toString()} className="group border-neon-white/40 bg-neon-black/30 flex items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200 data-[state=active]:border-neon-white">
+	<Tabs.Trigger value={step.toString()} className="group border-neon-white/40 bg-neon-black/30 data-[state=active]:border-neon-white flex items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200">
 		<div className={cn("text-neon-white flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r font-bold", gradient)}>{step}</div>
 		<div className="text-neon-white/40 group-data-[state=active]:text-white">{text}</div>
 	</Tabs.Trigger>
@@ -96,7 +96,7 @@ const QuickStart: FC = () => (
 					href="https://github.com/atahanyorganci/nix-casks/blob/main/README.md"
 					target="_blank"
 					rel="noopener noreferrer"
-					className="border-neon-purple/30 bg-neon-black text-neon-white inline-flex items-center gap-2 rounded-xl border px-6 py-3 font-bold transition-all duration-200 hover:border-neon-purple/60 hover:shadow-neon-purple/10 hover:translate-y-[-2px] hover:shadow-lg"
+					className="border-neon-purple/30 bg-neon-black text-neon-white hover:border-neon-purple/60 hover:shadow-neon-purple/10 inline-flex items-center gap-2 rounded-xl border px-6 py-3 font-bold transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
 				>
 					<span>View Full Documentation</span>
 					<IconArrowRight />
