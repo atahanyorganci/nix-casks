@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "@hono/zod-openapi";
-import { generateSitemap } from "@yorganci/sitemap";
+import { generateSitemapStream } from "@yorganci/sitemap";
 import { SITEMAP_PAGE_SIZE } from "astro:env/server";
 import { desc, eq } from "drizzle-orm";
 import { GENERATOR_VERSION } from "~/lib/homebrew";
@@ -32,14 +32,14 @@ export const GET: APIRoute = async ({ site, params }) => {
 		.limit(SITEMAP_PAGE_SIZE)
 		.offset((page - 1) * SITEMAP_PAGE_SIZE);
 
-	const sitemap = generateSitemap(distinctPackages.map(({ pname, createdAt }) => ({
+	const sitemapItems = distinctPackages.map(({ pname, createdAt }) => ({
 		loc: `https://${site?.hostname}/package/${pname}`,
 		lastmod: createdAt!.toISOString().split("T")[0],
-		changefreq: "daily",
+		changefreq: "daily" as const,
 		priority: 0.8,
-	})));
+	}));
 
-	return new Response(sitemap, {
+	return new Response(generateSitemapStream(sitemapItems), {
 		headers: {
 			"Content-Type": "application/xml",
 			"Cache-Control": "public, max-age=86400",

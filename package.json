@@ -44,7 +44,7 @@
 		"@tailwindcss/vite": "^4.1.11",
 		"@upstash/qstash": "^2.8.1",
 		"@upstash/workflow": "^0.2.13",
-		"@yorganci/sitemap": "^0.0.2",
+		"@yorganci/sitemap": "^0.0.3",
 		"algoliasearch": "^5.25.0",
 		"astro": "5.16.6",
 		"class-variance-authority": "^0.7.1",

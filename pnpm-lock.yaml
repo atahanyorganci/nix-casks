@@ -60,8 +60,8 @@ importers:
         specifier: ^0.2.13
         version: 0.2.13(react@19.1.0)
       '@yorganci/sitemap':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       algoliasearch:
         specifier: ^5.25.0
         version: 5.25.0
@@ -2477,8 +2477,8 @@ packages:
   '@vue/shared@3.5.12':
     resolution: {integrity: sha512-L2RPSAwUFbgZH20etwrXyVyCBu9OxRSi8T/38QsvnkJyvq2LufW2lDCOzm7t/U9C1mkhJGWYfCuFBCmIuNivrg==}
 
-  '@yorganci/sitemap@0.0.2':
-    resolution: {integrity: sha512-Ud9CA9DKgFWRwqp/YBeCOlSkpLDT6OVdfRk4dOWzjr7adQsdXm/b/H0qvMHMofEykSScc2QthQhZ0Osg7Q1ddw==}
+  '@yorganci/sitemap@0.0.3':
+    resolution: {integrity: sha512-+qnT14fpCEoJoJf+YG8OABpOQiqk+T/C3i+/Ykd0xkx1mWni4oTqrZY0f2GyFSUilj7jAym6fWd107QmYwHR+A==}
 
   '@zod/core@0.11.6':
     resolution: {integrity: sha512-03Bv82fFSfjDAvMfdHHdGSS6SOJs0iCcJlWJv1kJHRtoTT02hZpyip/2Lk6oo4l4FtjuwTrsEQTwg/LD8I7dJA==}
@@ -8721,7 +8721,7 @@ snapshots:
 
   '@vue/shared@3.5.12': {}
 
-  '@yorganci/sitemap@0.0.2':
+  '@yorganci/sitemap@0.0.3':
     dependencies:
       xmlbuilder2: 4.0.3
 
