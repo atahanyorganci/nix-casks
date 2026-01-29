@@ -441,6 +441,21 @@ export const Uninstall = z.union([
 		.transform(({ trash }) => ({ type: "trash" as const, value: trash })),
 ]);
 
+export const BashCompletion = z.object({
+	bash_completion: z.string().array(),
+}).transform(({ bash_completion }) => ({ type: "bash_completion" as const, value: bash_completion }));
+export type BashCompletion = z.infer<typeof BashCompletion>;
+
+const FishCompletion = z.object({
+	fish_completion: z.string().array(),
+}).transform(({ fish_completion }) => ({ type: "fish_completion" as const, value: fish_completion }));
+export type FishCompletion = z.infer<typeof FishCompletion>;
+
+const ZshCompletion = z.object({
+	zsh_completion: z.string().array(),
+}).transform(({ zsh_completion }) => ({ type: "zsh_completion" as const, value: zsh_completion }));
+export type ZshCompletion = z.infer<typeof ZshCompletion>;
+
 export const Artifact = z.union([
 	AppArtifact,
 	SuiteArtifact,
@@ -464,6 +479,9 @@ export const Artifact = z.union([
 	Vst3PluginArtifact,
 	GenericArtifact,
 	StageOnlyArtifact,
+	BashCompletion,
+	FishCompletion,
+	ZshCompletion,
 	z
 		.object({
 			zap: z.array(Uninstall),
@@ -635,6 +653,9 @@ const ignoredArtifactTypes = new Set([
 	"postflight",
 	"uninstall_preflight",
 	"uninstall_postflight",
+	"bash_completion",
+	"fish_completion",
+	"zsh_completion",
 ]);
 
 function replaceVariables(value: string, token: string, version: string) {
@@ -764,6 +785,11 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 				case "artifact": {
 					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
 					return `mkdir -p "${destDir}" && cp -r "${src}" "${dest}"`;
+				}
+				case "bash_completion":
+				case "fish_completion":
+				case "zsh_completion": {
+					unsupported(type, `${token}'s ${type} is not supported`);
 				}
 			}
 			return unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);
