@@ -16,6 +16,6 @@
         packagesJson);
     in
     {
-      packages = lib.mkIf (lib.hasSuffix "darwin" system) packages;
+      packages = lib.mkIf (lib.hasSuffix "darwin" stdenv.hostPlatform.system) packages;
     };
 }
