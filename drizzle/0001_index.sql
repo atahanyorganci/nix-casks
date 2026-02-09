@@ -1,0 +1,2 @@
+CREATE INDEX "archives_createdAt_index" ON "archives" USING btree ("createdAt" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX "packages_generatorVersion_pname_createdAt_index" ON "packages" USING btree ("generatorVersion","pname","createdAt" DESC NULLS LAST);

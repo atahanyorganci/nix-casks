@@ -1,14 +1,8 @@
 import type { SQL } from "drizzle-orm";
 import type { z } from "zod";
 import { sql } from "drizzle-orm";
-import { char, customType, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
+import { char, index, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-
-const semver = customType<{ data: string }>({
-	dataType() {
-		return "semver";
-	},
-});
 
 export const packages = pgTable(
 	"packages",
@@ -20,7 +14,6 @@ export const packages = pgTable(
 		version: varchar()
 			.notNull()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->>'version'`),
-		semver: semver().generatedAlwaysAs((): SQL => sql`try_cast_to_semver(${packages.nix}->>'version')`),
 		description: varchar()
 			.generatedAlwaysAs((): SQL => sql`${packages.nix}->'meta'->>'description'`),
 		homepage: varchar()
@@ -30,17 +23,26 @@ export const packages = pgTable(
 		url: varchar().notNull(),
 		createdAt: timestamp().defaultNow().notNull(),
 	},
-	table => [primaryKey({ columns: [table.generatorVersion, table.pname, table.version] })],
+	table => [
+		primaryKey({ columns: [table.generatorVersion, table.pname, table.version] }),
+		index("packages_generatorVersion_pname_createdAt_index").on(table.generatorVersion, table.pname, table.createdAt.desc()),
+	],
 );
 
 export const insertPackageSchema = createInsertSchema(packages);
 export type InsertPackage = z.infer<typeof insertPackageSchema>;
 
-export const archives = pgTable("archives", {
-	archive: json().notNull(),
-	sha256: char({ length: 64 })
-		.notNull()
-		.generatedAlwaysAs((): SQL => sql`encode(digest(${archives.archive}::text, 'sha256'), 'hex')`)
-		.primaryKey(),
-	createdAt: timestamp().defaultNow().notNull(),
-});
+export const archives = pgTable(
+	"archives",
+	{
+		archive: json().notNull(),
+		sha256: char({ length: 64 })
+			.notNull()
+			.generatedAlwaysAs((): SQL => sql`encode(digest(${archives.archive}::text, 'sha256'), 'hex')`)
+			.primaryKey(),
+		createdAt: timestamp().defaultNow().notNull(),
+	},
+	table => [
+		index("archives_createdAt_index").on(table.createdAt.desc()),
+	],
+);

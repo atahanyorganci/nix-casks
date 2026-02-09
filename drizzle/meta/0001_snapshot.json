@@ -1,6 +1,6 @@
 {
-	"id": "d83469e1-1f38-40c9-a334-dfccdd04b107",
-	"prevId": "467ee16a-663b-4e5f-a01e-f072e480fa1d",
+	"id": "4a02f6b4-f5f7-4410-a423-fdb37fbbac47",
+	"prevId": "c52f3fe2-bbe0-4a1b-98c3-513f515f9291",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
@@ -20,8 +20,8 @@
 					"primaryKey": true,
 					"notNull": true,
 					"generated": {
-						"type": "stored",
-						"as": "encode(digest(\"archives\".\"archive\"::text, 'sha256'), 'hex')"
+						"as": "encode(digest(\"archives\".\"archive\"::text, 'sha256'), 'hex')",
+						"type": "stored"
 					}
 				},
 				"createdAt": {
@@ -32,7 +32,23 @@
 					"default": "now()"
 				}
 			},
-			"indexes": {},
+			"indexes": {
+				"archives_createdAt_index": {
+					"name": "archives_createdAt_index",
+					"columns": [
+						{
+							"expression": "createdAt",
+							"isExpression": false,
+							"asc": false,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
@@ -56,8 +72,8 @@
 					"primaryKey": false,
 					"notNull": true,
 					"generated": {
-						"type": "stored",
-						"as": "\"packages\".\"nix\"->>'pname'"
+						"as": "\"packages\".\"nix\"->>'pname'",
+						"type": "stored"
 					}
 				},
 				"version": {
@@ -66,8 +82,8 @@
 					"primaryKey": false,
 					"notNull": true,
 					"generated": {
-						"type": "stored",
-						"as": "\"packages\".\"nix\"->>'version'"
+						"as": "\"packages\".\"nix\"->>'version'",
+						"type": "stored"
 					}
 				},
 				"description": {
@@ -76,8 +92,8 @@
 					"primaryKey": false,
 					"notNull": false,
 					"generated": {
-						"type": "stored",
-						"as": "\"packages\".\"nix\"->'meta'->>'description'"
+						"as": "\"packages\".\"nix\"->'meta'->>'description'",
+						"type": "stored"
 					}
 				},
 				"homepage": {
@@ -86,8 +102,8 @@
 					"primaryKey": false,
 					"notNull": false,
 					"generated": {
-						"type": "stored",
-						"as": "\"packages\".\"nix\"->'meta'->>'homepage'"
+						"as": "\"packages\".\"nix\"->'meta'->>'homepage'",
+						"type": "stored"
 					}
 				},
 				"generatorVersion": {
@@ -117,7 +133,35 @@
 					"default": "now()"
 				}
 			},
-			"indexes": {},
+			"indexes": {
+				"packages_generatorVersion_pname_createdAt_index": {
+					"name": "packages_generatorVersion_pname_createdAt_index",
+					"columns": [
+						{
+							"expression": "generatorVersion",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "pname",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "createdAt",
+							"isExpression": false,
+							"asc": false,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {
 				"packages_generatorVersion_pname_version_pk": {
@@ -137,10 +181,10 @@
 	},
 	"enums": {},
 	"schemas": {},
-	"views": {},
 	"sequences": {},
 	"roles": {},
 	"policies": {},
+	"views": {},
 	"_meta": {
 		"columns": {},
 		"schemas": {},

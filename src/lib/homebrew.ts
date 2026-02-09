@@ -441,6 +441,21 @@ export const Uninstall = z.union([
 		.transform(({ trash }) => ({ type: "trash" as const, value: trash })),
 ]);
 
+export const BashCompletion = z.object({
+	bash_completion: z.string().array(),
+}).transform(({ bash_completion }) => ({ type: "bash_completion" as const, value: bash_completion }));
+export type BashCompletion = z.infer<typeof BashCompletion>;
+
+const FishCompletion = z.object({
+	fish_completion: z.string().array(),
+}).transform(({ fish_completion }) => ({ type: "fish_completion" as const, value: fish_completion }));
+export type FishCompletion = z.infer<typeof FishCompletion>;
+
+const ZshCompletion = z.object({
+	zsh_completion: z.string().array(),
+}).transform(({ zsh_completion }) => ({ type: "zsh_completion" as const, value: zsh_completion }));
+export type ZshCompletion = z.infer<typeof ZshCompletion>;
+
 export const Artifact = z.union([
 	AppArtifact,
 	SuiteArtifact,
@@ -464,6 +479,9 @@ export const Artifact = z.union([
 	Vst3PluginArtifact,
 	GenericArtifact,
 	StageOnlyArtifact,
+	BashCompletion,
+	FishCompletion,
+	ZshCompletion,
 	z
 		.object({
 			zap: z.array(Uninstall),
@@ -559,73 +577,71 @@ export const NoCheck = z.literal("no_check").openapi({
 	example: "no_check",
 });
 
-export const Cask = z
-	.object({
-		token: z.string().regex(/^[a-z0-9-@+]+$/),
-		full_token: z.string(),
-		old_tokens: z.array(z.string()),
-		tap: z.string(),
-		name: z.array(z.string()).min(1),
-		desc: z.string().nullable(),
-		homepage: z.string(),
-		url: z.string().url(),
-		url_specs: z.unknown(),
-		version: z.union([Version, Latest]).openapi({
-			description: "Version of the package",
-			examples: ["1.94.2", "latest"],
-		}),
-		bundle_version: z.string().nullable(),
-		bundle_short_version: z.string().nullable(),
-		sha256: z.union([Sha256, NoCheck]).openapi({
-			description: "SHA256 hash of the package source code, binary or archive",
-			examples: ["fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU", "no_check"],
-		}),
-		artifacts: z.array(Artifact),
-		caveats: z.string().nullable(),
-		depends_on: z.unknown(),
-		conflicts_with: z
-			.object({
-				cask: z.array(z.string()).optional(),
-				formula: z.array(z.string()).optional(),
-			})
-			.nullable(),
-		container: Container.nullable(),
-		auto_updates: z.boolean().nullable(),
-		// Deprecation
-		deprecated: z.boolean(),
-		deprecation_date: z.string().nullable(),
-		deprecation_reason: z.string().nullable(),
-		deprecation_replacement_cask: z.string().nullable(),
-		deprecation_replacement_formula: z.string().nullable(),
-		// Disable
-		disabled: z.boolean(),
-		disable_date: z.string().nullable(),
-		disable_reason: z.string().nullable(),
-		disable_replacement_cask: z.string().nullable(),
-		disable_replacement_formula: z.string().nullable(),
-		tap_git_head: z.string().nullable(),
-		languages: z.array(z.string()),
-		ruby_source_path: z.string(),
-		ruby_source_checksum: z.object({
-			sha256: z.string(),
-		}),
-		// Used in local installations
-		variations: z.record(z.unknown()),
-		installed: z.null(),
-		installed_time: z.null(),
-		outdated: z.literal(false),
-		// Only from API
-		generated_date: z
-			.string()
-			.regex(/^\d{4}-\d{2}-\d{2}$/)
-			.optional(),
-		analytics: z.unknown(),
-		autobump: z.boolean(),
-		no_autobump_message: z.string().nullable(),
-		skip_livecheck: z.boolean(),
-		rename: z.string().array(),
-	})
-	.strict();
+export const Cask = z.object({
+	token: z.string().regex(/^[a-z0-9-@+]+$/),
+	full_token: z.string(),
+	old_tokens: z.array(z.string()),
+	tap: z.string(),
+	name: z.array(z.string()).min(1),
+	desc: z.string().nullable(),
+	homepage: z.string(),
+	url: z.url(),
+	url_specs: z.unknown(),
+	version: z.union([Version, Latest]).openapi({
+		description: "Version of the package",
+		examples: ["1.94.2", "latest"],
+	}),
+	bundle_version: z.string().nullable(),
+	bundle_short_version: z.string().nullable(),
+	sha256: z.union([Sha256, NoCheck]).openapi({
+		description: "SHA256 hash of the package source code, binary or archive",
+		examples: ["fQ9l6WwYpzypwEOS4LxER0QDg87BBYHxnyiNUsYcDgU", "no_check"],
+	}),
+	artifacts: z.array(Artifact),
+	caveats: z.string().nullable(),
+	depends_on: z.unknown(),
+	conflicts_with: z
+		.object({
+			cask: z.array(z.string()).optional(),
+			formula: z.array(z.string()).optional(),
+		})
+		.nullable(),
+	container: Container.nullable(),
+	auto_updates: z.boolean().nullable(),
+	// Deprecation
+	deprecated: z.boolean(),
+	deprecation_date: z.string().nullable(),
+	deprecation_reason: z.string().nullable(),
+	deprecation_replacement_cask: z.string().nullable(),
+	deprecation_replacement_formula: z.string().nullable(),
+	// Disable
+	disabled: z.boolean(),
+	disable_date: z.string().nullable(),
+	disable_reason: z.string().nullable(),
+	disable_replacement_cask: z.string().nullable(),
+	disable_replacement_formula: z.string().nullable(),
+	tap_git_head: z.string().nullable(),
+	languages: z.array(z.string()),
+	ruby_source_path: z.string(),
+	ruby_source_checksum: z.object({
+		sha256: z.string(),
+	}),
+	// Used in local installations
+	variations: z.record(z.string(), z.unknown()),
+	installed: z.null(),
+	installed_time: z.null(),
+	outdated: z.literal(false),
+	// Only from API
+	generated_date: z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/)
+		.optional(),
+	analytics: z.unknown(),
+	autobump: z.boolean(),
+	no_autobump_message: z.string().nullable(),
+	skip_livecheck: z.boolean(),
+	rename: z.string().array(),
+});
 
 export type Cask = z.infer<typeof Cask>;
 
@@ -637,6 +653,9 @@ const ignoredArtifactTypes = new Set([
 	"postflight",
 	"uninstall_preflight",
 	"uninstall_postflight",
+	"bash_completion",
+	"fish_completion",
+	"zsh_completion",
 ]);
 
 function replaceVariables(value: string, token: string, version: string) {
@@ -766,6 +785,11 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 				case "artifact": {
 					const { src, dest, destDir } = generateArtifactSrcDest(artifact, token, version);
 					return `mkdir -p "${destDir}" && cp -r "${src}" "${dest}"`;
+				}
+				case "bash_completion":
+				case "fish_completion":
+				case "zsh_completion": {
+					unsupported(type, `${token}'s ${type} is not supported`);
 				}
 			}
 			return unreachable(`${type} artifact is not supported, artifact: ${JSON.stringify(artifact)}`);

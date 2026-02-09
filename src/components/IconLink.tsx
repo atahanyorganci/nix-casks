@@ -16,7 +16,7 @@ const IconLink: FC<PropsWithChildren<IconLinkProps>> = ({ href, rel, target, tit
 			target={target}
 			rel={rel}
 			title={title}
-			className={cn("text-neon-white/60 stroke-neon-white/60 rounded-lg p-2 transition-colors hover:text-neon-purple hover:bg-neon-white/5", className)}
+			className={cn("text-neon-white/60 stroke-neon-white/60 hover:text-neon-purple hover:bg-neon-white/5 rounded-lg p-2 transition-colors", className)}
 		>
 			{children}
 		</a>

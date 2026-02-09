@@ -21,7 +21,7 @@ export const NixPackage = z
 			example: "1.94.2",
 		}),
 		src: z.object({
-			url: z.string().url().openapi({
+			url: z.url().openapi({
 				description: "URL to the source code, binary or archive",
 				example: "https://update.code.visualstudio.com/1.94.2/darwin-arm64/stable",
 			}),
@@ -38,7 +38,7 @@ export const NixPackage = z
 				description: "Short description of the package",
 				example: "Open-source code editor",
 			}),
-			homepage: z.string().url().optional().openapi({
+			homepage: z.url().optional().openapi({
 				description: "URL to the homepage of the package",
 				example: "https://code.visualstudio.com/",
 			}),
@@ -83,7 +83,7 @@ export const Package = z
 			description: "Short description of the package",
 			example: "Open-source code editor",
 		}),
-		homepage: z.string().url().optional().openapi({
+		homepage: z.url().optional().openapi({
 			description: "URL to the homepage of the package",
 			example: "https://code.visualstudio.com/",
 		}),
@@ -97,7 +97,7 @@ export async function getPackage(db: Database, pname: string, version?: string) 
 		.select()
 		.from(packages)
 		.where(where)
-		.orderBy(desc(packages.semver), desc(packages.createdAt))
+		.orderBy(desc(packages.createdAt))
 		.limit(1);
 	if (record.length !== 1) {
 		return;
@@ -142,7 +142,7 @@ export async function fetchCaskFromUrl(url: string): Promise<Cask> {
 	if (!result.success) {
 		throw new HTTPException(400, {
 			message: "Invalid cask definition",
-			cause: result.error.flatten(),
+			cause: z.treeifyError(result.error),
 		});
 	}
 	return result.data;
@@ -185,7 +185,7 @@ async function fetchCasksFromHomebrew() {
 	if (!result.success) {
 		throw new HTTPException(400, {
 			message: "Casks is not an array",
-			cause: result.error.flatten(),
+			cause: z.treeifyError(result.error),
 		});
 	}
 	return result.data;
@@ -217,7 +217,6 @@ function selectLatestPackages(db: Pick<Database, "select" | "selectDistinctOn">,
 		.where(eq(packages.generatorVersion, generatorVersion))
 		.orderBy(
 			desc(packages.pname),
-			desc(packages.semver),
 			desc(packages.createdAt),
 		)
 		.as("latest");
@@ -286,7 +285,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 								'generatorVersion', ${packages.generatorVersion},
 								'createdAt', ${packages.createdAt}
 						)
-						ORDER BY ${packages.semver} DESC, ${packages.createdAt} DESC
+						ORDER BY ${packages.createdAt} DESC
 				)`
 				.as("version_history"),
 		})
@@ -313,7 +312,7 @@ export async function getPackageVersions(db: Pick<Database, "select">, pname: st
 		})
 		.from(packages)
 		.where(where)
-		.orderBy(desc(packages.generatorVersion), desc(packages.version))
+		.orderBy(desc(packages.generatorVersion), desc(packages.createdAt))
 		.limit(1)
 		.innerJoin(versionHistory, eq(versionHistory.pname, packages.pname));
 	if (pkg.length === 0) {

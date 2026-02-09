@@ -31,7 +31,7 @@ export default function SearchBar() {
 				onKeyDown={handleInputKeyDown}
 				type="search"
 				placeholder="Search packages..."
-				className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2 pr-16 pl-10 transition-all duration-200 focus:border-neon-purple/50 focus:ring-neon-purple/10 focus:ring-2 focus:outline-none"
+				className="focus:border-neon-purple/50 focus:ring-neon-purple/10 w-full rounded-xl border border-white/10 bg-transparent px-4 py-2 pr-16 pl-10 transition-all duration-200 focus:ring-2 focus:outline-none"
 			/>
 			<div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1">
 				<div className="flex items-center gap-1">

@@ -1,1 +1,0 @@
-ALTER TABLE "packages" ADD COLUMN "semver" "semver" GENERATED ALWAYS AS (try_cast_to_semver("packages"."nix"->>'version')) STORED;

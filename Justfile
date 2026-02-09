@@ -15,7 +15,7 @@ vercel-link: vercel-login
     #!/usr/bin/env bash
 
     rm -rf .vercel
-    just vercel link --repo
+    just vercel link --repo --yes
     pnpm turbo link
 
 [group("setup")]
@@ -38,6 +38,10 @@ dev *args='':
     process-compose up {{args}}
 
 [group("db")]
+db:
+    docker compose up
+
+[group("db")]
 generate name:
     pnpm db:generate --name {{name}}
 
@@ -52,3 +56,32 @@ studio:
 [group("db")]
 push:
     pnpm db:push
+
+[group("db")]
+dump NAME:
+    #!/usr/bin/env bash
+
+    pg_dump \
+        --verbose \
+        --dbname="$DATABASE_URL&sslrootcert=system" \
+        --data-only \
+        --format=custom \
+        --no-owner --no-privileges \
+        -t public.packages \
+        -t public.archives \
+        -f $NAME
+
+[group("db")]
+restore NAME:
+    #!/usr/bin/env bash
+
+    pg_restore \
+        --verbose \
+        --dbname="$DATABASE_URL&sslrootcert=system" \
+        --data-only \
+        --no-owner --no-privileges \
+        $NAME
+
+[group("db")]
+repl:
+    psql --dbname="$DATABASE_URL&sslrootcert=system"
