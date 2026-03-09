@@ -35,7 +35,11 @@ const versions = pkg.versionHistory.map(({ version, createdAt, generatorVersion 
 }));
 ---
 
-<Layout title={`${pkg.name} - NixCasks`} description={pkg.description}>
+<Layout
+	title={`${pkg.name} - NixCasks`}
+	description={pkg.description}
+	canonical={`/package/${pkg.pname}/${pkg.version}`}
+>
 	<div class="container py-8 sm:py-12 lg:py-20 max-w-4xl gap-y-4 flex flex-col">
 		<div class="flex gap-2 sm:gap-4">
 			{

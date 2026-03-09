@@ -11,7 +11,7 @@ if (!query) {
 const { hits } = await searchPackages(query);
 ---
 
-<Layout title={`${query} | NixCasks`}>
+<Layout title={`${query} | NixCasks`} canonical="/search">
 	<div class="my-4 sm:my-8 md:my-12 max-w-6xl mx-auto px-1">
 		<div class="flex items-center justify-between text-neon-white text-lg font-medium mb-2 px-4">
 			{

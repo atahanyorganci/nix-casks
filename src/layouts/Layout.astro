@@ -6,17 +6,19 @@ import "../styles/global.css";
 interface Props {
 	title: string;
 	description?: string | null;
+	canonical: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonical: canonicalPath } = Astro.props;
+const canonical = new URL(canonicalPath, Astro.site).href;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
 	<head>
 		<title>{title}</title>
+		<link rel="canonical" href={canonical} />
 		{description && <meta name="description" content={description} />}
-		{/* Favicon */}
 		{/* Twitter */}
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
@@ -27,7 +29,7 @@ const { title, description } = Astro.props;
 		{description && <meta name="og:description" content={description} />}
 		<meta name="og:type" content="website" />
 		<meta name="og:site_name" content="NixCasks" />
-		<meta name="og:url" content="https://nix-casks.yorganci.dev" />
+		<meta name="og:url" content={canonical} />
 		{/* ... */}
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
