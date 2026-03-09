@@ -798,6 +798,8 @@ function artifactToInstallScript({ token, version, artifacts }: Cask) {
 
 export const GENERATOR_VERSION = 4;
 
+const NON_ALPHANUMERIC_REGEX = /[^A-z0-9-]/;
+
 export function cask2nix(cask: Cask): NixPackage {
 	if (cask.version === "latest") {
 		throw new InvalidVersionError("Package doesn't have a valid version.");
@@ -806,7 +808,7 @@ export function cask2nix(cask: Cask): NixPackage {
 		throw new InvalidChecksumError("Package doesn't have a valid checksum.");
 	}
 	const { token, version, url, sha256, desc: description, homepage } = cask;
-	const pname = token.replace(/[^A-z0-9-]/, "_");
+	const pname = token.replace(NON_ALPHANUMERIC_REGEX, "_");
 	const installPhase = artifactToInstallScript(cask);
 	return {
 		pname,
