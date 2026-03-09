@@ -8,7 +8,7 @@
       '';
     in
     {
-      devShells.default = pkgs.mkShell {
+      devShells.default = pkgs.mkShellNoCC {
         shellHook = ''
           corepack install -g ${packageManager}
         '';
