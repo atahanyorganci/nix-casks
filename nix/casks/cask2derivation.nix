@@ -5,7 +5,7 @@
 , cask
 , ...
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   inherit (cask) pname version;
   nativeBuildInputs = with pkgs; [
     magika
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
     inherit (cask.src) url sha256;
     name = cask.pname;
   };
-  meta = with stdenv.lib; {
+  meta = {
     description = cask.meta.description or null;
     homepage = cask.meta.homepage or null;
     platforms = lib.platforms.darwin;
