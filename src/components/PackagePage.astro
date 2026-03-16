@@ -4,6 +4,7 @@ import { IconArrowLeft, IconCode, IconHome } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import Layout from "~/layouts/Layout.astro";
 import type { PackageWithVersion } from "~/lib/package";
+import HomebrewIcon from "~/assets/homebrew.svg";
 
 interface Props {
 	pkg: PackageWithVersion;
@@ -77,6 +78,17 @@ const versions = pkg.versionHistory.map(({ version, createdAt, generatorVersion 
 						title="View source"
 					>
 						<IconCode className="h-4 w-4 md:w-5 md:h-5" />
+					</a>
+					<a
+						href={`https://formulae.brew.sh/cask/${pkg.pname}#default`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="md:p-2 p-1 text-neon-white/60 hover:text-neon-purple transition-colors rounded-lg hover:bg-neon-white/5"
+						title="View on Homebrew"
+					>
+						<HomebrewIcon
+							class="h-4 w-4 md:w-5 md:h-5 stroke-neon-white/60 hover:stroke-neon-purple transition-colors"
+						/>
 					</a>
 				</div>
 			</div>
