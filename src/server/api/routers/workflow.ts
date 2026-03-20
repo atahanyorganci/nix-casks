@@ -1,6 +1,6 @@
 import type { AppContext } from "../types";
 import { serve } from "@upstash/workflow/hono";
-import { QSTASH_TOKEN } from "astro:env/server";
+import { QSTASH_CURRENT_SIGNING_KEY, QSTASH_NEXT_SIGNING_KEY, QSTASH_TOKEN, QSTASH_URL } from "astro:env/server";
 import { Hono } from "hono";
 import { uploadPackageArchive } from "~/lib/archive";
 import { updateHomebrewCasks } from "~/lib/package";
@@ -47,7 +47,10 @@ workflowRouter.post("/homebrew", async (c) => {
 		});
 	}, {
 		env: {
+			QSTASH_CURRENT_SIGNING_KEY,
+			QSTASH_NEXT_SIGNING_KEY,
 			QSTASH_TOKEN,
+			QSTASH_URL,
 		},
 	});
 	// @ts-expect-error The error occurs because `AppContext` doesn't have `QSTASH_TOKEN` property but we are passing it in the `env` object.
