@@ -1,6 +1,5 @@
 import type { AppContext } from "../types";
 import { serve } from "@upstash/workflow/hono";
-import { QSTASH_CURRENT_SIGNING_KEY, QSTASH_NEXT_SIGNING_KEY, QSTASH_TOKEN, QSTASH_URL } from "astro:env/server";
 import { Hono } from "hono";
 import { uploadPackageArchive } from "~/lib/archive";
 import { updateHomebrewCasks } from "~/lib/package";
@@ -15,7 +14,7 @@ workflowRouter.post("/homebrew", async (c) => {
 	if (!authorized) {
 		return c.json({ error: "Unauthorized" }, 401);
 	}
-	const handler = serve(async (ctx) => {
+	const handler = serve<unknown, AppContext["Bindings"], AppContext["Variables"]>(async (ctx) => {
 		const { updateCount } = await ctx.run("fetch-homebrew-casks", async () => {
 			const packages = await updateHomebrewCasks(c.env.db);
 			c.env.logger.info("Updated homebrew casks", { count: packages.length });
@@ -45,15 +44,7 @@ workflowRouter.post("/homebrew", async (c) => {
 			const { status, data: workflowData } = await triggerUpdateArchiveWorkflow();
 			c.env.logger.info("Triggered update archive workflow", { status, workflowData });
 		});
-	}, {
-		env: {
-			QSTASH_CURRENT_SIGNING_KEY,
-			QSTASH_NEXT_SIGNING_KEY,
-			QSTASH_TOKEN,
-			QSTASH_URL,
-		},
 	});
-	// @ts-expect-error The error occurs because `AppContext` doesn't have `QSTASH_TOKEN` property but we are passing it in the `env` object.
 	return await handler(c);
 });
 

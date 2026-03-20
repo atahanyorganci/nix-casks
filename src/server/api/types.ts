@@ -7,5 +7,11 @@ export interface AppContext {
 		db: Database;
 		logger: Logger;
 		NODE_ENV: typeof NODE_ENV;
+		QSTASH_CURRENT_SIGNING_KEY: string;
+		QSTASH_NEXT_SIGNING_KEY: string;
+		QSTASH_TOKEN: string;
+		QSTASH_URL: string;
+		UPSTASH_WORKFLOW_URL: string;
 	};
+	Variables: object;
 }
