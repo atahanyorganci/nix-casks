@@ -2,7 +2,7 @@ import type { SQL } from "drizzle-orm";
 import type { z } from "zod";
 import { sql } from "drizzle-orm";
 import { char, index, integer, json, pgTable, primaryKey, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-orm/zod";
 
 export const packages = pgTable(
 	"packages",

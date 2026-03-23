@@ -1,0 +1,216 @@
+{
+	"id": "c52f3fe2-bbe0-4a1b-98c3-513f515f9291",
+	"prevIds": [
+		"00000000-0000-0000-0000-000000000000"
+	],
+	"version": "8",
+	"dialect": "postgres",
+	"ddl": [
+		{
+			"isRlsEnabled": false,
+			"name": "archives",
+			"schema": "public",
+			"entityType": "tables"
+		},
+		{
+			"type": "json",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": null,
+			"identity": null,
+			"name": "archive",
+			"schema": "public",
+			"table": "archives",
+			"entityType": "columns"
+		},
+		{
+			"columns": [
+				"sha256"
+			],
+			"nameExplicit": false,
+			"name": "archives_pkey",
+			"schema": "public",
+			"table": "archives",
+			"entityType": "pks"
+		},
+		{
+			"type": "char(64)",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": {
+				"as": "encode(digest(\"archives\".\"archive\"::text, 'sha256'), 'hex')",
+				"type": "stored"
+			},
+			"identity": null,
+			"name": "sha256",
+			"schema": "public",
+			"table": "archives",
+			"entityType": "columns"
+		},
+		{
+			"type": "timestamp",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": "now()",
+			"generated": null,
+			"identity": null,
+			"name": "createdAt",
+			"schema": "public",
+			"table": "archives",
+			"entityType": "columns"
+		},
+		{
+			"isRlsEnabled": false,
+			"name": "packages",
+			"schema": "public",
+			"entityType": "tables"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": null,
+			"identity": null,
+			"name": "name",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": {
+				"as": "\"packages\".\"nix\"->>'pname'",
+				"type": "stored"
+			},
+			"identity": null,
+			"name": "pname",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": {
+				"as": "\"packages\".\"nix\"->>'version'",
+				"type": "stored"
+			},
+			"identity": null,
+			"name": "version",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": false,
+			"dimensions": 0,
+			"default": null,
+			"generated": {
+				"as": "\"packages\".\"nix\"->'meta'->>'description'",
+				"type": "stored"
+			},
+			"identity": null,
+			"name": "description",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": false,
+			"dimensions": 0,
+			"default": null,
+			"generated": {
+				"as": "\"packages\".\"nix\"->'meta'->>'homepage'",
+				"type": "stored"
+			},
+			"identity": null,
+			"name": "homepage",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "integer",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": "1",
+			"generated": null,
+			"identity": null,
+			"name": "generatorVersion",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "json",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": null,
+			"identity": null,
+			"name": "nix",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "varchar",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": null,
+			"generated": null,
+			"identity": null,
+			"name": "url",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"type": "timestamp",
+			"typeSchema": null,
+			"notNull": true,
+			"dimensions": 0,
+			"default": "now()",
+			"generated": null,
+			"identity": null,
+			"name": "createdAt",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "columns"
+		},
+		{
+			"columns": [
+				"generatorVersion",
+				"pname",
+				"version"
+			],
+			"nameExplicit": false,
+			"name": "packages_generatorVersion_pname_version_pk",
+			"schema": "public",
+			"table": "packages",
+			"entityType": "pks"
+		}
+	],
+	"renames": []
+}
