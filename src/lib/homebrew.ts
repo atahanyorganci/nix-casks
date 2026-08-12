@@ -585,7 +585,7 @@ export const Cask = z.object({
 	name: z.array(z.string()).min(1),
 	desc: z.string().nullable(),
 	homepage: z.string(),
-	url: z.url(),
+	url: z.union([z.string(), z.record(z.string(), z.string())]),
 	url_specs: z.unknown(),
 	version: z.union([Version, Latest]).openapi({
 		description: "Version of the package",
@@ -800,14 +800,15 @@ export const GENERATOR_VERSION = 4;
 
 const NON_ALPHANUMERIC_REGEX = /[^A-z0-9-]/;
 
-export function cask2nix(cask: Cask): NixPackage {
+export function cask2nix(cask: Cask, arch: "intel" | "arm64" = "intel"): NixPackage {
 	if (cask.version === "latest") {
 		throw new InvalidVersionError("Package doesn't have a valid version.");
 	}
 	else if (cask.sha256 === "no_check") {
 		throw new InvalidChecksumError("Package doesn't have a valid checksum.");
 	}
-	const { token, version, url, sha256, desc: description, homepage } = cask;
+	const { token, version, url: rawUrl, sha256, desc: description, homepage } = cask;
+	const url = typeof rawUrl === "object" ? rawUrl[arch] ?? rawUrl.intel : rawUrl;
 	const pname = token.replace(NON_ALPHANUMERIC_REGEX, "_");
 	const installPhase = artifactToInstallScript(cask);
 	return {
