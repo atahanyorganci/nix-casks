@@ -16,6 +16,7 @@ vercel-link: vercel-login
 
     rm -rf .vercel
     just vercel link --repo --yes
+    pnpm turbo login
     pnpm turbo link
 
 [group("setup")]
